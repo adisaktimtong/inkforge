@@ -1,6 +1,7 @@
 ---
 id: SPEC-editor-engine
 companions:
+  - architecture-spine/ARCHITECTURE-SPINE.md
   - architecture.md
   - html-contract.md
   - customization.md
@@ -10,6 +11,8 @@ sources: []
 ---
 
 > **สัญญาหลักของระบบ:** `SPEC.md` และไฟล์ใน `companions:` เป็นข้อกำหนดฉบับสมบูรณ์สำหรับการพัฒนา ทดสอบ และตรวจรับระบบ
+
+> **ลำดับอำนาจด้านเทคนิค:** `architecture-spine/ARCHITECTURE-SPINE.md` เป็นสัญญาด้านสถาปัตยกรรมที่มีผลผูกพันสำหรับ package boundary, technology stack, security, testing, release และ rollout; ให้ใช้แทน guidance ที่ขัดกันใน companion เดิม
 
 # Engine สำหรับ Rich-Text Editor ที่ขยายความสามารถได้
 

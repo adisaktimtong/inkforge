@@ -1,5 +1,7 @@
 # สถาปัตยกรรม Editor Engine
 
+> **หมายเหตุสถานะ:** เอกสารนี้ยังอธิบาย document model และ integration contract ที่ใช้ร่วมกัน แต่การตัดสินใจเรื่อง package boundary, technology stack, security, testing, release และ rollout ให้ยึด [`architecture-spine/ARCHITECTURE-SPINE.md`](architecture-spine/ARCHITECTURE-SPINE.md) เป็นหลักเมื่อมีความขัดแย้ง
+
 ## ขอบเขตของแต่ละส่วน
 
 ```text
