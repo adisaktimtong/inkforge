@@ -8,3 +8,4 @@ dist/
 .turbo/
 playwright-report/
 test-results/
+apps/next-demo/next-env.d.ts
