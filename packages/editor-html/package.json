@@ -9,6 +9,9 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
+  "dependencies": {
+    "@inkforge/editor-core": "workspace:*"
+  },
   "files": [
     "dist"
   ],

@@ -308,7 +308,11 @@ importers:
 
   packages/editor-core: {}
 
-  packages/editor-html: {}
+  packages/editor-html:
+    dependencies:
+      '@inkforge/editor-core':
+        specifier: workspace:*
+        version: link:../editor-core
 
   packages/editor-react:
     dependencies:
