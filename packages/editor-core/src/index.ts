@@ -10,7 +10,10 @@ export interface LinkNode extends PresentationAttributes {
   href: string;
   children: InlineNode[];
 }
-export type InlineNode = TextNode | LinkNode;
+export interface HardBreakNode extends PresentationAttributes {
+  type: 'hard-break';
+}
+export type InlineNode = TextNode | LinkNode | HardBreakNode;
 export interface PresentationAttributes {
   className?: string;
   style?: string;
@@ -63,6 +66,10 @@ export const createLink = (
   children,
   ...presentation,
 });
+export const createHardBreak = (presentation: PresentationAttributes = {}): HardBreakNode => ({
+  type: 'hard-break',
+  ...presentation,
+});
 export const createParagraph = (
   children: InlineNode[] = [],
   presentation: PresentationAttributes = {},
@@ -98,7 +105,7 @@ export const createList = (
 export const isBlockNode = (node: DocumentNode | BlockNode | InlineNode): node is BlockNode =>
   node.type === 'paragraph' || node.type === 'heading' || node.type === 'list';
 export const isInlineNode = (node: DocumentNode | BlockNode | InlineNode): node is InlineNode =>
-  node.type === 'text' || node.type === 'link';
+  node.type === 'text' || node.type === 'link' || node.type === 'hard-break';
 
 export function* walkDocument(
   document: DocumentNode,

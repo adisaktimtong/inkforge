@@ -1,6 +1,7 @@
 import type { BlockNode, DocumentNode, InlineNode, Mark } from '@inkforge/editor-core';
 import {
   createDocument,
+  createHardBreak,
   createHeading,
   createLink,
   createList,
@@ -46,13 +47,20 @@ const allowedStyles = new Set([
   'text-decoration',
 ]);
 const safeStyle = (value: string, diagnostics: HtmlDiagnostic[]) =>
-  value
+  decodeCssEscapes(decode(value))
     .split(';')
     .map((x) => x.trim())
     .filter(Boolean)
     .map((decl) => {
       const i = decl.indexOf(':');
-      if (i < 1) return null;
+      if (i < 1) {
+        diagnostics.push({
+          code: 'UNSAFE_STYLE',
+          message: `Removed unsafe CSS declaration: ${decl.slice(0, 40)}`,
+          attribute: 'style',
+        });
+        return null;
+      }
       const property = decl.slice(0, i).trim().toLowerCase();
       const val = decl.slice(i + 1).trim();
       if (
@@ -72,6 +80,22 @@ const safeStyle = (value: string, diagnostics: HtmlDiagnostic[]) =>
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map((x) => `${x[0]}: ${x[1]}`)
     .join('; ');
+
+// CSS escapes can disguise both property names and executable values (for
+// example, `u\\72l(...)` or `expre\\73sion(...)`). Decode them before applying
+// the strict allowlist. Invalid/incomplete escapes are retained as literals.
+function decodeCssEscapes(value: string): string {
+  return value.replace(
+    /\\([0-9a-fA-F]{1,6})(?:[ \t\r\n\f]|\r\n)?|\\([^\r\n\f])/g,
+    (_m, hex, escaped) => {
+      if (hex) {
+        const codePoint = Number.parseInt(hex, 16);
+        return codePoint > 0 && codePoint <= 0x10ffff ? String.fromCodePoint(codePoint) : '\ufffd';
+      }
+      return escaped ?? _m;
+    },
+  );
+}
 
 type Token =
   | { close?: boolean; name: string; attrs: Record<string, string>; raw?: string }
@@ -95,24 +119,58 @@ const tokenize = (html: string): Token[] => {
   }
   return tokens;
 };
+const namedEntities: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: '\u00a0',
+  copy: '\u00a9',
+  reg: '\u00ae',
+  trade: '\u2122',
+  hellip: '\u2026',
+  mdash: '\u2014',
+  ndash: '\u2013',
+  laquo: '\u00ab',
+  raquo: '\u00bb',
+  bull: '\u2022',
+  middot: '\u00b7',
+  cent: '\u00a2',
+  pound: '\u00a3',
+  yen: '\u00a5',
+  euro: '\u20ac',
+  sect: '\u00a7',
+  para: '\u00b6',
+  plusmn: '\u00b1',
+  times: '\u00d7',
+  divide: '\u00f7',
+  deg: '\u00b0',
+};
 const decode = (text: string) =>
-  text.replace(
-    /&(?:amp|lt|gt|quot|apos|#39|nbsp);/gi,
-    (x) =>
-      ({
-        '&amp;': '&',
-        '&lt;': '<',
-        '&gt;': '>',
-        '&quot;': '"',
-        '&apos;': "'",
-        '&#39;': "'",
-        '&nbsp;': '\u00a0',
-      })[x.toLowerCase()] ?? x,
-  );
+  text.replace(/&(?:#(?:x[0-9a-f]+|[0-9]+)|[a-z][a-z0-9]+);?/gi, (entity) => {
+    const body = entity.slice(1).replace(/;$/, '');
+    if (body[0]?.toLowerCase() === '#') {
+      const hex = body[1]?.toLowerCase() === 'x';
+      const digits = body.slice(hex ? 2 : 1);
+      if (!digits || !/^[0-9a-f]+$/i.test(digits) || (!hex && !/^\d+$/.test(digits))) return entity;
+      const codePoint = Number.parseInt(digits, hex ? 16 : 10);
+      return codePoint > 0 && codePoint <= 0x10ffff ? String.fromCodePoint(codePoint) : entity;
+    }
+    return namedEntities[body.toLowerCase()] ?? entity;
+  });
 
 export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlParseResult {
   const diagnostics: HtmlDiagnostic[] = [];
-  const source = String(html ?? '').slice(0, options.maxInputLength ?? 2_000_000);
+  const input = String(html ?? '');
+  const maxInputLength = options.maxInputLength ?? 2_000_000;
+  const source = input.slice(0, Math.max(0, maxInputLength));
+  if (source.length < input.length) {
+    diagnostics.push({
+      code: 'INPUT_TRUNCATED',
+      message: `Input truncated to ${source.length} characters`,
+    });
+  }
   const root: { type: 'root'; children: any[] } = { type: 'root', children: [] };
   const stack: any[] = [root];
   const unsafe = new Set(['script', 'iframe', 'object', 'embed', 'form', 'style', 'svg', 'math']);
@@ -177,6 +235,7 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
   const inline = (nodes: any[], marks: Mark[] = []): InlineNode[] =>
     nodes.flatMap((n) => {
       if (n.kind === 'text') return n.text ? [createText(n.text, marks)] : [];
+      if (n.tag === 'br') return [{ ...createHardBreak(), ...presentation(n) }];
       const mark = markTags[n.tag];
       const next = mark ? [...marks, mark] : marks;
       const attrs = presentation(n);
@@ -247,6 +306,7 @@ export function serializeHtml(document: DocumentNode, options: HtmlSerializeOpti
   const inlines = (nodes: InlineNode[]): string =>
     nodes
       .map((n) => {
+        if (n.type === 'hard-break') return `<br${attrs(n.className, n.style)}>`;
         if (n.type === 'link') {
           const href = safeUrl(n.href) ? ` href="${escape(n.href, true)}"` : '';
           return `<a${href}${attrs(n.className, n.style)}>${inlines(n.children)}</a>`;

@@ -5,6 +5,7 @@ import { parseHtml as parseServerHtml } from '../../packages/editor-html/dist/se
 import * as browser from '../../packages/editor-html/dist/browser.mjs';
 import {
   createDocument,
+  createHardBreak,
   createHeading,
   createList,
   createListItem,
@@ -16,6 +17,42 @@ import {
 } from '../../packages/editor-core/dist/index.mjs';
 
 describe('editor HTML model boundary', () => {
+  test('decodes named and numeric entities while preserving unknown references safely', () => {
+    const result = parseHtml('<p>&copy; &#169; &#x1f600; &unknown;</p>');
+    assert.equal(result.document.children[0].children[0].text, '© © 😀 &unknown;');
+    assert.equal(serializeHtml(result.document), '<p>© © 😀 &amp;unknown;</p>');
+  });
+
+  test('preserves hard breaks in the inline model and HTML', () => {
+    const result = parseHtml('<p>a<br>b</p>');
+    assert.deepEqual(result.document.children[0].children, [
+      { type: 'text', text: 'a' },
+      { type: 'hard-break' },
+      { type: 'text', text: 'b' },
+    ]);
+    assert.equal(serializeHtml(result.document), '<p>a<br>b</p>');
+    assert.deepEqual(createHardBreak(), { type: 'hard-break' });
+  });
+
+  test('normalizes escaped CSS keywords before filtering and diagnoses them', () => {
+    const result = parseHtml(
+      '<p style="color:red; u\\72l(javascript:alert(1)); expre\\73sion(alert(1))">x</p>',
+    );
+    assert.equal(result.document.children[0].style, 'color: red');
+    assert.equal(result.diagnostics.filter((d) => d.code === 'UNSAFE_STYLE').length, 2);
+  });
+
+  test('parses only the bounded prefix and reports truncation', () => {
+    const result = parseHtml('<p>abcdef</p>', { maxInputLength: 5 });
+    assert.equal(result.diagnostics[0].code, 'INPUT_TRUNCATED');
+    assert.equal(result.document.children[0].children[0].text, 'ab');
+  });
+
+  test('keeps hardening behavior consistent across browser and server adapters', () => {
+    const html = '<p>&#x41;<br>z</p>';
+    assert.deepEqual(browser.parseHtml(html), parseServerHtml(html));
+  });
+
   test('round-trips supported article semantics deterministically', () => {
     const parsed = parseHtml(
       '<h1>Title</h1><p>Hello <strong>world</strong> <a href="https://example.com">link</a></p><ul><li>One</li><li>Two</li></ul>',
