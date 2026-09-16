@@ -1,6 +1,6 @@
 {
   "name": "@inkforge/editor-core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Headless editor contracts and document engine.",
   "repository": {
     "type": "git",

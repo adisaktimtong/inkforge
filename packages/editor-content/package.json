@@ -1,6 +1,6 @@
 {
   "name": "@inkforge/editor-content",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Optional editor content token presets and versioned content stylesheet.",
   "repository": {
     "type": "git",
