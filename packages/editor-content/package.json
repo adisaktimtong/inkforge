@@ -2,6 +2,10 @@
   "name": "@inkforge/editor-content",
   "version": "0.0.0",
   "description": "Optional editor content token presets and versioned content stylesheet.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adisaktimtong/inkforge.git"
+  },
   "license": "MIT",
   "type": "module",
   "sideEffects": [
