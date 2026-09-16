@@ -1,6 +1,6 @@
 {
   "name": "@inkforge/editor-checks",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Accessibility and content SEO contracts for the editor.",
   "repository": {
     "type": "git",
