@@ -249,7 +249,7 @@ importers:
 
   apps/next-demo:
     dependencies:
-      editor-content:
+      '@inkforge/editor-content':
         specifier: workspace:*
         version: link:../../packages/editor-content
       next:
@@ -264,13 +264,13 @@ importers:
 
   apps/react-playground:
     dependencies:
-      editor-content:
+      '@inkforge/editor-content':
         specifier: workspace:*
         version: link:../../packages/editor-content
-      editor-core:
+      '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../../packages/editor-core
-      editor-react:
+      '@inkforge/editor-react':
         specifier: workspace:*
         version: link:../../packages/editor-react
       react:
@@ -286,19 +286,19 @@ importers:
 
   internal/editor-dom:
     devDependencies:
-      editor-core:
+      '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../../packages/editor-core
-      editor-html:
+      '@inkforge/editor-html':
         specifier: workspace:*
         version: link:../../packages/editor-html
 
   internal/editor-source:
     devDependencies:
-      editor-core:
+      '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../../packages/editor-core
-      editor-html:
+      '@inkforge/editor-html':
         specifier: workspace:*
         version: link:../../packages/editor-html
 
@@ -312,7 +312,7 @@ importers:
 
   packages/editor-react:
     dependencies:
-      editor-core:
+      '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../editor-core
       react:

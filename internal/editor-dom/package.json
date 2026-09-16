@@ -1,5 +1,5 @@
 {
-  "name": "@texteditor/editor-dom",
+  "name": "@inkforge/editor-dom",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
-    "editor-core": "workspace:*",
-    "editor-html": "workspace:*"
+    "@inkforge/editor-core": "workspace:*",
+    "@inkforge/editor-html": "workspace:*"
   }
 }

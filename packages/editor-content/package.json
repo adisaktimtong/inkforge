@@ -1,5 +1,5 @@
 {
-  "name": "editor-content",
+  "name": "@inkforge/editor-content",
   "version": "0.0.0",
   "description": "Optional editor content token presets and versioned content stylesheet.",
   "license": "MIT",

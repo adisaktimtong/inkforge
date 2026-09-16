@@ -7,11 +7,11 @@ const root = resolve(import.meta.dirname, '../..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const json = (path) => JSON.parse(read(path));
 const publicPackages = [
-  'editor-core',
-  'editor-html',
-  'editor-checks',
-  'editor-react',
-  'editor-content',
+  '@inkforge/editor-core',
+  '@inkforge/editor-html',
+  '@inkforge/editor-checks',
+  '@inkforge/editor-react',
+  '@inkforge/editor-content',
 ];
 
 describe('workspace and release contract', () => {
@@ -28,7 +28,7 @@ describe('workspace and release contract', () => {
 
   test('publishes only explicit ESM package exports', () => {
     for (const name of publicPackages) {
-      const manifest = json(`packages/${name}/package.json`);
+      const manifest = json(`packages/${name.replace('@inkforge/', '')}/package.json`);
       assert.equal(manifest.private, undefined, `${name} must be publishable`);
       assert.equal(manifest.type, 'module');
       assert.equal(manifest.license, 'MIT');
@@ -46,7 +46,7 @@ describe('workspace and release contract', () => {
     assert.deepEqual(Object.keys(htmlExports).sort(), ['.', './browser', './server']);
 
     const react = json('packages/editor-react/package.json');
-    assert.equal(react.peerDependencies['editor-core'], 'workspace:*');
+    assert.equal(react.peerDependencies['@inkforge/editor-core'], 'workspace:*');
     assert.equal(react.peerDependencies.react, '>=18.2 <20');
     assert.equal(react.peerDependencies['react-dom'], '>=18.2 <20');
   });

@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import 'editor-content/content.css';
+import '@inkforge/editor-content/content.css';
 
 createRoot(document.getElementById('root')!).render(
   <main>

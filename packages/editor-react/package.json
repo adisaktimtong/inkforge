@@ -1,5 +1,5 @@
 {
-  "name": "editor-react",
+  "name": "@inkforge/editor-react",
   "version": "0.0.0",
   "description": "React adapter for editor-core.",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "./editor.css": "./dist/editor.css"
   },
   "peerDependencies": {
-    "editor-core": "workspace:*",
+    "@inkforge/editor-core": "workspace:*",
     "react": ">=18.2 <20",
     "react-dom": ">=18.2 <20"
   },

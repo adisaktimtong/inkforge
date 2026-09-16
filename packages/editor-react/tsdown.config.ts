@@ -5,5 +5,5 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['editor-core', 'react', 'react-dom'],
+  external: ['@inkforge/editor-core', 'react', 'react-dom'],
 });

@@ -5,14 +5,14 @@ import { join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const publicPackages = [
-  'editor-core',
-  'editor-html',
-  'editor-checks',
-  'editor-react',
-  'editor-content',
+  '@inkforge/editor-core',
+  '@inkforge/editor-html',
+  '@inkforge/editor-checks',
+  '@inkforge/editor-react',
+  '@inkforge/editor-content',
 ];
-const packed = mkdtempSync(join(tmpdir(), 'texteditor-packed-'));
-const consumer = mkdtempSync(join(tmpdir(), 'texteditor-consumer-'));
+const packed = mkdtempSync(join(tmpdir(), 'inkforge-packed-'));
+const consumer = mkdtempSync(join(tmpdir(), 'inkforge-consumer-'));
 const run = (command, args, cwd = root) => execFileSync(command, args, { cwd, stdio: 'inherit' });
 
 try {
@@ -47,7 +47,7 @@ try {
       consumer,
     );
   }
-  for (const subpath of ['editor-html/browser', 'editor-html/server']) {
+  for (const subpath of ['@inkforge/editor-html/browser', '@inkforge/editor-html/server']) {
     run(
       'node',
       ['--input-type=module', '--eval', `await import(${JSON.stringify(subpath)})`],
@@ -55,10 +55,10 @@ try {
     );
   }
   for (const specifier of [
-    'editor-core/internal',
-    'editor-html/dist/index.js',
-    '@texteditor/editor-dom',
-    '@texteditor/editor-source',
+    '@inkforge/editor-core/internal',
+    '@inkforge/editor-html/dist/index.js',
+    '@inkforge/editor-dom',
+    '@inkforge/editor-source',
   ]) {
     try {
       run(

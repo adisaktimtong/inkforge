@@ -1,4 +1,4 @@
-import 'editor-content/content.css';
+import '@inkforge/editor-content/content.css';
 import type { ReactNode } from 'react';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

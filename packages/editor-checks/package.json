@@ -1,5 +1,5 @@
 {
-  "name": "editor-checks",
+  "name": "@inkforge/editor-checks",
   "version": "0.0.0",
   "description": "Accessibility and content SEO contracts for the editor.",
   "license": "MIT",

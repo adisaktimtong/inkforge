@@ -9,9 +9,9 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "editor-content": "workspace:*",
-    "editor-core": "workspace:*",
-    "editor-react": "workspace:*",
+    "@inkforge/editor-content": "workspace:*",
+    "@inkforge/editor-core": "workspace:*",
+    "@inkforge/editor-react": "workspace:*",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

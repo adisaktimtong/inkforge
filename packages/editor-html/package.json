@@ -1,5 +1,5 @@
 {
-  "name": "editor-html",
+  "name": "@inkforge/editor-html",
   "version": "0.0.0",
   "description": "Environment-neutral HTML contracts and environment-specific adapters.",
   "license": "MIT",
