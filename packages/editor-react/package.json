@@ -1,0 +1,30 @@
+{
+  "name": "editor-react",
+  "version": "0.0.0",
+  "description": "React adapter for editor-core.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "./dist/editor.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./editor.css": "./dist/editor.css"
+  },
+  "peerDependencies": {
+    "editor-core": "workspace:*",
+    "react": ">=18.2 <20",
+    "react-dom": ">=18.2 <20"
+  },
+  "scripts": {
+    "build": "tsdown && cp src/editor.css dist/editor.css",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  }
+}

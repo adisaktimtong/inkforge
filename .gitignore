@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.turbo/
+.next/
+playwright-report/
+test-results/
+artifacts/
+*.tgz
+*.tsbuildinfo
+.DS_Store

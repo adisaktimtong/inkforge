@@ -1,0 +1,35 @@
+name: Publish approved release
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release PR merge commit or tag'
+        required: true
+        type: string
+permissions: { contents: write, id-token: write }
+jobs:
+  publish:
+    environment: npm-production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '${{ inputs.release_tag }}'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '12.4.2'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm validate
+      - name: Publish with npm trusted publishing (OIDC)
+        run: pnpm changeset publish
+      - run: git tag "release-${{ github.run_id }}" && git push origin --tags
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: 'release-${{ github.run_id }}'
+          generate_release_notes: true

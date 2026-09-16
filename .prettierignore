@@ -1,0 +1,10 @@
+# Generated workflow and planning artifacts are not source-formatting inputs.
+_bmad/
+_bmad-output/
+
+node_modules/
+dist/
+.next/
+.turbo/
+playwright-report/
+test-results/

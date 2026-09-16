@@ -1,0 +1,25 @@
+{
+  "name": "editor-content",
+  "version": "0.0.0",
+  "description": "Optional editor content token presets and versioned content stylesheet.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "./dist/content.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./content.css": "./dist/content.css"
+  },
+  "scripts": {
+    "build": "tsdown && cp src/content.css dist/content.css",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  }
+}

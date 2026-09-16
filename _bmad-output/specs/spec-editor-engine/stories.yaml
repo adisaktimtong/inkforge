@@ -1,0 +1,96 @@
+- id: "1"
+  title: Establish the workspace, package boundaries, and release contract
+  description: >-
+    Create the pnpm/Turborepo workspace and the public, internal, demo, test,
+    documentation, and release structure defined by Architecture Spine AD-8 through
+    AD-14. Configure independent package versioning, public runtime identity,
+    Node support, and initial CI checks without implementing editor behavior.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Treat Architecture Spine AD-8 through AD-14 and AD-26 as binding. Do not publish
+    internal DOM, parser, sanitizer, or source-editing modules; add only package
+    surfaces that the Spine identifies as public.
+- id: "2"
+  title: Implement the deterministic headless editor core
+  description: >-
+    Implement the immutable document model, schema validation, selection model,
+    commands, atomic transactions, history, and plugin lifecycle needed by CAP-2,
+    CAP-3, CAP-7, and CAP-9. The result must expose a framework-independent engine
+    whose state is owned by the engine and whose behavior is testable without a DOM.
+  spec_checkpoint: false
+  done_checkpoint: true
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-1 through AD-4, AD-17, AD-18, and AD-19. Keep the
+    functional core free of DOM and React imports; include deterministic unit tests
+    for transaction atomicity, history, plugin ordering/conflicts, and selection
+    mapping semantics.
+- id: "3"
+  title: Build the HTML boundary and shared content-security policy
+  description: >-
+    Implement normalized AST parsing, canonical serialization, ContentPolicy,
+    browser/server sanitization adapters, RawHtmlNode preservation, and HTML
+    compatibility fixtures for CAP-1, CAP-9, and CAP-11. Establish the common
+    output contract used by CMS persistence, previews, and website rendering.
+  spec_checkpoint: false
+  done_checkpoint: true
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-5, AD-6, AD-21, and AD-24. Browser and server
+    sanitizers must share the same policy semantics; script, unsafe URLs, event
+    handlers, executable SVG, and disallowed active embeds must be rejected or
+    removed according to the contract, with adversarial fixture tests.
+- id: "4"
+  title: Add browser DOM editing, selection, clipboard, and Thai IME support
+  description: >-
+    Implement the internal DOM adapter that maps browser input and selection to core
+    commands and reconciles the editable view for CAP-7. Cover keyboard editing,
+    rich/plain paste, composition lifecycle, focus transitions, and selection
+    restoration without allowing DOM mutations to become the source of truth.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-19, AD-20, and AD-21. Test real browser behavior,
+    including manual Thai IME acceptance steps; finalize composition on blur,
+    disposal, and non-composition input as specified.
+- id: "5"
+  title: Deliver the React and Next.js editor integration with composable UI
+  description: >-
+    Expose React 18.2/19 integration, headless accessible primitives, optional
+    default UI, design-token formatting, image-upload port, and consumer-composed
+    toolbar/modal actions for CAP-2, CAP-4, CAP-5, CAP-6, and CAP-8. Ensure the
+    public website can render saved HTML and content CSS without loading the editor.
+  spec_checkpoint: false
+  done_checkpoint: true
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-7, AD-15, AD-16, AD-22, AD-23, and AD-26. Use
+    useSyncExternalStore for engine subscription; preserve selection across modal
+    lifecycles; meet WCAG 2.2 AA for editor UI; keep public CSS classes configurable
+    through the immutable rte- prefix contract.
+- id: "6"
+  title: Add Source mode and content accessibility and SEO checks
+  description: >-
+    Provide safe Source mode with diagnostic, atomic, undoable Apply behavior and
+    implement accessibility and content-SEO checker rules for CAP-10, CAP-11, and
+    CAP-12. Checker results must be revision-bound, distinguish automated from
+    manual review, and navigate users to an actionable document location.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-22 and AD-25 plus the source-editing.md and
+    content-checks.md companions. Do not claim whole-site conformance; label
+    contrast and RawHtmlNode cases that require manual review or cannot be evaluated.
+- id: "7"
+  title: Ship executable demos, browser validation, and guarded npm release flow
+  description: >-
+    Complete the Vite React playground, Next.js App Router demo, Playwright matrix,
+    documentation, canary/beta/latest release workflows, and first-publication gate
+    needed to demonstrate every capability end-to-end. Validate that only changed
+    packages receive independent version bumps and that release is human-approved.
+  spec_checkpoint: false
+  done_checkpoint: true
+  invoke_dev_with: >-
+    Follow Architecture Spine AD-10 through AD-14 and AD-27 through AD-29. Include
+    Chromium on PRs, Chromium/Firefox/WebKit for releases, npm OIDC trusted publish,
+    package validation, rollback guidance, and documented first-publish checks for
+    npm organization ownership, package-name availability, and trusted publisher
+    mapping.

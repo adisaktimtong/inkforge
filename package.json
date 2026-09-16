@@ -1,0 +1,36 @@
+{
+  "name": "texteditor-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@12.4.2",
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": "12.4.2"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "node --test tests/contracts/*.test.mjs && turbo run test",
+    "test:browser": "playwright test",
+    "check:packages": "pnpm build && publint packages/* && attw --pack --profile esm-only packages/* && node scripts/check-packed-packages.mjs",
+    "lint": "eslint . --max-warnings=0",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm --filter react-playground build && pnpm --filter next-demo build && pnpm test:browser --project=chromium && pnpm check:packages"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@changesets/cli": "2.31.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.1",
+    "prettier": "3.7.4",
+    "publint": "0.3.24",
+    "tsdown": "0.23.0",
+    "turbo": "2.10.13",
+    "typescript": "7.0.2",
+    "vitest": "5.0.1"
+  }
+}

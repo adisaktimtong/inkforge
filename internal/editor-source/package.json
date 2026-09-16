@@ -1,0 +1,15 @@
+{
+  "name": "@texteditor/editor-source",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "editor-core": "workspace:*",
+    "editor-html": "workspace:*"
+  }
+}
