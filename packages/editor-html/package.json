@@ -1,6 +1,6 @@
 {
   "name": "@inkforge/editor-html",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Environment-neutral HTML contracts and environment-specific adapters.",
   "repository": {
     "type": "git",
