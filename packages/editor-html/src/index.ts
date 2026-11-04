@@ -265,8 +265,16 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
         return [
           { ...createHeading(Number(n.tag[1]) as any, inline(n.children)), ...presentation(n) },
         ];
-      if (n.tag === 'p' || n.tag === 'div' || n.tag === 'section' || n.tag === 'article')
+      if (n.tag === 'p' || n.tag === 'div' || n.tag === 'section' || n.tag === 'article') {
+        const hasBlocks = (children: any[]): boolean =>
+          children.some(
+            (child) =>
+              /^(?:p|div|section|article|h[1-6]|ul|ol)$/.test(child.tag ?? '') ||
+              hasBlocks(child.children ?? []),
+          );
+        if (hasBlocks(n.children)) return blocks(n.children);
         return [{ ...createParagraph(inline(n.children)), ...presentation(n) }];
+      }
       if (n.tag === 'ul' || n.tag === 'ol')
         return [
           {

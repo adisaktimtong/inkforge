@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  background: #fafafa;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+}
+main {
+  max-width: 56rem;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: white;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+button {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+label {
+  display: inline-block;
+  margin: 1rem 1rem 0 0;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f1f5f9;
+  padding: 1rem;
+}

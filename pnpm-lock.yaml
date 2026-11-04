@@ -252,6 +252,12 @@ importers:
       '@inkforge/editor-content':
         specifier: workspace:*
         version: link:../../packages/editor-content
+      '@inkforge/editor-core':
+        specifier: workspace:*
+        version: link:../../packages/editor-core
+      '@inkforge/editor-react':
+        specifier: workspace:*
+        version: link:../../packages/editor-react
       next:
         specifier: 16.3.5
         version: 16.3.5(@playwright/test@1.63.0)(@types/node@24.10.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -319,6 +325,9 @@ importers:
       '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../editor-core
+      '@inkforge/editor-html':
+        specifier: workspace:*
+        version: link:../editor-html
       react:
         specifier: '>=18.2 <20'
         version: 19.3.0

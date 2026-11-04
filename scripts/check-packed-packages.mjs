@@ -13,6 +13,7 @@ const publicPackages = [
 ];
 const packed = mkdtempSync(join(tmpdir(), 'inkforge-packed-'));
 const consumer = mkdtempSync(join(tmpdir(), 'inkforge-consumer-'));
+const react18Consumer = mkdtempSync(join(tmpdir(), 'inkforge-react18-'));
 const run = (command, args, cwd = root) => execFileSync(command, args, { cwd, stdio: 'inherit' });
 
 try {
@@ -47,6 +48,48 @@ try {
       consumer,
     );
   }
+  const renderSmoke = `
+    import assert from 'node:assert/strict';
+    import { createElement } from 'react';
+    import { renderToStaticMarkup } from 'react-dom/server';
+    import { InkForgeEditor } from '@inkforge/editor-react';
+    const html = renderToStaticMarkup(createElement(InkForgeEditor, {
+      value: '<p onclick=evil()>Packed <strong>editor</strong></p><script>evil()</script>',
+      'aria-label': 'Packed editor',
+    }));
+    assert.ok(html.includes('Packed <strong>editor</strong>'));
+    assert.ok(!html.includes('onclick') && !html.includes('<script'));
+  `;
+  run('node', ['--input-type=module', '--eval', renderSmoke], consumer);
+  writeFileSync(
+    join(react18Consumer, 'package.json'),
+    JSON.stringify({ name: 'packed-react18', private: true, type: 'module' }),
+  );
+  run(
+    'npm',
+    [
+      'install',
+      '--ignore-scripts',
+      '--no-package-lock',
+      ...tarballs,
+      'react@18.2.0',
+      'react-dom@18.2.0',
+    ],
+    react18Consumer,
+  );
+  run(
+    'node',
+    [
+      '--input-type=module',
+      '--eval',
+      renderSmoke +
+        `
+    assert.equal((await import('react')).version, '18.2.0');
+    assert.equal((await import('react-dom')).version, '18.2.0');
+  `,
+    ],
+    react18Consumer,
+  );
   for (const subpath of ['@inkforge/editor-html/browser', '@inkforge/editor-html/server']) {
     run(
       'node',
@@ -74,4 +117,5 @@ try {
 } finally {
   rmSync(packed, { recursive: true, force: true });
   rmSync(consumer, { recursive: true, force: true });
+  rmSync(react18Consumer, { recursive: true, force: true });
 }

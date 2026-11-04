@@ -160,3 +160,17 @@ describe('editor HTML model boundary', () => {
     );
   });
 });
+
+test('preserves supported blocks inside clipboard wrappers', () => {
+  assert.equal(
+    serializeHtml(parseHtml('<div><p>one</p><p>two</p></div>').document),
+    '<p>one</p><p>two</p>',
+  );
+  assert.equal(
+    serializeHtml(
+      parseHtml('<article><section><h2>Title</h2><ul><li>Item</li></ul></section></article>')
+        .document,
+    ),
+    '<h2>Title</h2><ul><li>Item</li></ul>',
+  );
+});

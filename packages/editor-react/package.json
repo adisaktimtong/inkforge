@@ -30,5 +30,8 @@
     "build": "tsdown && cp src/editor.css dist/editor.css",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@inkforge/editor-html": "workspace:*"
   }
 }
