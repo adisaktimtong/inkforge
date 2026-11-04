@@ -81,6 +81,36 @@ const safeStyle = (value: string, diagnostics: HtmlDiagnostic[]) =>
     .map((x) => `${x[0]}: ${x[1]}`)
     .join('; ');
 
+// Preserve declaration fallbacks: only the browser can decide whether a safe value
+// is supported. Inherited declarations lose priority against a child's own styles.
+function mergeInlineStyle(
+  parent: string | undefined,
+  child: string | undefined,
+  diagnostics: HtmlDiagnostic[],
+) {
+  if (!child) return safeStyle(parent ?? '', diagnostics);
+  const declarations = (source: string | undefined) =>
+    (source ?? '')
+      .split(';')
+      .map((value) => value.trim())
+      .filter(Boolean);
+  const inherited = declarations(parent)
+    .sort((a, b) => Number(/!important\s*$/i.test(a)) - Number(/!important\s*$/i.test(b)))
+    .map((value) => value.replace(/\s*!important\s*$/i, ''));
+  const own = declarations(child);
+  const resolved = own.flatMap((declaration) => {
+    const colon = declaration.indexOf(':');
+    const property = declaration.slice(0, colon).trim();
+    const value = declaration.slice(colon + 1).trim();
+    if (!/^inherit(?:\s*!important)?$/i.test(value)) return [declaration];
+    const source = inherited.filter((item) => item.slice(0, item.indexOf(':')).trim() === property);
+    return source.length
+      ? source.map((item) => item + (/!important\s*$/i.test(value) ? ' !important' : ''))
+      : [declaration];
+  });
+  return safeStyle([...inherited, ...resolved].join('; '), diagnostics);
+}
+
 // CSS escapes can disguise both property names and executable values (for
 // example, `u\\72l(...)` or `expre\\73sion(...)`). Decode them before applying
 // the strict allowlist. Invalid/incomplete escapes are retained as literals.
@@ -212,6 +242,7 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
         });
         delete token.attrs[attr];
       }
+    if (token.attrs.href) token.attrs.href = decode(token.attrs.href);
     if (token.attrs.href && !safeUrl(token.attrs.href)) {
       diagnostics.push({
         code: 'UNSAFE_URL',
@@ -242,7 +273,18 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
       if (n.tag === 'a' && n.attrs.href)
         return [createLink(n.attrs.href, inline(n.children, marks), attrs)];
       if (n.tag === 'span' && (attrs.className || attrs.style))
-        return inline(n.children, next).map((child) => ({ ...child, ...attrs }));
+        return inline(n.children, next).map((child) => {
+          const className = [
+            ...new Set([
+              ...(attrs.className ?? '').split(/\s+/),
+              ...(child.className ?? '').split(/\s+/),
+            ]),
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const style = mergeInlineStyle(attrs.style, child.style, diagnostics);
+          return { ...child, ...(className ? { className } : {}), ...(style ? { style } : {}) };
+        });
       return inline(n.children, next);
     });
   const presentation = (n: any): { className?: string; style?: string } => {

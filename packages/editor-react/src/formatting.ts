@@ -1,6 +1,6 @@
 // Small DOM repairs keep the native adapter's supported block semantics consistent.
 // The browser still owns text editing, inline commands and history.
-function selected(range: Range, element: Node): boolean {
+export function selected(range: Range, element: Node): boolean {
   if (!range.intersectsNode(element)) return false;
   if (range.collapsed) return element.contains(range.startContainer);
   if (element.nodeType !== 3 && element.childNodes.length)
@@ -29,7 +29,7 @@ function selectedItems(root: HTMLElement, range: Range) {
   return items.filter((item) => !items.some((other) => other !== item && other.contains(item)));
 }
 
-function preserve(range: Range, change: () => void) {
+export function preserve(range: Range, change: () => void) {
   // Markers move with inline content and also survive element-boundary selections.
   const doc = range.startContainer.ownerDocument!;
   const start = doc.createComment('selection-start');

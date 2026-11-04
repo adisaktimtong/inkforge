@@ -28,7 +28,7 @@ export interface InkForgeEditorProps extends Omit<
   onDiagnostics?: (diagnostics: HtmlDiagnostic[]) => void;
   disabled?: boolean;
   readOnly?: boolean;
-  /** Show the optional basic formatting toolbar. Defaults to false. */
+  /** Show the optional formatting toolbar. Defaults to false. */
   toolbar?: boolean;
 }
 
@@ -275,6 +275,12 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       () => disabled || readOnly || composing.current,
       () => commit(true),
     );
+    useEffect(() => {
+      const root = element.current;
+      const handler = (event: Event) => formatting.beforeInput(event as InputEvent);
+      root?.addEventListener('beforeinput', handler);
+      return () => root?.removeEventListener('beforeinput', handler);
+    });
     const finishComposition = () => {
       composing.current = false;
       requestReconcile();
@@ -286,6 +292,7 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         formatting.invalidate();
         committed.current = pending.html;
       } else {
+        formatting.finishComposition();
         commit(true);
       }
     };
@@ -305,7 +312,7 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       // This never changes after mount: React must not reconcile browser edits.
       dangerouslySetInnerHTML: { __html: initial.current.html },
       onPointerDown(event) {
-        formatting.activate();
+        formatting.activate(true);
         onPointerDown?.(event);
       },
       onKeyDown(event) {
@@ -335,6 +342,7 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         onBlur?.(event);
       },
       onCompositionStart(event) {
+        formatting.startComposition();
         composing.current = true;
         requestReconcile();
         onCompositionStart?.(event);

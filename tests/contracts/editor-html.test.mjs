@@ -225,3 +225,62 @@ test('discarded inline nodes do not introduce paragraphs; explicit empty blocks 
     '<p></p><p><br></p><p><br></p>',
   );
 });
+
+test('nested inline presentation merges classes and properties with child overrides', () => {
+  const source =
+    '<p><span class="outer shared" style="background-color: yellow; color: red"><span class="inner shared" style="color: blue"><a href="/safe"><strong><code>text</code></strong></a></span></span></p>';
+  const parsed = parseHtml(source);
+  assert.deepEqual(parsed.diagnostics, []);
+  const html = serializeHtml(parsed.document);
+  assert.match(html, /class="outer shared inner"/);
+  assert.match(html, /background-color: yellow; color: red; color: blue/);
+  assert.match(html, /href="\/safe"/);
+  assert.match(html, /<strong><code>text<\/code><\/strong>/);
+  assert.equal(serializeHtml(parseHtml(html).document), html);
+});
+
+test('same-element CSS importance survives while child presentation overrides inherited importance', () => {
+  const own = serializeHtml(
+    parseHtml('<p><span style="color: red !important; color: blue">own</span></p>').document,
+  );
+  assert.match(own, /color: red !important/);
+  const nested = serializeHtml(
+    parseHtml(
+      '<p><span style="color: red !important; background-color: yellow"><span style="color: blue">child</span></span></p>',
+    ).document,
+  );
+  assert.match(nested, /background-color: yellow; color: red; color: blue/);
+  assert.doesNotMatch(nested, /!important/);
+});
+
+test('safe CSS fallbacks survive sanitization and nested inherit resolves presentation', () => {
+  const fallback = serializeHtml(
+    parseHtml('<p><span style="color: red; color: not-a-color">fallback</span></p>').document,
+  );
+  assert.match(fallback, /color: red; color: not-a-color/);
+  const inherited = serializeHtml(
+    parseHtml(
+      '<p><span style="color: red; background-color: yellow"><span style="color: inherit; background-color: inherit">child</span></span></p>',
+    ).document,
+  );
+  assert.doesNotMatch(inherited, /inherit/);
+  assert.match(inherited, /color: red/);
+  assert.match(inherited, /background-color: yellow/);
+  assert.equal(serializeHtml(parseHtml(inherited).document), inherited);
+});
+
+test('href entities decode exactly once before URL validation and round-trip safely', () => {
+  const input = '<p><a href="https://example.com/?a=1&amp;b=&quot;two&quot;">Link</a></p>';
+  const result = parseHtml(input);
+  assert.deepEqual(result.diagnostics, []);
+  assert.equal(result.document.children[0].children[0].href, 'https://example.com/?a=1&b="two"');
+  assert.equal(serializeHtml(result.document), input);
+  assert.equal(serializeHtml(parseHtml(serializeHtml(result.document)).document), input);
+  for (const href of ['javascript&#58;alert(1)', '&#106;avascript:alert(1)']) {
+    const parsed = parseHtml(`<p><a href="${href}">unsafe</a></p>`);
+    assert.ok(parsed.diagnostics.some((d) => d.code === 'UNSAFE_URL'));
+    assert.equal(serializeHtml(parsed.document), '<p>unsafe</p>');
+  }
+  const once = parseHtml('<p><a href="/safe?x=&amp;amp;">once</a></p>');
+  assert.equal(once.document.children[0].children[0].href, '/safe?x=&amp;');
+});
