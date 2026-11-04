@@ -174,3 +174,54 @@ test('preserves supported blocks inside clipboard wrappers', () => {
     '<h2>Title</h2><ul><li>Item</li></ul>',
   );
 });
+
+test('round-trips contiguous marked/link list text and nested mixed block flow', () => {
+  for (const html of [
+    '<ul><li>Plain <strong>bold</strong> <em>italic</em> <u>under</u> <a href="/safe">link</a></li></ul>',
+    '<ol><li><p>Before <strong>bold</strong></p><ul><li><a href="/nested"><em>link</em></a></li></ul><p>After <u>end</u></p></li></ol>',
+    '<ul class="list"><li class="item"><p class="lead" style="color: red">styled <strong>text</strong></p></li></ul>',
+    '<p>Leading <strong>mark</strong></p><h2>Heading</h2><p>Trailing <a href="/end">link</a></p>',
+  ]) {
+    const result = parseHtml(html);
+    assert.deepEqual(result.diagnostics, []);
+    assert.equal(serializeHtml(result.document), html);
+    assert.deepEqual(parseHtml(serializeHtml(result.document)).document, result.document);
+  }
+  assert.equal(
+    serializeHtml(
+      parseHtml(
+        '<div>Leading <strong>mark</strong><h2>Heading</h2>Trailing <a href="/end">link</a></div>',
+      ).document,
+    ),
+    '<p>Leading <strong>mark</strong></p><h2>Heading</h2><p>Trailing <a href="/end">link</a></p>',
+  );
+  const unsafe = parseHtml(
+    '<ul><li><strong onclick="evil()">safe</strong> <a href="javascript:evil()">link</a></li></ul>',
+  );
+  assert.equal(serializeHtml(unsafe.document), '<ul><li><strong>safe</strong> link</li></ul>');
+  assert.deepEqual(
+    unsafe.diagnostics.map((item) => item.code),
+    ['EVENT_ATTRIBUTE', 'UNSAFE_URL'],
+  );
+});
+
+test('discarded inline nodes do not introduce paragraphs; explicit empty blocks and breaks remain', () => {
+  for (const html of [
+    '<img><p>Text</p>',
+    '<span></span><p>Text</p>',
+    '<p>Text</p><span></span>',
+    '<p>Text</p><span><img></span><p>Next</p>',
+    '<ul><li><img><p>Text</p><span></span></li></ul>',
+  ]) {
+    const expected = html.includes('Next')
+      ? '<p>Text</p><p>Next</p>'
+      : html.startsWith('<ul>')
+        ? '<ul><li>Text</li></ul>'
+        : '<p>Text</p>';
+    assert.equal(serializeHtml(parseHtml(html).document), expected);
+  }
+  assert.equal(
+    serializeHtml(parseHtml('<p></p><br><p><br></p>').document),
+    '<p></p><p><br></p><p><br></p>',
+  );
+});

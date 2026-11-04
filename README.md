@@ -35,7 +35,7 @@ import '@inkforge/editor-react/editor.css';
 
 export function ArticleForm() {
   const [html, setHtml] = useState('<p>Start writing</p>');
-  return <InkForgeEditor aria-label="Article body" value={html} onChange={setHtml} />;
+  return <InkForgeEditor toolbar aria-label="Article body" value={html} onChange={setHtml} />;
 }
 ```
 
@@ -45,4 +45,8 @@ The component forwards a ref to its `HTMLDivElement` for `focus()` and supports 
 
 Initial and external HTML and formatted clipboard HTML use the shared parser/serializer. Ordinary typing keeps the browser DOM and caret; blur and committed composition normalize markup with selection preservation. Intermediate composition does not emit changes, and blur finalizes a composition if its end event is missing. External value changes during composition wait until finalization. Native HTML drops are blocked; paste is accepted outside composition. Supported article content includes paragraphs, headings, marks, links, lists and hard breaks.
 
-This MVP has no toolbar, commands/transaction engine, plugin API, uploads, collaboration, persistence or custom history. Typing uses native browser editing/undo; sanitization and paste DOM replacements do not provide a custom undo history. It does not integrate with pagebuilder. Run the React playground for controlled/uncontrolled, reset and diagnostics examples; the Next demo's `/editor` route exercises server rendering and hydration while `/` remains a content-only route. Automated composition checks supplement the manual OS Thai IME checklist in `tests/ime-manual/thai-ime-checklist.md`.
+Set `toolbar` to show Bold, Italic, Underline, Paragraph, Heading 1–3, Bulleted list and Numbered list. It defaults to `false`, preserving the bare editable div. Pointer and touch activation preserve the editor selection. Tab enters the toolbar at one control; Left/Right arrows move between controls, Home/End jump to the first/last, and Enter/Space apply formatting. Tab moves to the editable surface. Pressed states follow the selection, and controls are unavailable while disabled, read-only or composing. Native attributes and the forwarded ref remain on the editable div. Toolbar colors can be themed with `--inkforge-toolbar-border`, `--inkforge-toolbar-background`, `--inkforge-toolbar-active` and `--inkforge-toolbar-focus`.
+
+The optional toolbar privately uses native browser editing commands; this DOM-owned adapter is not the future core command/transaction engine. Native markup, mixed-selection state and inline undo grouping can vary between browsers. Heading, paragraph and list commands use direct DOM operations and do not participate in native undo/redo. This MVP has no transactional history; a full history engine is deferred. Commands emit through the same sanitizer as typing and keep native DOM until normalization on blur, preserving collapsed typing formats.
+
+This MVP has no core commands/transaction engine, plugin API, uploads, collaboration, persistence or custom history. Typing uses native browser editing/undo; sanitization and paste DOM replacements do not provide a custom undo history. It does not integrate with pagebuilder. Run the React playground for controlled/uncontrolled, reset and diagnostics examples; the Next demo's `/editor` route exercises server rendering and hydration while `/` remains a content-only route. Automated composition checks supplement the manual OS Thai IME checklist in `tests/ime-manual/thai-ime-checklist.md`.

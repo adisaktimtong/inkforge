@@ -182,6 +182,10 @@ test('keyboard focus, ref, empty input, disabled and read-only semantics', async
   await expect(editor).toHaveAttribute('aria-multiline', 'true');
   await page.getByLabel('Reject controlled edits', { exact: true }).focus();
   await page.keyboard.press('Tab');
+  await expect(
+    page.getByRole('toolbar').first().getByRole('button', { name: 'Bold', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Tab');
   await expect(editor).toBeFocused();
   expect(await editor.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe('solid');
   await page.getByRole('button', { name: 'Focus editor', exact: true }).click();

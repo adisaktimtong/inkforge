@@ -19,6 +19,8 @@ function Playground() {
   const [renders, setRenders] = useState(0);
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
+  const [showToolbar, setShowToolbar] = useState(true);
+  const uncontrolledEditor = useRef<HTMLDivElement>(null);
   const [rejectEdits, setRejectEdits] = useState(false);
   const editor = useRef<HTMLDivElement>(null);
   return (
@@ -37,6 +39,7 @@ function Playground() {
           <button onClick={() => setValue('<p><br></p>')}>Load hard break</button>
           <button onClick={() => setRenders((n) => n + 1)}>Rerender parent ({renders})</button>
           <button onClick={() => editor.current?.focus()}>Focus editor</button>
+          <button onClick={() => setShowToolbar((show) => !show)}>Toggle toolbars</button>
         </div>
         <label>
           <input
@@ -64,6 +67,7 @@ function Playground() {
         </label>
         <p id="controlled-label">Article body</p>
         <InkForgeEditor
+          toolbar={showToolbar}
           ref={editor}
           aria-labelledby="controlled-label"
           aria-describedby="controlled-help"
@@ -96,7 +100,12 @@ function Playground() {
         <button onClick={() => setDefaultValue('<p>Changed default</p>')}>
           Change default prop
         </button>
+        <button onClick={() => uncontrolledEditor.current?.focus()}>
+          Focus uncontrolled editor
+        </button>
         <InkForgeEditor
+          ref={uncontrolledEditor}
+          toolbar={showToolbar}
           aria-label="Uncontrolled article"
           defaultValue={defaultValue}
           onChange={setUncontrolled}

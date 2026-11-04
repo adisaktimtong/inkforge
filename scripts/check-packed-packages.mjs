@@ -54,9 +54,11 @@ try {
     import { renderToStaticMarkup } from 'react-dom/server';
     import { InkForgeEditor } from '@inkforge/editor-react';
     const html = renderToStaticMarkup(createElement(InkForgeEditor, {
+      toolbar: true,
       value: '<p onclick=evil()>Packed <strong>editor</strong></p><script>evil()</script>',
       'aria-label': 'Packed editor',
     }));
+    assert.ok(html.includes('role="toolbar"') && html.includes('aria-label="Bold"'));
     assert.ok(html.includes('Packed <strong>editor</strong>'));
     assert.ok(!html.includes('onclick') && !html.includes('<script'));
   `;

@@ -184,7 +184,7 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
     if (token.close) {
       if (unsafe.has(token.name) && skip) skip--;
       else {
-        const idx = stack.findIndex((x) => x.tag === token.name);
+        const idx = stack.map((x) => x.tag).lastIndexOf(token.name);
         if (idx >= 0) stack.length = idx;
       }
       continue;
@@ -258,37 +258,51 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
     }
     return out;
   };
-  const blocks = (nodes: any[]): BlockNode[] =>
-    nodes.flatMap((n) => {
-      if (n.kind === 'text') return n.text.trim() ? [createParagraph(inline([n]))] : [];
-      if (/^h[1-6]$/.test(n.tag))
-        return [
-          { ...createHeading(Number(n.tag[1]) as any, inline(n.children)), ...presentation(n) },
-        ];
-      if (n.tag === 'p' || n.tag === 'div' || n.tag === 'section' || n.tag === 'article') {
-        const hasBlocks = (children: any[]): boolean =>
-          children.some(
-            (child) =>
-              /^(?:p|div|section|article|h[1-6]|ul|ol)$/.test(child.tag ?? '') ||
-              hasBlocks(child.children ?? []),
-          );
-        if (hasBlocks(n.children)) return blocks(n.children);
-        return [{ ...createParagraph(inline(n.children)), ...presentation(n) }];
+  const blockTag = /^(?:p|div|section|article|h[1-6]|ul|ol)$/;
+  const hasBlocks = (nodes: any[]): boolean =>
+    nodes.some((node) => blockTag.test(node.tag ?? '') || hasBlocks(node.children ?? []));
+  const blocks = (nodes: any[]): BlockNode[] => {
+    const result: BlockNode[] = [];
+    let run: any[] = [];
+    const flush = () => {
+      // Keep spaces between inline siblings; discard only block indentation.
+      const children = inline(run);
+      const hasContent = (nodes: InlineNode[]): boolean =>
+        nodes.some(
+          (node) =>
+            node.type === 'hard-break' ||
+            (node.type === 'text' ? !!node.text.trim() : hasContent(node.children)),
+        );
+      if (hasContent(children)) result.push(createParagraph(children));
+      run = [];
+    };
+    for (const n of nodes) {
+      if (!blockTag.test(n.tag ?? '') && !hasBlocks(n.children ?? [])) {
+        run.push(n);
+        continue;
       }
-      if (n.tag === 'ul' || n.tag === 'ol')
-        return [
-          {
-            ...createList(
-              n.tag === 'ol',
-              n.children
-                .filter((x: any) => x.tag === 'li')
-                .map((x: any) => createListItem(blocks(x.children), presentation(x))),
-            ),
-            ...presentation(n),
-          },
-        ];
-      return blocks(n.children);
-    });
+      flush();
+      if (/^h[1-6]$/.test(n.tag))
+        result.push({
+          ...createHeading(Number(n.tag[1]) as any, inline(n.children)),
+          ...presentation(n),
+        });
+      else if (n.tag === 'ul' || n.tag === 'ol')
+        result.push({
+          ...createList(
+            n.tag === 'ol',
+            n.children
+              .filter((x: any) => x.tag === 'li')
+              .map((x: any) => createListItem(blocks(x.children), presentation(x))),
+          ),
+          ...presentation(n),
+        });
+      else if (hasBlocks(n.children)) result.push(...blocks(n.children));
+      else result.push({ ...createParagraph(inline(n.children)), ...presentation(n) });
+    }
+    flush();
+    return result;
+  };
   return { document: createDocument(blocks(root.children)), diagnostics };
 }
 
@@ -334,7 +348,7 @@ export function serializeHtml(document: DocumentNode, options: HtmlSerializeOpti
           ? `<p${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</p>`
           : n.type === 'heading'
             ? `<h${Math.min(6, Math.max(1, n.level))}${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</h${Math.min(6, Math.max(1, n.level))}>`
-            : `<${n.ordered ? 'ol' : 'ul'}${attrs(options.className, n.style, n.className)}>${n.items.map((i) => `<li${attrs(i.className, i.style)}>${i.children.length === 1 && i.children[0]?.type === 'paragraph' ? inlines(i.children[0].children) : render(i.children)}</li>`).join('')}</${n.ordered ? 'ol' : 'ul'}>`,
+            : `<${n.ordered ? 'ol' : 'ul'}${attrs(options.className, n.style, n.className)}>${n.items.map((i) => `<li${attrs(i.className, i.style)}>${i.children.length === 1 && i.children[0]?.type === 'paragraph' && !i.children[0].className && !i.children[0].style ? inlines(i.children[0].children) : render(i.children)}</li>`).join('')}</${n.ordered ? 'ol' : 'ul'}>`,
       )
       .join(options.pretty ? '\n' : '');
   return render(document.children);

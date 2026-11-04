@@ -21,3 +21,62 @@
 .inkforge-editor[aria-readonly='true'] {
   border-style: dashed;
 }
+
+.inkforge-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.375rem;
+  border: 1px solid var(--inkforge-toolbar-border, #cbd5e1);
+  border-radius: 0.375rem 0.375rem 0 0;
+  background: var(--inkforge-toolbar-background, #f8fafc);
+}
+
+.inkforge-toolbar + .inkforge-editor {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.inkforge-toolbar button {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.inkforge-toolbar button[aria-label='Bold'] {
+  font-weight: bold;
+}
+
+.inkforge-toolbar button[aria-label='Italic'] {
+  font-style: italic;
+}
+
+.inkforge-toolbar button[aria-label='Underline'] {
+  text-decoration: underline;
+}
+
+.inkforge-toolbar button.inkforge-toolbar-group {
+  margin-inline-start: 0.375rem;
+  border-inline-start-color: var(--inkforge-toolbar-border, #cbd5e1);
+}
+
+.inkforge-toolbar button[aria-pressed='true'] {
+  background: var(--inkforge-toolbar-active, #dbeafe);
+  border-color: var(--inkforge-toolbar-focus, #2563eb);
+}
+
+.inkforge-toolbar button:focus-visible {
+  outline: 2px solid var(--inkforge-toolbar-focus, #2563eb);
+  outline-offset: 2px;
+}
+
+.inkforge-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

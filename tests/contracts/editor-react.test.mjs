@@ -58,6 +58,25 @@ test('built entry retains client directive and public typed surface', () => {
   );
   assert.match(types, /InkForgeEditorProps/);
   assert.match(types, /HTMLDivElement/);
-  for (const prop of ['value', 'defaultValue', 'onChange', 'onDiagnostics', 'disabled', 'readOnly'])
+  for (const prop of [
+    'value',
+    'defaultValue',
+    'onChange',
+    'onDiagnostics',
+    'disabled',
+    'readOnly',
+    'toolbar',
+  ])
     assert.match(types, new RegExp(prop + '\\??:'));
+});
+
+test('optional toolbar is SSR-safe, accessible and keeps attributes on the editable div', () => {
+  assert.doesNotMatch(render(), /role="toolbar"/);
+  assert.equal(render({ toolbar: false }), render());
+  const html = render({ toolbar: true, id: 'editable', className: 'custom', readOnly: true });
+  assert.match(html, /role="toolbar" aria-label="Text formatting"/);
+  assert.equal((html.match(/type="button"/g) ?? []).length, 9);
+  assert.equal((html.match(/disabled=""/g) ?? []).length, 9);
+  assert.match(html, /id="editable"[^>]*role="textbox"[^>]*class="inkforge-editor custom"/);
+  assert.doesNotMatch(html, /toolbar="/);
 });

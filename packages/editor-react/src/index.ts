@@ -1,8 +1,10 @@
 'use client';
 
+import { useToolbar } from './toolbar.js';
 import { parseHtml, serializeHtml, type HtmlDiagnostic } from '@inkforge/editor-html';
 import {
   createElement,
+  Fragment,
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -26,6 +28,8 @@ export interface InkForgeEditorProps extends Omit<
   onDiagnostics?: (diagnostics: HtmlDiagnostic[]) => void;
   disabled?: boolean;
   readOnly?: boolean;
+  /** Show the optional basic formatting toolbar. Defaults to false. */
+  toolbar?: boolean;
 }
 
 function sanitize(html: string) {
@@ -192,9 +196,13 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       onDiagnostics,
       disabled = false,
       readOnly = false,
+      toolbar = false,
       className,
       tabIndex,
       onInput,
+      onFocus,
+      onPointerDown,
+      onKeyDown,
       onBlur,
       onCompositionStart,
       onCompositionEnd,
@@ -240,6 +248,7 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         immediateEcho.current = null;
         browserEmpty.current = false;
         replaceHtml(element.current, controlled.html);
+        formatting.invalidate();
         committed.current = controlled.html;
       }
     });
@@ -258,21 +267,32 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         if (controlled) requestReconcile();
       }
     };
+    const formatting = useToolbar(
+      element,
+      toolbar,
+      disabled || readOnly || composing.current,
+      () => commit(false),
+      () => disabled || readOnly || composing.current,
+      () => commit(true),
+    );
     const finishComposition = () => {
       composing.current = false;
+      requestReconcile();
       const pending = pendingValue.current;
       pendingValue.current = null;
       if (pending && element.current) {
         browserEmpty.current = false;
         replaceHtml(element.current, pending.html);
+        formatting.invalidate();
         committed.current = pending.html;
       } else {
         commit(true);
       }
     };
 
-    return createElement('div', {
+    const surface = createElement('div', {
       ...attributes,
+      key: 'surface',
       ref: element,
       role: 'textbox',
       'aria-multiline': true,
@@ -284,8 +304,21 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       suppressContentEditableWarning: true,
       // This never changes after mount: React must not reconcile browser edits.
       dangerouslySetInnerHTML: { __html: initial.current.html },
+      onPointerDown(event) {
+        formatting.activate();
+        onPointerDown?.(event);
+      },
+      onKeyDown(event) {
+        formatting.activate();
+        onKeyDown?.(event);
+      },
+      onFocus(event) {
+        if (formatting.container.current?.contains(event.relatedTarget as Node | null))
+          formatting.restore();
+        onFocus?.(event);
+      },
       onInput(event) {
-        if (!disabled && !readOnly) {
+        if (!disabled && !readOnly && !formatting.running.current) {
           browserEmpty.current = /^(?:<br>|<(?:p|div)(?: [^>]*)?><br><\/(?:p|div)>)$/.test(
             event.currentTarget.innerHTML,
           );
@@ -295,11 +328,15 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       },
       onBlur(event) {
         if (composing.current) finishComposition();
-        else commit(true);
+        else if (!formatting.container.current?.contains(event.relatedTarget as Node | null))
+          commit(true);
+        if (!formatting.container.current?.contains(event.relatedTarget as Node | null))
+          formatting.refresh();
         onBlur?.(event);
       },
       onCompositionStart(event) {
         composing.current = true;
+        requestReconcile();
         onCompositionStart?.(event);
       },
       onCompositionEnd(event) {
@@ -353,5 +390,8 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         event.preventDefault();
       },
     });
+    // The stable keyed surface never remounts when its sibling toolbar changes.
+    // A Fragment preserves the original bare-div DOM when the toolbar is absent.
+    return createElement(Fragment, null, toolbar ? formatting.view : null, surface);
   },
 );

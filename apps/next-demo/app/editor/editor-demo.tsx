@@ -11,6 +11,7 @@ export function EditorDemo() {
     <section>
       <p id="article-label">Article body</p>
       <InkForgeEditor
+        toolbar
         aria-labelledby="article-label"
         value={html}
         onChange={setHtml}
