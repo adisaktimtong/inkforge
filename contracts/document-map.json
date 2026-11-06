@@ -1,6 +1,6 @@
 {
-  "version": "0.1.0",
-  "scope": "migrationManagedDocumentsOnly",
+  "version": "0.2.1",
+  "scope": "ownedDesignDocumentsAndWorkItems",
   "ownerRepository": "adisaktimtong/inkforge",
   "entryRef": "docs/README.md",
   "metadataSchemaRef": "../enterpises_cms/contracts/sdlc-document-metadata.schema.json",
@@ -250,7 +250,133 @@
         "work_item": "LIB-04-html-profile",
         "usage": "plannedWorkItem"
       }
+    },
+    {
+      "path": "docs/architecture/shared-ui-adapter.md",
+      "role": "canonicalReference",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "DOC-IF-SHARED-UI-ADAPTER",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "canonicalReference"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/decision.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-DECISION",
+        "artifact_type": "decision",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/evidence.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/intent.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-INTENT",
+        "artifact_type": "intent",
+        "sdlc_stage": "Plan",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-PLAN",
+        "artifact_type": "plan",
+        "sdlc_stage": "Build",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/spec.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-SPEC",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/test-plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-LIB-02-UI-ADAPTER-TEST",
+        "artifact_type": "test-plan",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "contracts/shared-ui-adapter.json",
+      "role": "authoringUiAdapterDesign",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Design",
+      "relatedStages": [
+        "Build",
+        "Test"
+      ],
+      "format": "json"
     }
   ],
-  "navigationBranch": "codex/library-documentation"
+  "navigationBranch": "codex/library-documentation",
+  "currentDesign": {
+    "workItem": "LIB-02-shared-ui",
+    "mode": "designOnly",
+    "status": "draft",
+    "documentRefKind": "containingGitCommit",
+    "runtimeAcceptance": "notRun",
+    "sourceBaseCommit": "7c759a5811ed94d0d3b334b014e70cdd5c4c5fd2",
+    "publicationEvidenceOwner": "adisaktimtong/enterpises_cms",
+    "scope": "sharedUiAdapterPublicContractsAndHandoff"
+  }
 }

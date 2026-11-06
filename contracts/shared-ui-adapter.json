@@ -1,0 +1,66 @@
+{
+  "version": "0.1.0",
+  "mode": "designOnly",
+  "status": "proposedNotImplemented",
+  "runtimeAcceptance": "notRun",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "adapterApiVersion": 1,
+  "designRef": "docs/architecture/shared-ui-adapter.md",
+  "workItemRef": "docs/work-items/LIB-02-shared-ui/intent.md",
+  "integrationContract": {
+    "repository": "adisaktimtong/enterpises_cms",
+    "path": "contracts/authoring-ui-adapter-contract.json",
+    "refKind": "documentationBranch",
+    "branch": "codex/cloud-environment-setup",
+    "versionPolicy": "CMS containing commit records exact owner library versions; this branch locator is navigation, not runtime certification"
+  },
+  "publicPorts": [
+    {
+      "id": "IFA-01",
+      "name": "createInkforgeCommonUiAdapter",
+      "entry": "@inkforge/editor-react/common-ui",
+      "existingExport": false,
+      "contract": "Optional proposed subpath returns version-1 UI descriptor from public Common UI exports without importing Builder/CMS."
+    },
+    {
+      "id": "IFA-02",
+      "name": "InkForgeEditorProps.uiAdapter",
+      "existingExport": false,
+      "contract": "Opt-in renderer/toolbar/field/overlay view descriptor; existing HTMLDivElement ref and value/defaultValue API retain legacy meaning."
+    },
+    {
+      "id": "IFA-03",
+      "name": "public controller binding",
+      "existingExport": false,
+      "contract": "Engine opt-in supplies proposed LIB-03 public getSnapshot/subscribe/dispatch/captureBookmark/restoreBookmark; DOM ref never becomes controller handle."
+    },
+    {
+      "id": "IFA-04",
+      "name": "toolbar and composite Field bridge",
+      "existingExport": false,
+      "contract": "Toolbar reflects public immutable engine state; controlled command intents carry child revision/selectionEpoch and host original fences; Field IDs/ARIA are separate from editor value/history."
+    },
+    {
+      "id": "IFA-05",
+      "name": "standalone host bridge",
+      "existingExport": false,
+      "contract": "Uses standalone hostValueGeneration branch and LIB-05 observeField/prepareField/acceptExternalValue protocol without importing or creating Builder."
+    }
+  ],
+  "publicApiAdoption": "Additive opt-in; omitted uiAdapter preserves baseline legacy behavior; full CMS capability requires new public ports and actual cohort, no silent fallback",
+  "sourceCodeCommit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+  "coreDependencies": "No Common UI/React/CMS runtime dependency introduced into headless core by adapter",
+  "backlogIds": [
+    "UA-IF01",
+    "UA-IF02",
+    "UA-IF03",
+    "UA-IF04",
+    "UA-IF05",
+    "UA-IF06"
+  ],
+  "documentationPublication": {
+    "documentRefKind": "containingGitCommit",
+    "scope": "designOnly",
+    "runtimeAcceptance": "notRun"
+  }
+}
