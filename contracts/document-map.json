@@ -1,0 +1,256 @@
+{
+  "version": "0.1.0",
+  "scope": "migrationManagedDocumentsOnly",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "entryRef": "docs/README.md",
+  "metadataSchemaRef": "../enterpises_cms/contracts/sdlc-document-metadata.schema.json",
+  "existingOwnerFiles": "Pre-existing source/legacy documents/prototypes preserved outside this managed map",
+  "publication": "gitVersionedDocumentation; containing commit defines owner document version",
+  "records": [
+    {
+      "path": "contracts/document-map.json",
+      "role": "ownedDocumentNavigation",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Design",
+      "format": "json"
+    },
+    {
+      "path": "contracts/inkforge-engine-contract.json",
+      "role": "ownedLibraryDesignContract",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Design",
+      "relatedStages": [
+        "Build",
+        "Test"
+      ],
+      "format": "json"
+    },
+    {
+      "path": "docs/README.md",
+      "role": "navigation",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "DOC-INKFORGE-SDLC-INDEX",
+        "artifact_type": "index",
+        "sdlc_stage": "Plan",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "usage": "navigation"
+      }
+    },
+    {
+      "path": "docs/architecture/24-inkforge-editing-engine.md",
+      "role": "canonicalReference",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "DOC-INKFORGE-EDITING-ENGINE",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "related_stages": [
+          "Build",
+          "Test"
+        ],
+        "usage": "canonicalReference"
+      }
+    },
+    {
+      "path": "docs/architecture/html-library-boundary.md",
+      "role": "canonicalReference",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "DOC-INKFORGE-HTML-LIBRARY-BOUNDARY",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "usage": "canonicalReference"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/decision.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-decision",
+        "artifact_type": "decision",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/evidence.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-evidence",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/intent.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-intent",
+        "artifact_type": "intent",
+        "sdlc_stage": "Plan",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-plan",
+        "artifact_type": "plan",
+        "sdlc_stage": "Build",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/spec.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-spec",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/test-plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-03-inkforge-engine-test-plan",
+        "artifact_type": "test-plan",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/decision.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-decision",
+        "artifact_type": "decision",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/evidence.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-evidence",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/intent.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-intent",
+        "artifact_type": "intent",
+        "sdlc_stage": "Plan",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-plan",
+        "artifact_type": "plan",
+        "sdlc_stage": "Build",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/spec.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-spec",
+        "artifact_type": "spec",
+        "sdlc_stage": "Design",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-04-html-profile/test-plan.md",
+      "role": "plannedWorkItem",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "LIB-04-html-profile-test-plan",
+        "artifact_type": "test-plan",
+        "sdlc_stage": "Test",
+        "status": "draft",
+        "mode": "designOnly",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-04-html-profile",
+        "usage": "plannedWorkItem"
+      }
+    }
+  ],
+  "navigationBranch": "codex/library-documentation"
+}

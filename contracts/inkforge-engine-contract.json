@@ -1,0 +1,1967 @@
+{
+  "version": "0.1.0",
+  "mode": "designOnly",
+  "status": "designDraftNotImplemented",
+  "runtimeAcceptance": "notRun",
+  "owningRepository": "adisaktimtong/inkforge",
+  "workPackageRefs": [
+    "LIB-03",
+    "D-LIB-03"
+  ],
+  "dependencyWorkPackages": [
+    "LIB-01",
+    "LIB-02"
+  ],
+  "downstreamWorkPackages": [
+    "LIB-04",
+    "LIB-05"
+  ],
+  "designRef": "docs/architecture/24-inkforge-editing-engine.md",
+  "workItemRef": "docs/work-items/LIB-03-inkforge-engine/intent.md",
+  "decisionRef": "docs/work-items/LIB-03-inkforge-engine/decision.md",
+  "nestedContractRef": "../enterpises_cms/contracts/nested-editor-coordination.json",
+  "standardsRef": "../enterpises_cms/contracts/pagebuilder-standards-profile.json",
+  "sessionContinuityRef": "../enterpises_cms/contracts/cms-session-continuity.json",
+  "sourceBaseline": {
+    "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+    "workingTreePrototype": "notAdopted",
+    "remoteQueried": false,
+    "readMethod": "git show exactCommit:path; no application execution"
+  },
+  "sourceEvidence": [
+    {
+      "id": "IE-S01",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-core/src/index.ts",
+      "line": 40,
+      "needle": "export interface DocumentNode",
+      "sha256": "0eded8e5e89ea780d900fcea364b1d5d9a0f8e036135ab8fb1050bafd72f85e4",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-core/src/index.ts#L40",
+      "kind": "committedCode",
+      "finding": "Existing public AST shape and constructors are retained",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S02",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-core/src/index.ts",
+      "line": 3,
+      "needle": "export interface TextNode",
+      "sha256": "0eded8e5e89ea780d900fcea364b1d5d9a0f8e036135ab8fb1050bafd72f85e4",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-core/src/index.ts#L3",
+      "kind": "committedCode",
+      "finding": "Text leaves expose text/marks/presentation; runtime ID sidecar is proposed",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S03",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-core/src/index.ts",
+      "line": 8,
+      "needle": "export interface LinkNode",
+      "sha256": "0eded8e5e89ea780d900fcea364b1d5d9a0f8e036135ab8fb1050bafd72f85e4",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-core/src/index.ts#L8",
+      "kind": "committedCode",
+      "finding": "Link remains an inline container, not silently converted into a different mark model",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S04",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-core/src/index.ts",
+      "line": 49,
+      "needle": "export const createText",
+      "sha256": "0eded8e5e89ea780d900fcea364b1d5d9a0f8e036135ab8fb1050bafd72f85e4",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-core/src/index.ts#L49",
+      "kind": "committedCode",
+      "finding": "Existing constructor signature must remain compatible",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S05",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 17,
+      "needle": "export interface InkForgeEditorProps",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L17",
+      "kind": "committedCode",
+      "finding": "Existing value/defaultValue/onChange/diagnostics props",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S06",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 228,
+      "needle": "useImperativeHandle(forwardedRef",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L228",
+      "kind": "committedCode",
+      "finding": "Forwarded ref is HTMLDivElement, not engine handle",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S07",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 284,
+      "needle": "const finishComposition",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L284",
+      "kind": "committedCode",
+      "finding": "Pending controlled value path needs explicit echo/external origin reconciliation",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S08",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 337,
+      "needle": "if (composing.current) finishComposition();",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L337",
+      "kind": "committedCode",
+      "finding": "Existing blur finalization path",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S09",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 258,
+      "needle": "const raw = element.current.innerHTML;",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L258",
+      "kind": "committedCode",
+      "finding": "Current commit reads DOM; this is baseline evidence, not target engine authority",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S10",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/index.ts",
+      "line": 392,
+      "needle": "insertFragment(element.current, selection.getRangeAt(0), template.content);",
+      "sha256": "64e447b146b00dafdcf4f3a9b004bd12967d8970799100795a012307bfbb1f7f",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/index.ts#L392",
+      "kind": "committedCode",
+      "finding": "Paste currently mutates DOM before commit; target insertSlice is proposed",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S11",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/toolbar.ts",
+      "line": 377,
+      "needle": "doc.execCommand(action[2]",
+      "sha256": "f32fa3fc5bacbb6e08230c8cad7152910d2ed8813f5ed494d782ad62dd03d7a8",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/toolbar.ts#L377",
+      "kind": "committedCode",
+      "finding": "Existing native command fallback must not coexist with engine-owned history in one instance",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S12",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-react/src/formatting.ts",
+      "line": 2,
+      "needle": "The browser still owns text editing",
+      "sha256": "0569040b038be87c43e34c2af714a73895af1426de2a525d51c2e044cdbc1f9b",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-react/src/formatting.ts#L2",
+      "kind": "committedCode",
+      "finding": "Current adapter explicitly documents browser-owned history",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S13",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "internal/editor-dom/src/index.ts",
+      "line": 1,
+      "needle": "Private DOM adapter placeholder",
+      "sha256": "90f216dffc0eb1aa6b3a12ec820ee6940f6e53a3ba1672aa358c6a98c5a769c1",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/internal/editor-dom/src/index.ts#L1",
+      "kind": "committedCode",
+      "finding": "Dedicated input adapter is still a placeholder",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S14",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "packages/editor-core/package.json",
+      "line": 24,
+      "needle": "vitest run --passWithNoTests",
+      "sha256": "757fc541e5a4ea2cd09af9f90588bfd44801b789b8d046e93e553f8878717ec2",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/packages/editor-core/package.json#L24",
+      "kind": "committedCode",
+      "finding": "Actual executed test inventory must be checked; zero tests do not prove kernel behavior",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S15",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "tests/contracts/editor-react.test.mjs",
+      "line": 48,
+      "needle": "test('built entry retains client directive and public typed surface'",
+      "sha256": "599c240d6397452167010f267c0bf6b8bef585f11f5a569ff7fc835effa129e0",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/tests/contracts/editor-react.test.mjs#L48",
+      "kind": "committedCode",
+      "finding": "Preserve existing public export/ref contract tests; not executed this review",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S16",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "tests/browser/toolbar.spec.ts",
+      "line": 229,
+      "needle": "test('same-turn composition start guards commands before React rerenders'",
+      "sha256": "3f532e6dd17f9aa74fc630b4d53f933fd5d1c9d1e61babea857f134ad504f977",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/tests/browser/toolbar.spec.ts#L229",
+      "kind": "committedCode",
+      "finding": "Existing composition/toolbar behavior fixtures can inform regression; not native acceptance by source alone",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S17",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 42,
+      "needle": "### AD-1 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L42",
+      "kind": "committedDesignNotImplementation",
+      "finding": "Reuse repository-owned kernel direction; no external editor kernel introduced",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S18",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 48,
+      "needle": "### AD-2 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L48",
+      "kind": "committedDesignNotImplementation",
+      "finding": "Reuse pure atomic state machine design",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S19",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 54,
+      "needle": "### AD-3 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L54",
+      "kind": "committedDesignNotImplementation",
+      "finding": "Saved baseline authority must be distinct from current dirty equality",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S20",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 162,
+      "needle": "### AD-18 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L162",
+      "kind": "committedDesignNotImplementation",
+      "finding": "One owner for cross-package types and deterministic plugin registry",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S21",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 168,
+      "needle": "### AD-19 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L168",
+      "kind": "committedDesignNotImplementation",
+      "finding": "Reuse UTF-16/affinity/runtime ID/revision vocabulary; clarify captured acknowledgement",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "IE-S22",
+      "repository": "adisaktimtong/inkforge",
+      "commit": "9d7392d1aae9ef6c25040ce7c2318324f0a55d35",
+      "path": "_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md",
+      "line": 174,
+      "needle": "### AD-20 —",
+      "sha256": "5160107d1840b5eadd96eb18fe75c10a03167080e333ecd0a4a1ebf5801e4718",
+      "url": "https://github.com/adisaktimtong/inkforge/blob/9d7392d1aae9ef6c25040ce7c2318324f0a55d35/_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md#L174",
+      "kind": "committedDesignNotImplementation",
+      "finding": "Reconcile blur/invalid-composition/disposal with latest retention/security boundary",
+      "runtimeExecuted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "IE-01",
+      "area": "ownership",
+      "requirement": "Pure self-owned kernel; no DOM/React/HTML transport/persistence imports into core; new APIs explicitly proposed."
+    },
+    {
+      "id": "IE-02",
+      "area": "identity",
+      "requirement": "Preserve AST constructors through engine runtime sidecar IDs; same logical node retains ID, imports allocate new IDs, no IDs serialized."
+    },
+    {
+      "id": "IE-03",
+      "area": "revision",
+      "requirement": "Document transactions increment revision once; observable stateVersion and explicit selectionEpoch have distinct semantics."
+    },
+    {
+      "id": "IE-04",
+      "area": "position",
+      "requirement": "Model positions use UTF-16 text offsets or container child boundaries with affinity; no surrogate-half points or atomic-node interior."
+    },
+    {
+      "id": "IE-05",
+      "area": "mapping",
+      "requirement": "Each operation and normalization emits composable forward/inverse maps; split/join/remove/move preserve valid selection and identity."
+    },
+    {
+      "id": "IE-06",
+      "area": "segmentation",
+      "requirement": "User character/word deletion uses declared deterministic segmentation service; no code-unit fallback or silent Unicode normalization."
+    },
+    {
+      "id": "IE-07",
+      "area": "atomicity",
+      "requirement": "Guard/compile/apply/map/normalize/validate/commit is atomic; no partial state/history/revision mutation on rejection."
+    },
+    {
+      "id": "IE-08",
+      "area": "fencing",
+      "requirement": "Captured expected session/revision/selection context and idempotent request identity must match at dispatch; no stale restamping."
+    },
+    {
+      "id": "IE-09",
+      "area": "commands",
+      "requirement": "Typed model commands cover text/blocks/lists/marks/links/slices and preserve unrelated content; no DOM mutation bypass."
+    },
+    {
+      "id": "IE-10",
+      "area": "normalization",
+      "requirement": "Deterministic rule order to fixed point; detect changed digest cycles/pass cap; reject nonconverging candidate with no partial commit."
+    },
+    {
+      "id": "IE-11",
+      "area": "events",
+      "requirement": "Immutable snapshots and synchronous ordered publication; reentrant mutations rejected; observer fault does not roll back accepted transaction."
+    },
+    {
+      "id": "IE-12",
+      "area": "history",
+      "requirement": "One engine history per instance, semantic burst boundaries, explicit composition group, redo invalidation only on accepted new content edit."
+    },
+    {
+      "id": "IE-13",
+      "area": "baseline",
+      "requirement": "Separate parent acceptance/current content/server-saved witnesses; exact captured B may be acknowledged while C remains dirty; no stale baseline rollback."
+    },
+    {
+      "id": "IE-14",
+      "area": "dom",
+      "requirement": "Single DOM adapter translates input paths into commands; reconcile noncancelable native input without trusting whole live innerHTML as authority."
+    },
+    {
+      "id": "IE-15",
+      "area": "composition",
+      "requirement": "Keep transient IME buffer outside committed document/history; one validated final transaction, no duplicate beforeinput/final input/blur commit."
+    },
+    {
+      "id": "IE-16",
+      "area": "draftRetention",
+      "requirement": "Invalid composition/unexpected input retains safe candidate in memory while authorized, blocks Save, and never silently cancels content."
+    },
+    {
+      "id": "IE-17",
+      "area": "react",
+      "requirement": "Preserve InkForgeEditor/ref/props compatibility, immutable external-store snapshot and host engine ownership under Strict Mode."
+    },
+    {
+      "id": "IE-18",
+      "area": "plugins",
+      "requirement": "Registry/type/schema/command/serializer/mapping conflicts rejected before enable; plugin observation/async work never bypasses fences."
+    },
+    {
+      "id": "IE-19",
+      "area": "bounds",
+      "requirement": "Finite document/operation/normalization/history/checkpoint/mapping/candidate budgets, validated before commit; no hidden non-undoable overflow."
+    },
+    {
+      "id": "IE-20",
+      "area": "lifecycle",
+      "requirement": "Read-only/suspend and terminal dispose distinct; auth hard termination clears protected candidate/model/history/caches and late callbacks stay inert."
+    },
+    {
+      "id": "IE-21",
+      "area": "compatibility",
+      "requirement": "No persisted cms.richText v1/legacy blocks-runs mutation or automatic enabling of source/raw/media/plugin capabilities."
+    },
+    {
+      "id": "IE-22",
+      "area": "integration",
+      "requirement": "Standalone public controller/HTML bridge supports LIB-05 proposed ports with no Builder dependency, mixed native-engine history, or auto-save."
+    }
+  ],
+  "decisionRecords": [
+    {
+      "id": "IE-DEC-01",
+      "status": "agentDesignSelectionWithinAssignedScope",
+      "actualUserApprovalClaimed": false,
+      "issue": "Reconcile upstream Spine AD-3/19/20 with current LIB-05 baseline/draft/security rules",
+      "recordRef": "docs/work-items/LIB-03-inkforge-engine/decision.md",
+      "upstreamFileChanged": false
+    }
+  ],
+  "stateCounters": {
+    "sessionId": "Changes for external replacement/owner reset, not echo",
+    "revision": "Starts at 0 per new session; one increment per accepted document transaction including undo/redo",
+    "stateVersion": "Monotonic across engine instance lifetime; one increment per observable state publication",
+    "selectionEpoch": "Starts at 0 per session; user caret/selection intent changes only; mapping references source revision"
+  },
+  "position": {
+    "shape": {
+      "nodeId": "NodeId",
+      "offset": "nonnegative integer",
+      "affinity": "forward|backward"
+    },
+    "textUnit": "UTF-16 code units",
+    "containerUnit": "direct child boundary index",
+    "surrogateHalfAllowed": false,
+    "atomicNodeInteriorAllowed": false,
+    "range": [
+      "anchor",
+      "head"
+    ],
+    "runtimeIdentity": "sidecar index, not serialized",
+    "implicitUnicodeNormalization": false,
+    "segmentation": "Immutable provider/fingerprint/locale; no unsupported code-unit fallback",
+    "providerResultValidation": "Range must be ordered, in captured document and have legal boundaries; provider failure rejects atomically",
+    "lineDeletion": "Core line means logical hard-break/block line; browser soft-line uses measured fresh layout range or is unsupported"
+  },
+  "dispatch": {
+    "expected": [
+      "sessionId",
+      "revision"
+    ],
+    "selectionDependentExpected": [
+      "selectionEpoch"
+    ],
+    "required": [
+      "requestId",
+      "command",
+      "registeredOrigin"
+    ],
+    "outcomes": [
+      "committed",
+      "noChange",
+      "rejected",
+      "stale",
+      "disposed",
+      "pendingComposition"
+    ],
+    "resultFields": [
+      "requestId",
+      "sessionId",
+      "revision",
+      "stateVersion",
+      "documentChanged",
+      "stateChanged",
+      "diagnostics",
+      "mappingRef"
+    ],
+    "serverSave": false,
+    "reentrantMutation": "rejected"
+  },
+  "commands": [
+    {
+      "name": "insertText",
+      "payload": {
+        "range": "Selection",
+        "text": "string",
+        "marks": "optional MarkSet"
+      },
+      "semantics": "Replace ordered selected range; inherited/stored marks for collapsed typing",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "replaceRange",
+      "payload": {
+        "range": "Selection",
+        "slice": "ValidatedSlice"
+      },
+      "semantics": "One schema-fit replacement; no partial deletion before invalid insertion",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "deleteRange",
+      "payload": {
+        "range": "Selection"
+      },
+      "semantics": "Delete ordered range and map caret to surviving boundary",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "deleteBackward",
+      "payload": {
+        "selection": "Selection",
+        "unit": "grapheme|word|line",
+        "segmentationContext": "registered immutable provider"
+      },
+      "semantics": "Delete selection or provider-confirmed boundary range; schema-aware block join",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "deleteForward",
+      "payload": {
+        "selection": "Selection",
+        "unit": "grapheme|word|line",
+        "segmentationContext": "registered immutable provider"
+      },
+      "semantics": "Delete selection or provider-confirmed boundary range; schema-aware block join",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "splitBlock",
+      "payload": {
+        "at": "Position"
+      },
+      "semantics": "Split semantic block; heading end creates following paragraph",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "insertHardBreak",
+      "payload": {
+        "range": "Selection"
+      },
+      "semantics": "Insert inline hard break with mapped caret",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "joinBlocks",
+      "payload": {
+        "leftBlockId": "NodeId",
+        "rightBlockId": "NodeId"
+      },
+      "semantics": "Adjacent compatible blocks only; preserve descendants or reject",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "setMark",
+      "payload": {
+        "range": "Selection",
+        "mark": "RegisteredMark",
+        "attributes": "typed registered attributes if any"
+      },
+      "semantics": "Range split/map preserving other marks; collapsed intent delegates to stored marks",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "clearMark",
+      "payload": {
+        "range": "Selection",
+        "mark": "RegisteredMark",
+        "attributes": "typed registered attributes if any"
+      },
+      "semantics": "Range split/map preserving other marks; collapsed intent delegates to stored marks",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "setStoredMarks",
+      "payload": {
+        "marks": "RegisteredMarkSet"
+      },
+      "semantics": "Transient typing intent; stateVersion change without document revision/history/dirty",
+      "mayChangeDocument": false,
+      "existingEngineExport": false
+    },
+    {
+      "name": "setBlockType",
+      "payload": {
+        "blocks": "NodeId[]",
+        "type": "paragraph|heading",
+        "level": "1..6 when heading"
+      },
+      "semantics": "Change selected textblock types preserving inline descendants",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "wrapList",
+      "payload": {
+        "targets": "contiguous block/item IDs",
+        "ordered": "boolean for wrapList"
+      },
+      "semantics": "Schema-aware whole transformation; preserve unselected siblings/nested descendants",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "unwrapList",
+      "payload": {
+        "targets": "contiguous block/item IDs",
+        "ordered": "boolean for wrapList"
+      },
+      "semantics": "Schema-aware whole transformation; preserve unselected siblings/nested descendants",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "indentList",
+      "payload": {
+        "targets": "contiguous block/item IDs",
+        "ordered": "boolean for wrapList"
+      },
+      "semantics": "Schema-aware whole transformation; preserve unselected siblings/nested descendants",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "outdentList",
+      "payload": {
+        "targets": "contiguous block/item IDs",
+        "ordered": "boolean for wrapList"
+      },
+      "semantics": "Schema-aware whole transformation; preserve unselected siblings/nested descendants",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "setLink",
+      "payload": {
+        "range": "Selection",
+        "destination": "HTML/host-validated baseline href plus policy witness"
+      },
+      "semantics": "Inline link container, no nested links; collapsed uses host-confirmed text/destination intent",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "removeLink",
+      "payload": {
+        "range": "Selection"
+      },
+      "semantics": "Unwrap selected link portion, preserving children/marks",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "insertSlice",
+      "payload": {
+        "range": "Selection",
+        "slice": "validated model fragment",
+        "openStart": "nonnegative integer",
+        "openEnd": "nonnegative integer",
+        "profileWitness": "required"
+      },
+      "semantics": "Fresh IDs; explicit boundary fitting and one history group",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "undo",
+      "payload": {},
+      "semantics": "Traverse engine operation history group; restore selection/marks/IDs without ID allocator rewind",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "redo",
+      "payload": {},
+      "semantics": "Traverse engine operation history group; restore selection/marks/IDs without ID allocator rewind",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    },
+    {
+      "name": "replaceExternalDocument",
+      "payload": {
+        "document": "validated model",
+        "origin": "ownerLoad|parentUndo|parentRedo|conflictResolution",
+        "profileWitness": "required"
+      },
+      "semantics": "Privileged host lifecycle port, new session/history; never use for echo",
+      "mayChangeDocument": true,
+      "existingEngineExport": false
+    }
+  ],
+  "proposedControllerPorts": [
+    {
+      "name": "createEngine",
+      "existingExport": false
+    },
+    {
+      "name": "getSnapshot",
+      "existingExport": false
+    },
+    {
+      "name": "subscribe",
+      "existingExport": false
+    },
+    {
+      "name": "dispatch",
+      "existingExport": false
+    },
+    {
+      "name": "setSelection",
+      "existingExport": false
+    },
+    {
+      "name": "captureBookmark",
+      "existingExport": false
+    },
+    {
+      "name": "restoreBookmark",
+      "existingExport": false
+    },
+    {
+      "name": "loadExternal",
+      "existingExport": false
+    },
+    {
+      "name": "setReadOnly",
+      "existingExport": false
+    },
+    {
+      "name": "closeHistoryGroup",
+      "existingExport": false
+    },
+    {
+      "name": "captureCheckpoint",
+      "existingExport": false
+    },
+    {
+      "name": "acknowledgeCheckpoint",
+      "existingExport": false
+    },
+    {
+      "name": "releaseCheckpoint",
+      "existingExport": false
+    },
+    {
+      "name": "dispose",
+      "existingExport": false
+    }
+  ],
+  "pipeline": [
+    "guardCapturedContext",
+    "compilePureCommand",
+    "applyCandidateWithInverseAndMaps",
+    "normalizeToFixedPointWithMaps",
+    "validateWholeCandidate",
+    "classifyNoChangeOrStateOnly",
+    "commitOneRevisionAndPublishImmutableSnapshot"
+  ],
+  "composition": {
+    "states": [
+      "idle",
+      "composing",
+      "finalizing",
+      "invalidDraft",
+      "disposed"
+    ],
+    "committedModelDuringComposition": "Unchanged",
+    "finalizedDocumentTransactionsPerInputCycle": 1,
+    "saveDuringComposition": "pendingComposition",
+    "invalidFinalCandidate": "Retain inert safe draft while authorized; block Save",
+    "forcedSaveBlur": false,
+    "timerCorrectness": false,
+    "terminalAuth": "Dispose and clear protected state, no finalization/recovery guarantee"
+  },
+  "history": {
+    "typingGapDefaultMilliseconds": 1000,
+    "thresholdInclusive": true,
+    "clock": "injectedMonotonic",
+    "composition": "one distinct group",
+    "newAcceptedContentAfterUndo": "truncateRedo",
+    "noChangeSelectionOrRejected": "preserveRedo",
+    "ids": "allocator never rewinds",
+    "savedDirty": "Content equality plus unresolved candidate, not revision equality",
+    "lateExactBWhileCurrentC": "Accept captured B baseline; C remains dirty"
+  },
+  "proposedTestBudget": {
+    "status": "finiteReviewFixtureNotMeasuredProductionLimits",
+    "documentUtf8Bytes": 1048576,
+    "nodes": 10000,
+    "depth": 64,
+    "textUtf16Units": 200000,
+    "operationsPerTransaction": 256,
+    "normalizationPasses": 16,
+    "historyEntries": 100,
+    "historyBytes": 8388608,
+    "checkpointRecords": 8,
+    "checkpointBytes": 8388608,
+    "mappingRevisions": 256,
+    "mappingBytes": 4194304,
+    "requestLedgerEntries": 128,
+    "requestLedgerBytes": 131072,
+    "retainedCandidateBytes": 524288,
+    "profileLimitRule": "Effective profile/host lower bound wins; actual enabled cohort limits must be declared/tested"
+  },
+  "compatibility": {
+    "existingReactComponent": "InkForgeEditor",
+    "forwardedRef": "HTMLDivElement preserved",
+    "engineMode": "optInUntilBehavioralCohortAccepted",
+    "mixedNativeAndEngineHistory": false,
+    "cmsRichTextV1": [
+      "props.html literal",
+      "props.contentProfile literal"
+    ],
+    "legacyCoreRichText": "blocks/runs unchanged",
+    "sourceModeCmsBodyV1": "disabled",
+    "serverAutosave": false,
+    "browserDraftPersistence": false,
+    "externalLoadBaseline": "New child session does not imply server Save; explicit host-confirmed baseline/origin, preserve owning save-unit dirty on parent undo/redo"
+  },
+  "acceptanceGroups": [
+    {
+      "id": "model",
+      "layer": "core"
+    },
+    {
+      "id": "selection",
+      "layer": "core"
+    },
+    {
+      "id": "transactions",
+      "layer": "core"
+    },
+    {
+      "id": "commands",
+      "layer": "core"
+    },
+    {
+      "id": "history",
+      "layer": "coreBridge"
+    },
+    {
+      "id": "input",
+      "layer": "browser"
+    },
+    {
+      "id": "ime",
+      "layer": "nativeBrowser"
+    },
+    {
+      "id": "integration",
+      "layer": "packedConsumer"
+    },
+    {
+      "id": "lifecycle",
+      "layer": "browser"
+    }
+  ],
+  "acceptanceScenarioCount": 46,
+  "acceptanceScenarios": [
+    {
+      "id": "IE-T01",
+      "group": "model",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-01",
+        "IE-17",
+        "IE-22"
+      ],
+      "scenario": "Headless and consumer import boundaries",
+      "given": "Core/HTML/React packages built from assigned source.",
+      "when": "Import headless Core without window/document/React and inspect packed graph.",
+      "expected": [
+        "Core has no framework/DOM/parser/persistence dependencies.",
+        "Published React bundles private adapter implementation without unresolved private npm imports."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T02",
+      "group": "model",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-02",
+        "IE-21"
+      ],
+      "scenario": "Constructor and persisted shape compatibility",
+      "given": "Baseline constructor/AST fixtures and CMS/legacy documents.",
+      "when": "Create/import/edit/serialize model.",
+      "expected": [
+        "Existing constructor signatures remain compatible; runtime IDs sidecar only.",
+        "No persisted ID/body format or profile expansion; legacy blocks/runs not implicitly converted."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T03",
+      "group": "model",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-02"
+      ],
+      "scenario": "ID lifecycle through edit paste undo",
+      "given": "Node IDs assigned to logical nodes; allocator counter captured.",
+      "when": "Split/join, paste cloned content, undo then create new node.",
+      "expected": [
+        "Same nodes retain IDs and undo restores their original identity.",
+        "New nodes/imports never reuse unrelated prior IDs; counter not rewound."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T04",
+      "group": "model",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-02",
+        "IE-07",
+        "IE-19"
+      ],
+      "scenario": "Invalid graph and oversized import",
+      "given": "Cyclic/aliased object, invalid children and excessive depth fixtures.",
+      "when": "Attempt import/session creation.",
+      "expected": [
+        "Reject or explicit canonical import policy before opening editable engine.",
+        "No partial state/index/session or silently truncated content."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T05",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-03",
+        "IE-04"
+      ],
+      "scenario": "Backward and container selections",
+      "given": "Text, empty paragraph, list-item and hard break model.",
+      "when": "Set backward range and legal container boundaries.",
+      "expected": [
+        "Anchor/head direction retained with legal points including empty caret.",
+        "Selection-only change leaves document revision/history/dirty unchanged."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T06",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-04",
+        "IE-05"
+      ],
+      "scenario": "Insertion affinity",
+      "given": "Two positions at same insertion boundary with opposing affinity.",
+      "when": "Insert text and map positions.",
+      "expected": [
+        "Backward stays before and forward moves after inserted UTF-16 length.",
+        "Both positions reference legal resulting nodes."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T07",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-04",
+        "IE-05"
+      ],
+      "scenario": "Split/join mapping",
+      "given": "Range crosses nodes and exact split boundary.",
+      "when": "Split then join text while preserving marks.",
+      "expected": [
+        "Apply normative map chain including boundary affinity and right offsets.",
+        "Selection remains valid and undo restores original range/IDs."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T08",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-05"
+      ],
+      "scenario": "Delete/move/normalize mapping",
+      "given": "Selection/bookmarks in subtree scheduled for delete or move.",
+      "when": "Apply removal/move and adjacent text normalization.",
+      "expected": [
+        "Deleted points resolve nearest legal boundary by affinity; moved points retain logical node.",
+        "Normalization map prevents any orphan node ID/offset."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T09",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-04",
+        "IE-06"
+      ],
+      "scenario": "UTF-16 versus grapheme",
+      "given": "Emoji surrogate pair, ZWJ sequence, decomposed accents and Thai combining text.",
+      "when": "Address positions; deleteBackward/deleteForward in grapheme and word modes.",
+      "expected": [
+        "Reject surrogate-half points; user deletion uses declared provider boundary.",
+        "No offset-minus-one deletion or implicit Unicode normalization."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T10",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-06",
+        "IE-07"
+      ],
+      "scenario": "Missing segmentation capability",
+      "given": "Required locale/segmentation provider missing, fingerprint differs, throws or returns invalid/out-of-bounds range.",
+      "when": "Attempt grapheme/word deletion.",
+      "expected": [
+        "Unsupported diagnostic without mutation.",
+        "No code-unit fallback hidden behind apparently successful command.",
+        "Faulty provider result cannot change document/selection/history; validate bounds before compile."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T11",
+      "group": "selection",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-05",
+        "IE-08",
+        "IE-22"
+      ],
+      "scenario": "Mapped bookmark versus exact async fence",
+      "given": "Internal bookmark map chain exists; host dialog captures exact revision.",
+      "when": "Text changes then both restore paths attempt apply.",
+      "expected": [
+        "Internal mapping only works with full retained chain and current session.",
+        "LIB-05 dialog/check/AI exact fence stays stale; no auto-rebasing request."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T12",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-03",
+        "IE-07"
+      ],
+      "scenario": "Multi-operation atomic failure",
+      "given": "Transaction contains valid text edit then invalid structural op.",
+      "when": "Dispatch candidate.",
+      "expected": [
+        "Document/index/selection/history/revision/baseline unchanged.",
+        "Return rejected diagnostics identifying operation; no partial event commit."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T13",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-03",
+        "IE-07",
+        "IE-11"
+      ],
+      "scenario": "Single revision and immutable snapshots",
+      "given": "Transaction has many valid operations and selection update.",
+      "when": "Dispatch once, then attempt mutation of caller inputs and returned snapshot.",
+      "expected": [
+        "Exactly one document revision increment and ordered immutable publication.",
+        "Caller changes cannot mutate engine; unchanged getSnapshot reference stays stable."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T14",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-08"
+      ],
+      "scenario": "Stale and duplicate envelope",
+      "given": "Captured session/revision/selectionEpoch plus request R.",
+      "when": "Change each fence or replay R with same/different payload.",
+      "expected": [
+        "Stale contexts reject without restamping.",
+        "Identical request returns same bounded receipt; changed payload rejects."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T15",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-03",
+        "IE-12"
+      ],
+      "scenario": "Semantic noChange and stored marks",
+      "given": "Undo stack has redo branch and content matches set command.",
+      "when": "No-op dispatch or collapsed stored-mark update.",
+      "expected": [
+        "No document revision/history/redo change from semantic no-op.",
+        "Stored marks publish stateVersion without document dirty."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T16",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-10"
+      ],
+      "scenario": "Normalization convergence",
+      "given": "Stable-pass, oscillating and growing plugin normalization fixtures.",
+      "when": "Run declared ordered normalization with finite cap.",
+      "expected": [
+        "Unchanged pass converges; changed digest loop/cap rejects whole candidate.",
+        "All normalization position maps included and deterministic across repeated runs."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T17",
+      "group": "transactions",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-11"
+      ],
+      "scenario": "Observer failure and reentrancy",
+      "given": "Subscriber throws and another subscriber dispatches inside event.",
+      "when": "Commit valid transaction.",
+      "expected": [
+        "Committed state survives observer fault; subsequent subscriber order documented.",
+        "Nested mutation rejects, queued work later checks original context."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T18",
+      "group": "commands",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-07",
+        "IE-09"
+      ],
+      "scenario": "Cross-block replacement and split/join",
+      "given": "Marked linked text spans two paragraphs and heading.",
+      "when": "Replace selection, Enter in heading middle/end, Shift+Enter and join.",
+      "expected": [
+        "Exact intended text/structure/marks preserved with documented heading-end paragraph.",
+        "Incompatible join rejects whole command without flattening unknown descendants."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T19",
+      "group": "commands",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-09",
+        "IE-12"
+      ],
+      "scenario": "Range and collapsed mark operations",
+      "given": "Mixed marked text and a collapsed caret inside link.",
+      "when": "Set/clear mark; move caret; type; undo.",
+      "expected": [
+        "Unrelated marks/links and suffix text retained.",
+        "Stored marks affect intended typing only and use correct history boundary."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T20",
+      "group": "commands",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-09"
+      ],
+      "scenario": "Lists and nested descendants",
+      "given": "Partial contiguous items across nested ordered/unordered lists.",
+      "when": "Wrap/unwrap/indent/outdent and Enter empty/nonempty item.",
+      "expected": [
+        "Only selected scope transforms; siblings/order/nested descendants retained.",
+        "Non-fitting transform rejected atomically."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T21",
+      "group": "commands",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-09",
+        "IE-21"
+      ],
+      "scenario": "Link node and active profile",
+      "given": "Baseline inline link with nested marks and unsafe/unsupported new target.",
+      "when": "SetLink/removeLink on partial range or collapsed confirmed intent.",
+      "expected": [
+        "Keep link container semantics and preserved marks, never nested links.",
+        "Profile/host witness checked; no raw scheme/profile bypass or silent target loss."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T22",
+      "group": "commands",
+      "layer": "core",
+      "ruleRefs": [
+        "IE-02",
+        "IE-09",
+        "IE-14"
+      ],
+      "scenario": "Rich/plain clipboard slice",
+      "given": "HTML and plain-text clipboard fixtures with valid and lossy content.",
+      "when": "Paste with open boundaries then undo.",
+      "expected": [
+        "Boundary fitting and fresh IDs in one transaction; literal text escaping/newline policy stable.",
+        "Loss/security diagnostics follow HTML policy; no untrusted clipboard DOM injection."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T23",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-12"
+      ],
+      "scenario": "Typing grouping clock",
+      "given": "Injected monotonic clock at 999/1000/1001ms gaps and adjacent caret.",
+      "when": "Type same/different marks and directions then undo.",
+      "expected": [
+        "Same compatible burst groups only at declared inclusive 1000ms boundary.",
+        "Selection/mark/direction/structure/context boundary closes group."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T24",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-02",
+        "IE-12"
+      ],
+      "scenario": "Undo/redo structural branch",
+      "given": "Mixed text/list/link edits with inverse maps and selection.",
+      "when": "Undo/redo, selection-only edit, rejected edit, then accepted new content.",
+      "expected": [
+        "Restore content/IDs/selection/stored marks and increment document revision per actual traversal.",
+        "Only accepted new document edit truncates redo; allocator never rewinds."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T25",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-13"
+      ],
+      "scenario": "Saved B while current C",
+      "given": "Host captures exact B and user continues typing C.",
+      "when": "Ack B with original checkpoint/revision/content/profile witness.",
+      "expected": [
+        "Baseline B accepted while C remains visible/dirty.",
+        "No equal-current-revision requirement erases C; no automatic write."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T26",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-13"
+      ],
+      "scenario": "Old released mismatched acknowledgement",
+      "given": "New baseline B exists, plus older A and released/wrong-profile checkpoints.",
+      "when": "Ack each invalid witness.",
+      "expected": [
+        "Reject stale/wrong-session/digest/profile/released acknowledgement.",
+        "No baseline rollback and no parent acceptance confused with server Save."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T27",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-03",
+        "IE-13"
+      ],
+      "scenario": "Undo equals saved baseline",
+      "given": "Saved canonical A; edited B and then undo to equivalent A at newer revision.",
+      "when": "Compare dirty and save status.",
+      "expected": [
+        "Content equality can become clean without another host write.",
+        "Revision remains monotonic; no baseline reassignment from selection-only state."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T28",
+      "group": "history",
+      "layer": "coreBridge",
+      "ruleRefs": [
+        "IE-19"
+      ],
+      "scenario": "History/checkpoint/map capacity",
+      "given": "History inverse/map cost and checkpoints reach declared limits.",
+      "when": "Accept bounded edit, attempt oversized transaction, then evict eligible history.",
+      "expected": [
+        "Reject hard-budget edit before commit or explicit reviewed import flow.",
+        "Do not evict active/saved unknown receipts or silently lose undo claim; stale missing map fails explicitly."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T29",
+      "group": "input",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-14"
+      ],
+      "scenario": "Cancelable beforeinput dedupe",
+      "given": "Supported cancelable insert input followed by browser input callback.",
+      "when": "Input typed once.",
+      "expected": [
+        "One model command/revision/history action.",
+        "DOM rendering is owned patch, not second native authority."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T30",
+      "group": "input",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-14"
+      ],
+      "scenario": "Noncancelable correction and unexpected mutation",
+      "given": "Spellcheck/autocorrect changes bounded DOM region; observer sees own and foreign writes.",
+      "when": "Reconcile each event.",
+      "expected": [
+        "Own patches ignored; native affected slice becomes one validated transaction.",
+        "Unrepresentable mutation quarantined safely, no whole innerHTML authority or silent acceptance."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T31",
+      "group": "input",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-12",
+        "IE-14"
+      ],
+      "scenario": "Native history and outer router",
+      "given": "Engine mode editable with outer page Undo.",
+      "when": "Ctrl/Cmd-Z, historyUndo/historyRedo, context menu history.",
+      "expected": [
+        "At most one engine owner per intent; no native plus engine plus outer triple action.",
+        "Unreliable ownership marks browser capability unavailable instead of claiming support."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T32",
+      "group": "input",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-14",
+        "IE-19"
+      ],
+      "scenario": "Paste cut drop and clipboard failure",
+      "given": "Valid selection and clipboard permission/error variants.",
+      "when": "Paste/cut/drop with rejected policy or read failure.",
+      "expected": [
+        "No document deletion before failed cut/copy/parse prerequisite.",
+        "Drop rejected by default and no file/network insertion without host capability."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T33",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-15"
+      ],
+      "scenario": "Composition event order variants",
+      "given": "Captured Thai/emoji input cycle and alternate end/final-input order.",
+      "when": "Start/update/end plus trailing beforeinput/input/blur.",
+      "expected": [
+        "One finalized transaction/history group with exact final characters.",
+        "No duplicate/lost/transposed text and no timer-based correctness."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T34",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-07",
+        "IE-15"
+      ],
+      "scenario": "Composition cancel and same content",
+      "given": "IME started then user cancels or candidate equals base.",
+      "when": "Browser confirms end.",
+      "expected": [
+        "noChange document revision/history where content unchanged.",
+        "Caret restored validly and no phantom parent edit."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T35",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-15",
+        "IE-16",
+        "IE-22"
+      ],
+      "scenario": "Save/Preview while composing",
+      "given": "Uncommitted native IME buffer with current parent document.",
+      "when": "Host prepares field or user clicks Save/Preview/AI Apply.",
+      "expected": [
+        "pendingComposition with visible status; no forced blur/normalization or partial snapshot.",
+        "Normal native completion can prepare a fresh accepted snapshot."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T36",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-07",
+        "IE-15",
+        "IE-16"
+      ],
+      "scenario": "Invalid final buffer",
+      "given": "Profile/model/limit check rejects finalized composition candidate.",
+      "when": "Composition ends or confirmed blur finalizes.",
+      "expected": [
+        "Retain safe draft/diagnostics while authorized; document/history remain unchanged.",
+        "Save blocked and no automatic cancel-to-old-text hidden from user.",
+        "Repair/retry under unchanged profile can apply one valid replacement; explicit discard only, no raw HTML mode bypass."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T37",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-15",
+        "IE-17"
+      ],
+      "scenario": "Parent echo/external replacement during IME",
+      "given": "Old accepted revision echo and later owner replacement both arrive.",
+      "when": "Controlled value rerender while composition active.",
+      "expected": [
+        "Echo preserves buffer/caret without session reload.",
+        "Nonterminal replacement waits for explicit resolution, never pendingValue silently overwrites final native text."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T38",
+      "group": "ime",
+      "layer": "nativeBrowser",
+      "ruleRefs": [
+        "IE-15",
+        "IE-20"
+      ],
+      "scenario": "Read-only/suspend versus terminal disposal",
+      "given": "Composition active under valid rights then lifecycle changes.",
+      "when": "Set readOnly/disabled, hide surface, or hard expiry/revoke.",
+      "expected": [
+        "Nonterminal valid-rights transition preserves safe pending candidate and blocks commands.",
+        "Hard terminal event clears state immediately; no finalize/recovery promise or late callback revival."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T39",
+      "group": "integration",
+      "layer": "packedConsumer",
+      "ruleRefs": [
+        "IE-17"
+      ],
+      "scenario": "React ref and controlled API regression",
+      "given": "Existing bare-div/toolbar controlled/uncontrolled consumer.",
+      "when": "Mount, render, focus via HTMLDivElement ref and toggle toolbar.",
+      "expected": [
+        "Original ref/props/callback contract preserved; no fake engine handle replacement.",
+        "Surface/session remain stable across render/toolbar visibility; callback echoes do not loop.",
+        "External parent undo/redo initializes explicit unsaved origin and new child session at revision 0; host server baseline/dirty is not silently reset."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T40",
+      "group": "integration",
+      "layer": "packedConsumer",
+      "ruleRefs": [
+        "IE-11",
+        "IE-17",
+        "IE-20"
+      ],
+      "scenario": "External store and Strict Mode",
+      "given": "Host-owned external controller subscribed by React twice.",
+      "when": "Strict Mode setup/cleanup/re-render and final owner dispose.",
+      "expected": [
+        "No duplicate subscriptions/input dispatch or disposal of live host engine.",
+        "getSnapshot stable until state publication; cleanup idempotent and final callbacks inert."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T41",
+      "group": "integration",
+      "layer": "packedConsumer",
+      "ruleRefs": [
+        "IE-01",
+        "IE-21",
+        "IE-22"
+      ],
+      "scenario": "Standalone packed Next consumers",
+      "given": "Actual packed public package and supported React/Next cohort.",
+      "when": "Use standalone form, then Builder host; render public content route.",
+      "expected": [
+        "Standalone controller has no Builder dependency; public route no editor runtime/UI CSS.",
+        "cms-body-v1 remains restricted; runtime conformance only for actual tested cohort."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T42",
+      "group": "integration",
+      "layer": "packedConsumer",
+      "ruleRefs": [
+        "IE-18"
+      ],
+      "scenario": "Plugin registration and command mapping",
+      "given": "Duplicate IDs, parse priority ties, missing serializer/map/inverse fixtures.",
+      "when": "Create engine/register configured plugin then async command.",
+      "expected": [
+        "Reject conflicting/incomplete registry before session enable.",
+        "Plugin command uses public operation/fence; no direct DOM/state mutation or stale async apply."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T43",
+      "group": "integration",
+      "layer": "packedConsumer",
+      "ruleRefs": [
+        "IE-08",
+        "IE-18",
+        "IE-22"
+      ],
+      "scenario": "Search/check/AI range stale",
+      "given": "Tool captures revision/selection/auth context before typing.",
+      "when": "Return navigate/repair/proposal after content/owner changed.",
+      "expected": [
+        "Exact host context rejects stale apply; no bookmark laundering via internal map.",
+        "Fresh human-accepted edit follows engine transaction and parent ack, never server autosave."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T44",
+      "group": "lifecycle",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-20",
+        "IE-22"
+      ],
+      "scenario": "Same-actor pre-expiry continuity",
+      "given": "Engine has model/undo/IME; host begins valid continuity flow.",
+      "when": "Session continues with fresh auth epoch before hard deadline.",
+      "expected": [
+        "Preserve engine memory/history/selection/IME with fresh host context.",
+        "Old async callback stale; no write replay or timer authority over real deadline."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T45",
+      "group": "lifecycle",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-16",
+        "IE-20"
+      ],
+      "scenario": "Terminal auth cleanup and late results",
+      "given": "Draft/checkpoint/search/DOM region holds protected text.",
+      "when": "Expiry/logout/revoke/different actor then pending promise resolves.",
+      "expected": [
+        "Clear protected engine/adapter/candidate/preview state and detach listeners.",
+        "Disposed instance cannot become active or repopulate another owner."
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-T46",
+      "group": "lifecycle",
+      "layer": "browser",
+      "ruleRefs": [
+        "IE-16",
+        "IE-19",
+        "IE-20"
+      ],
+      "scenario": "Unmount and bounded retained candidate",
+      "given": "Field hidden with invalid safe candidate; registry retains engine.",
+      "when": "Unmount/remount surface and pressure candidate storage.",
+      "expected": [
+        "No accidental discard on presentation cleanup; safe rebind uses current owner/session.",
+        "Bound pressure reports blocked/error and requires explicit resolution, never unsafe DOM rendering/persistence."
+      ],
+      "status": "designedNotExecuted"
+    }
+  ],
+  "positionMappingVectors": [
+    {
+      "id": "IE-V01",
+      "name": "Insert at affinity boundary",
+      "operation": {
+        "kind": "insertText",
+        "nodeId": "t1",
+        "offset": 1,
+        "text": "XY"
+      },
+      "beforeTextNodes": {
+        "t1": "ab"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "aXYb"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 3,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 4,
+          "affinity": "forward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-V02",
+      "name": "UTF-16 inserted emoji length",
+      "operation": {
+        "kind": "insertText",
+        "nodeId": "t1",
+        "offset": 1,
+        "text": "😀"
+      },
+      "beforeTextNodes": {
+        "t1": "ab"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "a😀b"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 3,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 4,
+          "affinity": "forward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-V03",
+      "name": "Delete half-open range",
+      "operation": {
+        "kind": "deleteText",
+        "nodeId": "t1",
+        "from": 1,
+        "to": 4
+      },
+      "beforeTextNodes": {
+        "t1": "abcde"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 0,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 4,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 5,
+          "affinity": "forward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "ae"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 0,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-V04",
+      "name": "Split keeps left ID",
+      "operation": {
+        "kind": "splitText",
+        "nodeId": "t1",
+        "offset": 2,
+        "newRightId": "t2"
+      },
+      "beforeTextNodes": {
+        "t1": "abcd"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 4,
+          "affinity": "forward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "ab",
+        "t2": "cd"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "backward"
+        },
+        {
+          "nodeId": "t2",
+          "offset": 0,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t2",
+          "offset": 2,
+          "affinity": "forward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-V05",
+      "name": "Join maps right ID",
+      "operation": {
+        "kind": "joinText",
+        "leftId": "t1",
+        "rightId": "t2"
+      },
+      "beforeTextNodes": {
+        "t1": "ab",
+        "t2": "cd"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t2",
+          "offset": 0,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t2",
+          "offset": 2,
+          "affinity": "backward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "abcd"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 1,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        },
+        {
+          "nodeId": "t1",
+          "offset": 4,
+          "affinity": "backward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    },
+    {
+      "id": "IE-V06",
+      "name": "Combining text uses exact units",
+      "operation": {
+        "kind": "insertText",
+        "nodeId": "t1",
+        "offset": 2,
+        "text": "!"
+      },
+      "beforeTextNodes": {
+        "t1": "é"
+      },
+      "positions": [
+        {
+          "nodeId": "t1",
+          "offset": 2,
+          "affinity": "forward"
+        }
+      ],
+      "afterTextNodes": {
+        "t1": "é!"
+      },
+      "expectedPositions": [
+        {
+          "nodeId": "t1",
+          "offset": 3,
+          "affinity": "forward"
+        }
+      ],
+      "status": "designedNotExecuted"
+    }
+  ],
+  "evidenceLimits": [
+    "Committed design status is not current implementation.",
+    "Source/tests were read, not executed.",
+    "Vector and static checks cannot certify selection mapping or native Thai IME.",
+    "No certified runtime or package release from this draft."
+  ]
+}
