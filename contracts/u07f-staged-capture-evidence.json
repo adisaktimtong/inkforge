@@ -1,0 +1,37 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-05-nested-editor/U07-F",
+  "result": "passedForU07FLocalCaptureOnly",
+  "refKind": "uncommittedWorkingTree",
+  "sourceBaseCommit": "0ad12749df07043aeb9420481d248a1c75fd799f",
+  "sourceSha256": {
+    "packages/editor-core/src/controller/types.ts": "4e9435dd87ba77ba581962bc420fec076eb306cf8a23ddb8483526b441001a14",
+    "packages/editor-core/src/controller/index.ts": "ef5ede7fb7969c8c4f23f33fc4b9990028566b403b04eb9ba7799484c072b569",
+    "packages/editor-core/src/controller/commands.ts": "01419e8e362fdaa0d9c765e6375923b846bdc304c2c200253528f1d70e76cbd5",
+    "packages/editor-core/src/controller/model.ts": "06619dc74c7338bc47866ef33049cc2f828cdb8482f4cc1701e2a2c443688d58",
+    "packages/editor-react/src/host.ts": "18847d025431712d03742179c8cc34d9d9bf258fc9e1ed2653b247f8c7145b6b",
+    "internal/editor-dom/src/controller-dom.ts": "9c9d94a4d85cef989051f7d715ae88b387fa976a40b8814edc4956ed45fe8d0e",
+    "scripts/check-host-boundary.mjs": "d1a1c41821bacb605488260b2061d42ad0029ffcb181b67b05870562befae13b",
+    "scripts/check-engine-surface.mjs": "a72f0d2e9dc08cf9a823c42d8ef07f805f532fc4ffe787c1b42158d28a68c5ef"
+  },
+  "artifact": {
+    "name": "@inkforge/editor-react",
+    "file": "inkforge-editor-react-0.0.2.tgz",
+    "bytes": 102563,
+    "integrity": "sha512-usVUPBHoZp2ybuPqmdmE3sWrfkHBC0nf79MNsafco7VWPj6x22DRxi9X2bw1G68mA7TwuaPUzguHhCWhMZyFpA=="
+  },
+  "actualEvidence": {
+    "repository": "adisaktimtong/enterpises_cms",
+    "path": "contracts/u07f-authoring-capture-evidence.json",
+    "refKind": "uncommittedWorkingTree"
+  },
+  "command": "node tools/authoring-checks/check-capture.mjs",
+  "cwd": "/workspace/enterpises_cms",
+  "localCaptureImplemented": true,
+  "serverSavedAcknowledgmentImplemented": false,
+  "fullLibraryAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "commitPush": false
+}

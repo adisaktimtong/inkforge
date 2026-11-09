@@ -50,3 +50,9 @@ The user authorized commit/push of this design. This containing commit versions 
 ## U07-E retained host integration
 
 [Parent observation decision](work-items/LIB-03-inkforge-engine/u07e-parent-observation.md) and [owner evidence](../contracts/u07e-retained-host-evidence.json) qualify the retained public binding in the actual Builder Inspector. Unrelated parent changes preserve child drafts/history while old issued operations remain stale.
+## U07-F current local capture integration
+
+[Staged capture/read barrier](work-items/LIB-03-inkforge-engine/u07f-staged-capture.md) qualifies the synchronous engine/field/native prerequisite for exact group capture; field ack remains distinct from server Save.
+## U07-G current exact Save integration
+
+[Staged Save checkpoint acknowledgment](work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md) is exercised by the CMS normalized scripted-transport cohort. Field delivery remains separate from server Save; live backend/authorization and full library acceptance remain open.

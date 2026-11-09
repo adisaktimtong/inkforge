@@ -91,11 +91,11 @@
     "refKind": "uncommittedWorkingTree"
   },
   "currentImplementation": {
-    "workItem": "LIB-05-field-binding/U07-E",
+    "workItem": "LIB-05-nested-editor/U07-G",
     "refKind": "uncommittedWorkingTree",
-    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
-    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md",
-    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
+    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
     "capabilities": [
       "scopedTheme",
       "nativeButtons",
@@ -111,8 +111,13 @@
     "legacyEditorEngineBindingPropEnabled": false,
     "allFieldsCmsSaveBarrierImplemented": false,
     "certifiedRuntime": null,
-    "nextWorkItem": "LIB-05-all-field-coordination",
-    "retainedInspectorIntegrationImplemented": true
+    "nextWorkItem": "LIB-05-delivery-history-and-draft-guards",
+    "retainedInspectorIntegrationImplemented": true,
+    "localAllFieldsCapturePrerequisiteImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": true,
+    "exactStagedSavedCheckpointImplemented": true,
+    "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
+    "liveBackendAcceptance": "notRun"
   },
   "engineDependencyProgress": {
     "workItem": "LIB-03-inkforge-engine/U07-C",
@@ -178,5 +183,55 @@
     "allFieldsCmsSaveBarrierImplemented": false,
     "certifiedRuntime": null,
     "nextWorkItem": "LIB-05-bound-control-registry"
+  },
+  "previousRetainedFieldImplementation": {
+    "workItem": "LIB-05-field-binding/U07-E",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md",
+    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": true,
+    "publishedCommitUnchanged": true,
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-all-field-coordination",
+    "retainedInspectorIntegrationImplemented": true
+  },
+  "previousAllFieldCaptureImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-F",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07f-staged-capture-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07f-staged-capture.md",
+    "runtimeAcceptance": "passedForU07FLocalCaptureOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": true,
+    "publishedCommitUnchanged": true,
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-server-receipt-orchestration",
+    "retainedInspectorIntegrationImplemented": true,
+    "localAllFieldsCapturePrerequisiteImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": false
   }
 }

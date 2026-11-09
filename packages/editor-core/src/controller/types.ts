@@ -186,6 +186,11 @@ export interface CreateEngineOptions {
 export interface EngineController {
   getSnapshot(): ControllerSnapshot;
   subscribe(listener: () => void): () => void;
+  /** Synchronous capture scope. It never spans a task/await and rejects reentrant mutation. */
+  withReadBarrier<T>(
+    context: DispatchContext,
+    read: (snapshot: ControllerSnapshot) => T & (T extends PromiseLike<unknown> ? never : unknown),
+  ): Readonly<{ status: 'captured'; value: T }> | Extract<ControllerResult, { status: 'rejected' }>;
   dispatch(command: ControllerCommand, context: DispatchContext): ControllerResult;
   setSelection(selection: ModelSelection | null, context: DispatchContext): ControllerResult;
   captureBookmark(

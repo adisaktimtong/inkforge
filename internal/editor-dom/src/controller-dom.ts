@@ -953,7 +953,11 @@ export function mountEngineDom(
     } else pending = null;
   }
   return {
-    getStatus: () => status,
+    getStatus: () => {
+      if (active && observer.takeRecords().length && !pending?.active && !nativeEdit)
+        quarantine('INPUT_WITHOUT_CAPTURE');
+      return status;
+    },
     update(next) {
       options = next;
       if (pending && pending.context !== next.interactionContextKey && !pending.invalid) {

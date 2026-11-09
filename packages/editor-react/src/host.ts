@@ -1,4 +1,9 @@
-import type { ControllerToken, EngineController, HostFence } from '@inkforge/editor-core';
+import type {
+  ControllerToken,
+  ControllerResult,
+  EngineController,
+  HostFence,
+} from '@inkforge/editor-core';
 import type { EngineContentCodec, ProfileIdentity } from '@inkforge/editor-html/engine';
 export type { ProfileIdentity } from '@inkforge/editor-html/engine';
 export { createStandaloneHostField } from './standalone-host.js';
@@ -89,6 +94,23 @@ export type FieldPrepareResult =
 export type FieldDeliveryResult =
   | Readonly<{ status: 'delivered'; ack: HostFieldAck }>
   | Readonly<{ status: 'blocked'; diagnostics: readonly string[] }>;
+export interface StagedFieldDelivery {
+  readonly edit: HostFieldEdit;
+  readonly checkpointId: string;
+  isCurrent(): boolean;
+  withReadBarrier<T>(
+    read: () => T & (T extends PromiseLike<unknown> ? never : unknown),
+  ): Readonly<{ status: 'captured'; value: T }> | Extract<ControllerResult, { status: 'rejected' }>;
+  accept(ack: HostFieldAck): FieldDeliveryResult;
+  cancel(): void;
+  /** A server receipt owner may acknowledge this exact issued checkpoint after delivery.
+   * Later child edits remain intact. This never substitutes a field-delivery ack for Save. */
+  acknowledgeSavedCheckpoint(): ControllerResult;
+  releaseCheckpoint(): void;
+}
+export type FieldStageResult =
+  | Readonly<{ status: 'staged'; stage: StagedFieldDelivery }>
+  | Readonly<{ status: 'blocked'; diagnostics: readonly string[] }>;
 export interface EngineFieldBinding {
   getStatus(): FieldBindingStatus;
   subscribe(listener: () => void): () => void;
@@ -96,6 +118,7 @@ export interface EngineFieldBinding {
   prepareField(): FieldPrepareResult;
   isPreparedCurrent(field: PreparedField): boolean;
   flush(): Promise<FieldDeliveryResult>;
+  stagePreparedField(field: PreparedField): FieldStageResult;
   acceptExternalValue(
     options?: Readonly<{ discardLocal?: boolean }>,
   ): Readonly<{ status: 'accepted' | 'rejected'; diagnostics: readonly string[] }>;
@@ -311,6 +334,80 @@ export function createEngineFieldBinding(
     prepared.set(field, s.token);
     return { status: 'ready', field };
   }
+  function settle(
+    edit: HostFieldEdit,
+    base: HostFieldSnapshot,
+    ack: HostFieldAck,
+  ): FieldDeliveryResult {
+    if (disposed) return blocked('DISPOSED');
+    if (!pending || pending.edit !== edit) return blocked('STALE_DELIVERY');
+    const current = host.getSnapshot();
+    if (
+      !contextCurrent(current) ||
+      current.lifecycle !== 'active' ||
+      !host.isContextCurrent(edit.capturedHostFenceRef)
+    ) {
+      problem('HOST_CONTEXT_CHANGED');
+      return blocked('HOST_CONTEXT_CHANGED');
+    }
+    if (child(e).sessionId !== edit.child.sessionId) {
+      problem('STALE_CHILD_SESSION');
+      return blocked('STALE_CHILD_SESSION');
+    }
+    if (
+      ack.requestId !== edit.requestId ||
+      ack.fieldBindingId !== base.fieldBindingId ||
+      ack.bindingEpoch !== base.bindingEpoch ||
+      !equal(ack.acceptedChildToken, edit.child) ||
+      !Array.isArray(ack.diagnostics) ||
+      ack.diagnostics.some((d) => typeof d !== 'string')
+    ) {
+      problem('INVALID_FIELD_ACK', 'rejected');
+      return blocked('INVALID_FIELD_ACK');
+    }
+    if (ack.status !== 'committed' && ack.status !== 'noChange') {
+      problem(
+        ack.diagnostics[0] ?? 'FIELD_EDIT_REJECTED',
+        ack.status === 'stale' ? 'stale' : 'rejected',
+      );
+      return blocked(...(ack.diagnostics.length ? ack.diagnostics : ['FIELD_EDIT_REJECTED']));
+    }
+    if (
+      ack.exactAcceptedHtml !== edit.canonicalHtml ||
+      !parentStep(base.parent, ack.actualParentToken, ack.status)
+    ) {
+      problem('FIELD_ACK_WITNESS_MISMATCH', 'rejected');
+      return blocked('FIELD_ACK_WITNESS_MISMATCH');
+    }
+    if (
+      current.parent.kind !== ack.actualParentToken.kind ||
+      (current.parent.kind === 'builder' &&
+        ack.actualParentToken.kind === 'builder' &&
+        current.parent.sessionId !== ack.actualParentToken.sessionId) ||
+      parentNumber(current.parent) < parentNumber(ack.actualParentToken)
+    ) {
+      problem('FIELD_ACK_PARENT_MISMATCH', 'rejected');
+      return blocked('FIELD_ACK_PARENT_MISMATCH');
+    }
+    if (
+      acceptedChild.sessionId !== edit.child.sessionId ||
+      edit.child.revision < acceptedChild.revision
+    ) {
+      problem('OLD_FIELD_ACK');
+      return blocked('OLD_FIELD_ACK');
+    }
+    echoes.set(edit.requestId, { edit, parent: ack.actualParentToken });
+    while (echoes.size > limit) echoes.delete(echoes.keys().next().value!);
+    acceptedHtml = edit.canonicalHtml;
+    acceptedChild = edit.child;
+    baseline = freeze({ ...base, parent: copy(ack.actualParentToken), html: acceptedHtml });
+    delivery =
+      equal(current.parent, ack.actualParentToken) && current.html === acceptedHtml
+        ? 'synchronized'
+        : 'stale';
+    diagnostics = delivery === 'stale' ? ['PARENT_ADVANCED_AFTER_ACK'] : [];
+    return freeze({ status: 'delivered', ack });
+  }
   const binding: EngineFieldBinding = {
     getStatus: () => {
       publish();
@@ -352,6 +449,128 @@ export function createEngineFieldBinding(
         equal(h.parent, field.parent)
       );
     },
+    stagePreparedField(field) {
+      if (busy || pending) return blocked('DELIVERY_PENDING');
+      if (!binding.isPreparedCurrent(field)) return blocked('STALE_PREPARATION');
+      const expected = prepared.get(field)!,
+        base = freeze(copy(host.getSnapshot()));
+      const contextFence: HostFence = {
+        reference: field.capturedHostFenceRef,
+        isCurrent: (r) =>
+          !disposed && contextCurrent(host.getSnapshot()) && host.isContextCurrent(r),
+      };
+      const captured = e.captureCheckpoint({ expected, fence: contextFence });
+      if (captured.status === 'rejected')
+        return blocked(...captured.diagnostics.map((d) => d.code));
+      const checkpoint = captured.checkpoint;
+      const edit = freeze({
+        requestId: `${field.fieldBindingId}:${field.bindingEpoch}:${e.getSnapshot().engineInstanceId}:${++sequence}`,
+        capturedHostFenceRef: field.capturedHostFenceRef,
+        child: field.child,
+        canonicalHtml: field.canonicalHtml,
+        profile: field.profile,
+      });
+      const previousDelivery = delivery,
+        previousDiagnostics = diagnostics;
+      let ended = false,
+        delivered = false,
+        saved = false,
+        released = false;
+      prepared.delete(field);
+      pending = { edit, base };
+      busy = true;
+      delivery = 'pending';
+      diagnostics = [];
+      publish();
+      const localCurrent = () =>
+        !disposed &&
+        !e.getSnapshot().disposed &&
+        e.getSnapshot().token === expected &&
+        !e.getSnapshot().composing &&
+        contextCurrent(host.getSnapshot()) &&
+        host.getSnapshot().lifecycle === 'active' &&
+        host.isContextCurrent(edit.capturedHostFenceRef) &&
+        (() => {
+          const s = safeSurface();
+          return !!s && !s.pending && ['ready', 'readOnly'].includes(s.phase);
+        })();
+      const finish = () => {
+        if (pending?.edit === edit) {
+          pending = null;
+          busy = false;
+          if (!disposed) observeUnchangedField(host.getSnapshot());
+          publish();
+        }
+      };
+      const stage: StagedFieldDelivery = {
+        edit,
+        checkpointId: checkpoint.id,
+        isCurrent: () =>
+          !ended &&
+          pending?.edit === edit &&
+          localCurrent() &&
+          host.isFenceCurrent(edit.capturedHostFenceRef) &&
+          equal(host.getSnapshot().parent, field.parent),
+        withReadBarrier(read) {
+          if (!stage.isCurrent())
+            return { status: 'rejected', diagnostics: [{ code: 'STALE_PREPARATION' }] };
+          return e.withReadBarrier({ expected, fence: contextFence }, () => {
+            if (!stage.isCurrent()) throw Error('STALE_PREPARATION');
+            const value = read();
+            if (!localCurrent()) throw Error('STALE_CAPTURE_CONTEXT');
+            return value;
+          });
+        },
+        accept(ack) {
+          if (ended) return blocked('STAGED_DELIVERY_ENDED');
+          ended = true;
+          try {
+            const result = settle(edit, base, freeze(copy(ack)));
+            delivered = result.status === 'delivered';
+            return result;
+          } catch {
+            problem('INVALID_FIELD_ACK', 'rejected');
+            return blocked('INVALID_FIELD_ACK');
+          } finally {
+            finish();
+          }
+        },
+        cancel() {
+          if (ended) return;
+          ended = true;
+          if (pending?.edit === edit) {
+            delivery = previousDelivery;
+            diagnostics = previousDiagnostics;
+          }
+          finish();
+          stage.releaseCheckpoint();
+        },
+        acknowledgeSavedCheckpoint() {
+          if (
+            !delivered ||
+            released ||
+            disposed ||
+            e.getSnapshot().disposed ||
+            e.getSnapshot().token.sessionId !== checkpoint.token.sessionId ||
+            !contextFence.isCurrent(contextFence.reference)
+          )
+            return { status: 'rejected', diagnostics: [{ code: 'SAVE_CHECKPOINT_UNAVAILABLE' }] };
+          if (saved) return { status: 'noChange', snapshot: e.getSnapshot() };
+          const result = e.acknowledgeCheckpoint(checkpoint, {
+            expected: e.getSnapshot().token,
+            fence: contextFence,
+          });
+          if (result.status !== 'rejected') saved = true;
+          return result;
+        },
+        releaseCheckpoint() {
+          if (released) return;
+          released = true;
+          e.releaseCheckpoint(checkpoint);
+        },
+      };
+      return freeze({ status: 'staged', stage: Object.freeze(stage) });
+    },
     async flush() {
       if (busy || pending) return blocked('DELIVERY_PENDING');
       const result = prepare();
@@ -373,74 +592,7 @@ export function createEngineFieldBinding(
       publish();
       try {
         const ack = freeze(copy(await host.submitFieldEdit(edit)));
-        if (disposed) return blocked('DISPOSED');
-        if (!pending || pending.edit !== edit) return blocked('STALE_DELIVERY');
-        const current = host.getSnapshot();
-        if (
-          !contextCurrent(current) ||
-          current.lifecycle !== 'active' ||
-          !host.isContextCurrent(edit.capturedHostFenceRef)
-        ) {
-          problem('HOST_CONTEXT_CHANGED');
-          return blocked('HOST_CONTEXT_CHANGED');
-        }
-        if (child(e).sessionId !== edit.child.sessionId) {
-          problem('STALE_CHILD_SESSION');
-          return blocked('STALE_CHILD_SESSION');
-        }
-        if (
-          ack.requestId !== edit.requestId ||
-          ack.fieldBindingId !== base.fieldBindingId ||
-          ack.bindingEpoch !== base.bindingEpoch ||
-          !equal(ack.acceptedChildToken, edit.child) ||
-          !Array.isArray(ack.diagnostics) ||
-          ack.diagnostics.some((d) => typeof d !== 'string')
-        ) {
-          problem('INVALID_FIELD_ACK', 'rejected');
-          return blocked('INVALID_FIELD_ACK');
-        }
-        if (ack.status !== 'committed' && ack.status !== 'noChange') {
-          problem(
-            ack.diagnostics[0] ?? 'FIELD_EDIT_REJECTED',
-            ack.status === 'stale' ? 'stale' : 'rejected',
-          );
-          return blocked(...(ack.diagnostics.length ? ack.diagnostics : ['FIELD_EDIT_REJECTED']));
-        }
-        if (
-          ack.exactAcceptedHtml !== edit.canonicalHtml ||
-          !parentStep(base.parent, ack.actualParentToken, ack.status)
-        ) {
-          problem('FIELD_ACK_WITNESS_MISMATCH', 'rejected');
-          return blocked('FIELD_ACK_WITNESS_MISMATCH');
-        }
-        if (
-          current.parent.kind !== ack.actualParentToken.kind ||
-          (current.parent.kind === 'builder' &&
-            ack.actualParentToken.kind === 'builder' &&
-            current.parent.sessionId !== ack.actualParentToken.sessionId) ||
-          parentNumber(current.parent) < parentNumber(ack.actualParentToken)
-        ) {
-          problem('FIELD_ACK_PARENT_MISMATCH', 'rejected');
-          return blocked('FIELD_ACK_PARENT_MISMATCH');
-        }
-        if (
-          acceptedChild.sessionId !== edit.child.sessionId ||
-          edit.child.revision < acceptedChild.revision
-        ) {
-          problem('OLD_FIELD_ACK');
-          return blocked('OLD_FIELD_ACK');
-        }
-        echoes.set(edit.requestId, { edit, parent: ack.actualParentToken });
-        while (echoes.size > limit) echoes.delete(echoes.keys().next().value!);
-        acceptedHtml = edit.canonicalHtml;
-        acceptedChild = edit.child;
-        baseline = freeze({ ...base, parent: copy(ack.actualParentToken), html: acceptedHtml });
-        delivery =
-          equal(current.parent, ack.actualParentToken) && current.html === acceptedHtml
-            ? 'synchronized'
-            : 'stale';
-        diagnostics = delivery === 'stale' ? ['PARENT_ADVANCED_AFTER_ACK'] : [];
-        return freeze({ status: 'delivered', ack });
+        return settle(edit, base, ack);
       } catch {
         problem('HOST_SUBMISSION_FAILED', 'rejected');
         return blocked('HOST_SUBMISSION_FAILED');
@@ -494,7 +646,15 @@ export function createEngineFieldBinding(
       baseline = freeze({ ...baseline, html: '', lifecycle: 'disposed' });
       offEngine();
       offHost();
-      if (!e.getSnapshot().disposed) e.dispose();
+      if (!e.getSnapshot().disposed) {
+        const result = e.dispose();
+        // An owner may revoke from the controller's own Save/dispatch observer.
+        // Drain terminal cleanup once the synchronous controller lock has exited.
+        if (result.status === 'rejected')
+          void Promise.resolve().then(() => {
+            if (!e.getSnapshot().disposed) e.dispose();
+          });
+      }
       publish();
       listeners.clear();
     },

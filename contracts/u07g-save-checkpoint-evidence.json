@@ -1,0 +1,32 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-05-nested-editor/U07-G",
+  "result": "passedForU07GSaveSessionScriptedTransportOnly",
+  "refKind": "uncommittedWorkingTree",
+  "sourceBaseCommit": "0ad12749df07043aeb9420481d248a1c75fd799f",
+  "sourceSha256": {
+    "packages/editor-react/src/host.ts": "3606d86e489cf3f11928686135f0fd0d4a86d18eacf54b997eb8fd4ba2b9aebb"
+  },
+  "artifact": {
+    "name": "@inkforge/editor-react",
+    "file": "inkforge-editor-react-0.0.2.tgz",
+    "bytes": 103437,
+    "integrity": "sha512-Y5eNsJn4Wg/9JL5LVLJOGaduwkIAu7oY2GJAmsod+5/+lHDQFt/j22ObjOeeHuxzk1Xy2Een5z984issgvX72w=="
+  },
+  "actualEvidence": {
+    "repository": "adisaktimtong/enterpises_cms",
+    "path": "contracts/u07g-authoring-save-evidence.json",
+    "refKind": "uncommittedWorkingTree"
+  },
+  "command": "node tools/authoring-checks/check-save.mjs",
+  "cwd": "/workspace/enterpises_cms",
+  "stagedExactSavedCheckpointImplemented": true,
+  "terminalObserverCleanupRetryImplemented": true,
+  "normalizedTransportScriptedOnly": true,
+  "liveBackendAcceptance": "notRun",
+  "fullLibraryAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "commitPush": false
+}

@@ -587,6 +587,58 @@
       "metadataSource": "registryOnly",
       "primaryStage": "Test",
       "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07f-staged-capture.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07F-STAGED-CAPTURE",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-05-nested-editor/U07-F",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07f-staged-capture-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07G-SAVE-CHECKPOINT",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-05-nested-editor/U07-G",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07g-save-checkpoint-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
     }
   ],
   "navigationBranch": "codex/library-documentation",
@@ -612,14 +664,15 @@
     }
   },
   "currentImplementation": {
-    "workItem": "LIB-05-field-binding/U07-E",
+    "workItem": "LIB-05-nested-editor/U07-G",
     "refKind": "uncommittedWorkingTree",
-    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
-    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
-    "hostAcknowledgmentImplemented": true,
-    "retainedInspectorRegistryImplemented": true,
-    "allFieldsCmsSaveBarrierImplemented": false,
+    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "exactStagedSavedCheckpointImplemented": true,
+    "normalizedTransportScriptedOnly": true,
+    "liveBackendAcceptance": "notRun",
     "completeLibraryAcceptance": "notRun",
+    "certifiedRuntime": null,
     "publishedCommitUnchanged": true
   },
   "previousPresentationImplementation": {
@@ -659,6 +712,28 @@
     "hostAcknowledgmentImplemented": true,
     "allFieldsCmsSaveBarrierImplemented": false,
     "completeLibraryAcceptance": "notRun",
+    "publishedCommitUnchanged": true
+  },
+  "previousRetainedFieldImplementation": {
+    "workItem": "LIB-05-field-binding/U07-E",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
+    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "hostAcknowledgmentImplemented": true,
+    "retainedInspectorRegistryImplemented": true,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "completeLibraryAcceptance": "notRun",
+    "publishedCommitUnchanged": true
+  },
+  "previousAllFieldCaptureImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-F",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07f-staged-capture-evidence.json",
+    "runtimeAcceptance": "passedForU07FLocalCaptureOnly",
+    "localAllFieldsCaptureImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": false,
+    "completeLibraryAcceptance": "notRun",
+    "certifiedRuntime": null,
     "publishedCommitUnchanged": true
   }
 }

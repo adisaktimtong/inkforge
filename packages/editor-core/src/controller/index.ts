@@ -51,6 +51,7 @@ const capabilities = freeze([
   'operationMaps',
   'semanticHistory',
   'checkpoints',
+  'synchronousReadBarrier',
   'insertText',
   'insertPlainText',
   'deleteRange',
@@ -225,6 +226,8 @@ export function createEngine(options: CreateEngineOptions): EngineController {
     readOnly = false,
     disposed = false,
     locked = false;
+  let inReadBarrier = false,
+    terminalAfterBarrier = false;
   let baseline: string | null = origin === 'persisted' ? canonical(tree.root) : null;
   let history: readonly HistoryEntry[] = [],
     redo: readonly HistoryEntry[] = [],
@@ -446,6 +449,34 @@ export function createEngine(options: CreateEngineOptions): EngineController {
   }
   const controller: EngineController = {
     getSnapshot: () => snapshot,
+    withReadBarrier(context, read) {
+      let owns = false;
+      try {
+        return enter(context, (fences) => {
+          if (composition) fail('COMPOSITION_ACTIVE');
+          if (typeof read !== 'function') fail('INVALID_READ_BARRIER');
+          inReadBarrier = true;
+          owns = true;
+          const value = read(snapshot);
+          if (value && typeof (value as unknown as PromiseLike<unknown>).then === 'function') {
+            void Promise.resolve(value).catch(() => {});
+            fail('ASYNC_READ_BARRIER');
+          }
+          if (terminalAfterBarrier) fail('DISPOSED');
+          finalFence(fences);
+          if (terminalAfterBarrier) fail('DISPOSED');
+          return { status: 'captured' as const, value };
+        });
+      } finally {
+        if (owns) {
+          inReadBarrier = false;
+          if (terminalAfterBarrier) {
+            terminalAfterBarrier = false;
+            controller.dispose();
+          }
+        }
+      }
+    },
     subscribe(listener) {
       if (typeof listener !== 'function') throw new TypeError('Listener must be a function');
       if (disposed) return () => {};
@@ -669,7 +700,10 @@ export function createEngine(options: CreateEngineOptions): EngineController {
       if (!locked) checkpoints.delete(checkpoint);
     },
     dispose() {
-      if (locked) return rejected('REENTRANT_OPERATION');
+      if (locked) {
+        if (inReadBarrier) terminalAfterBarrier = true;
+        return rejected('REENTRANT_OPERATION');
+      }
       if (disposed) return noChange();
       locked = true;
       try {

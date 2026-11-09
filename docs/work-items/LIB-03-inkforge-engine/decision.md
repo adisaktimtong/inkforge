@@ -55,3 +55,9 @@ The next user continuation assigns the [bounded pure-controller delivery](u07b-c
 ## U07-E current retained field integration
 
 [Unchanged parent observation](u07e-parent-observation.md) is tested with the actual retained Builder registry/Inspector. The current cohort includes earlier U07-A/C/D gates; their versioned evidence remains historical at its recorded identity. All-field CMS Save, automatic delivery and extended editor/profile gates remain separate.
+## U07-F current capture prerequisite
+
+[Staged field capture and engine read barrier](u07f-staged-capture.md) are verified through the actual CMS-owned packed/native cohort. Earlier evidence remains historical at its original source/artifact identity. Network write/receipts, full CMS acceptance and remaining engine/profile/manual/release gates stay open.
+## U07-G current Save prerequisite
+
+[Exact child Save checkpoint acknowledgment and terminal observer cleanup](u07g-save-checkpoint.md) now support the CMS Save session over normalized scripted transport. Earlier evidence retains its original source/artifact identity. Live Go receipts/identity and full engine/manual/release acceptance remain open.
