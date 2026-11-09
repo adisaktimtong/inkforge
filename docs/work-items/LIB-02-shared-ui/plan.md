@@ -27,3 +27,15 @@ usage: plannedWorkItem
 Full dependency DAG and the other owner tasks are in the CMS integration registry. Foundation Common UI capability is sufficient to begin engine integration; complete combined acceptance remains downstream. Existing coarse LIB work packages are not marked done by a foundation subgate. ExternalGates are prerequisite design/implementation capabilities, not proof they passed.
 
 Implementation must first inspect actual repository/package/toolchain/public declarations, preserve existing prototypes and choose exact artifacts under U01/LIB-01. Use public entries, no source alias/private import workaround. For each task, update actual nonzero test outcomes with source+patch/package/CSS/runtime/browser/IME/AT identity. Current task creates documentation only; package publishing and commit/push are not performed.
+
+## Current U07-A assignment
+
+[Presentation decision](u07-presentation.md) and [actual evidence](u07-evidence.md) record the independent owner entry/buttons/theme boundary. Full engine/host integration remains open; no coarse work item or combined certification is marked done.
+
+## U07-B engine prerequisite
+
+[Actual pure controller](../LIB-03-inkforge-engine/u07b-controller.md) and [evidence](../LIB-03-inkforge-engine/u07b-evidence.md) now supply public model commands/selectionEpoch/bookmarks. UA-IF03 toolbar binding and UA-IF05 host acknowledgment remain downstream; the legacy engineBinding guard stays active until the actual DOM/host protocol is implemented.
+
+## U07-C actual engine toolbar/Field binding
+
+[Owner native decision](../LIB-03-inkforge-engine/u07c-native-surface.md) / [actual evidence](../LIB-03-inkforge-engine/u07c-evidence.md) now qualify the separate controller-owned component and fixed public Common UI Toolbar/Button/Field composition. The complete proposed engineBinding/hostField API remains gated pending U07-D exact HTML/profile/ack barriers.

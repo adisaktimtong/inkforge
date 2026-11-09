@@ -1,3 +1,10 @@
+export type DeepReadonly<T> = T extends (...args: never[]) => unknown
+  ? T
+  : T extends readonly (infer U)[]
+    ? readonly DeepReadonly<U>[]
+    : T extends object
+      ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+      : T;
 export type Mark = 'bold' | 'italic' | 'underline' | 'strike' | 'code';
 
 export interface TextNode extends PresentationAttributes {
@@ -8,6 +15,7 @@ export interface TextNode extends PresentationAttributes {
 export interface LinkNode extends PresentationAttributes {
   type: 'link';
   href: string;
+  target?: '_self' | '_blank';
   children: InlineNode[];
 }
 export interface HardBreakNode extends PresentationAttributes {
@@ -125,3 +133,8 @@ export function* walkDocument(
 }
 
 export const traverseDocument = walkDocument;
+
+export * from './engine.js';
+
+// Granular opt-in controller. The legacy replaceDocument prototype remains separate.
+export * from './controller/index.js';

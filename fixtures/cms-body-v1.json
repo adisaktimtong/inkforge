@@ -1,0 +1,210 @@
+{
+  "version": "0.2.0",
+  "profileId": "cms-body-v1",
+  "status": "Normative CMS input fixtures. Server assertions run in tests/contracts/cms-profile.test.mjs; browser and Go parity remain separate gates.",
+  "allowedTags": [
+    "p",
+    "h2",
+    "h3",
+    "h4",
+    "ul",
+    "ol",
+    "li",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "code",
+    "br",
+    "a",
+    "span"
+  ],
+  "allowedTokenClasses": ["rte-typo-body", "rte-typo-lead", "rte-text-brand"],
+  "contextRules": [
+    "Class names must be registered; prefix alone does not grant acceptance",
+    "Target _blank requires safe rel output and faithful round-trip",
+    "Unsupported or truncated input is not silently saved",
+    "Host decision occurs before destructive normalization",
+    "All fixture URLs are reserved example data; no remote fetch implied",
+    "Stored cms-ref and cms-route must follow link-reference-v0.1 and round-trip through public profile API",
+    "Go verifies ownership/locale/current public eligibility separately; syntax fixture is not authorization proof"
+  ],
+  "fixtures": [
+    {
+      "id": "HTML-01",
+      "title": "Thai paragraph and strong",
+      "inputHtml": "<p>สวัสดี <strong>โลก</strong></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p>สวัสดี <strong>โลก</strong></p>",
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-02",
+      "title": "Normalize supported bold alias",
+      "inputHtml": "<p><b>สำคัญ</b></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><strong>สำคัญ</strong></p>",
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-03",
+      "title": "Entity decoding and escaping",
+      "inputHtml": "<p>A &amp; B</p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p>A &amp; B</p>",
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-04",
+      "title": "Hard break",
+      "inputHtml": "<p>หนึ่ง<br/>สอง</p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p>หนึ่ง<br>สอง</p>",
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-05",
+      "title": "Heading allowed by profile",
+      "inputHtml": "<h2>หัวข้อ</h2>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<h2>หัวข้อ</h2>",
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-06",
+      "title": "Registered token",
+      "inputHtml": "<p><span class=\"rte-typo-lead\">นำเรื่อง</span></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><span class=\"rte-typo-lead\">นำเรื่อง</span></p>",
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-CONTENT-CSS"]
+    },
+    {
+      "id": "HTML-07",
+      "title": "Blank target fidelity",
+      "inputHtml": "<p><a href=\"https://outside.example/\" target=\"_blank\" rel=\"noopener noreferrer\">อ่านต่อ</a></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><a href=\"https://outside.example/\" target=\"_blank\" rel=\"noopener noreferrer\">อ่านต่อ</a></p>",
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-08",
+      "title": "Script disallowed",
+      "inputHtml": "<script>alert(1)</script><p>A</p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-09",
+      "title": "Event handler disallowed",
+      "inputHtml": "<p onclick=\"alert(1)\">A</p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-10",
+      "title": "Executable URL disallowed",
+      "inputHtml": "<p><a href=\"javascript:alert(1)\">A</a></p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-11",
+      "title": "Unregistered prefix class disallowed",
+      "inputHtml": "<p class=\"rte-arbitrary\">A</p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-12",
+      "title": "Inline style disallowed",
+      "inputHtml": "<p style=\"position:fixed\">A</p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-13",
+      "title": "Unsupported safe wrapper must not unwrap silently",
+      "inputHtml": "<aside><p>A</p></aside>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-14",
+      "title": "H1 outside rich text profile",
+      "inputHtml": "<h1>A</h1>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-15",
+      "title": "Iframe outside profile",
+      "inputHtml": "<iframe src=\"https://outside.example/\"></iframe>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML"]
+    },
+    {
+      "id": "HTML-16",
+      "title": "Logical download reference",
+      "inputHtml": "<p><a href=\"cms-ref:asset:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256\" target=\"_blank\" rel=\"noopener noreferrer\">เอกสาร</a></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><a href=\"cms-ref:asset:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256\" target=\"_blank\" rel=\"noopener noreferrer\">เอกสาร</a></p>",
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-17",
+      "title": "Logical content reference",
+      "inputHtml": "<p><a href=\"cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256\">อ่านต่อ</a></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><a href=\"cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256\">อ่านต่อ</a></p>",
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-18",
+      "title": "Registered route encoding",
+      "inputHtml": "<p><a href=\"cms-route:home\">หน้าหลัก</a></p>",
+      "hostDecision": "accept",
+      "canonicalHtml": "<p><a href=\"cms-route:home\">หน้าหลัก</a></p>",
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-19",
+      "title": "Malformed reference suffix",
+      "inputHtml": "<p><a href=\"cms-ref:asset:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256?url=https://outside.example/\">A</a></p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-20",
+      "title": "Arbitrary scheme disallowed",
+      "inputHtml": "<p><a href=\"cms-anything:run\">A</a></p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-21",
+      "title": "Protocol relative anchor disallowed",
+      "inputHtml": "<p><a href=\"//outside.example/\">A</a></p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    },
+    {
+      "id": "HTML-22",
+      "title": "Unsafe target disallowed",
+      "inputHtml": "<p><a href=\"https://outside.example/\" target=\"_top\">A</a></p>",
+      "hostDecision": "rejectPreserveOriginal",
+      "canonicalHtml": null,
+      "requiredCapabilityIds": ["CAP-HTML", "CAP-LINK-CODEC", "CAP-LINK-TARGET"]
+    }
+  ]
+}

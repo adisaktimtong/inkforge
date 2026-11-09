@@ -1,0 +1,107 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "workItem": "LIB-02-shared-ui/U07-A",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "refKind": "uncommittedWorkingTree",
+  "sourceBaseCommit": "50f27967886f75144a140cc5241be04893304e83",
+  "sourceSha256": {
+    "package.json": "7086a19cb9938921afd915de9ba1d6cadf10d664599dde05a14d24aa7c900689",
+    "packages/editor-core/package.json": "757fc541e5a4ea2cd09af9f90588bfd44801b789b8d046e93e553f8878717ec2",
+    "packages/editor-core/src/engine.ts": "69ccbd46f12f5a177a5033e5b6847921cd899228d9dc8d750dd636538db0b225",
+    "packages/editor-core/src/index.ts": "f0928b63986081af06116cfc77ecb0920ecc627301e9e3c4c086526d0e8c987b",
+    "packages/editor-core/tsconfig.json": "a2c9d111afbf0904ad59fa3f6c16196292e37c146fa3b73cd70affd8ef01ce21",
+    "packages/editor-core/tsdown.config.ts": "5a89720b844a17a76bf9967d0b5582ea5ddafa419cb6e3a7ab222bfa703a2f98",
+    "packages/editor-html/package.json": "a7c4fc4231be31591d5e4819bb041e1c2b93aecc6b9fe218281ce79ff2b983a8",
+    "packages/editor-html/src/browser.ts": "9d602a3ea470324bfcd96a66d7f044a449e35fd23720a7ed80944ac869879a14",
+    "packages/editor-html/src/index.ts": "a7073e502bfc59369b5686f64c8f592b2a0c4e287fd3c151e4b5e7958dad3598",
+    "packages/editor-html/src/profile.ts": "e5c0d247437efc151ee2859a6627bfa7570e6839c81b248c13a5766ebb1ea1b9",
+    "packages/editor-html/src/server.ts": "4443ac8df085ab81a55fccb6417810bd348508f9cf0a6a1671e1ef45acf46135",
+    "packages/editor-html/tsconfig.json": "a2c9d111afbf0904ad59fa3f6c16196292e37c146fa3b73cd70affd8ef01ce21",
+    "packages/editor-html/tsdown.config.ts": "45e34524642ed18abf9da9f272b1709839752613c82e1e9d7b680a13dc080b15",
+    "packages/editor-react/package.json": "21c951f6bbf1c54bc3d46faaac6b1086015085dda4b2869585f28a2083952b7d",
+    "packages/editor-react/src/common-ui.ts": "2bf9d298953584f9344ad9bdb965a4310da08d0fda3e3de6d6549562881ce56a",
+    "packages/editor-react/src/editor.css": "b9ec599ed9ecbafd1859f81002ef3f8f395b359235dd679516397478caef46f3",
+    "packages/editor-react/src/formatting.ts": "0569040b038be87c43e34c2af714a73895af1426de2a525d51c2e044cdbc1f9b",
+    "packages/editor-react/src/index.ts": "a9cf4de44249fa0deff16dbc228363a608033cf501eec03a9602dd73b5adaa5a",
+    "packages/editor-react/src/inline.ts": "2b0cb55fc8a6dadbcff04ca9339b77993bd53baf1d9ff4db96beae591d7682e2",
+    "packages/editor-react/src/toolbar.ts": "cacb22406d4bd7231b0d2def10997c18f0dbc133a021e5444acb720fff0a80f1",
+    "packages/editor-react/src/ui-adapter.ts": "66934bd8c58a83001cb9222d586589f59ae9f4cece083460183451653be22bc6",
+    "packages/editor-react/tsconfig.json": "306a24dd118d809ac47a7653be0f1a930fc3cf51bac2925074ad32f3e080ea49",
+    "packages/editor-react/tsdown.config.ts": "c1fddb73809cc72b5c323d72a2bdb833ab1b03cc137224eb724d91033735d11e",
+    "pnpm-lock.yaml": "314c7f4b40ba57aa4d5c573bcea6db2fcc42d31fd6d7a603d1c61d655cac444a",
+    "pnpm-workspace.yaml": "d473decad1569f8d249d683502b075be74e745fb9a8560d4e9a2c0e8a4273731",
+    "tsconfig.base.json": "3503ff644450c4bb4511e1dd843be769967f8aa5b2c6aa90464453e9698520ef"
+  },
+  "result": "passedForRecordedU07APresentationCohortOnly",
+  "artifacts": [
+    {
+      "name": "@inkforge/editor-core",
+      "file": "inkforge-editor-core-0.0.2.tgz",
+      "bytes": 13584,
+      "integrity": "sha512-Aidep+VbLa1CWOGFAL9O6ztg3J14PIqndXyhzuX1er7nf/QKAOuJMRlAhtZ8fwP+FAj+QFjRKWCSrhmlTwuMmQ=="
+    },
+    {
+      "name": "@inkforge/editor-html",
+      "file": "inkforge-editor-html-0.0.2.tgz",
+      "bytes": 29246,
+      "integrity": "sha512-hu4iDRhQCn3XglVu6p6LpukfBeQ2JAzMB1fU+t7fJpbsdPdY4drYMnY93saSygtnPWC1xP3ITlGPu7P1V9aTkw=="
+    },
+    {
+      "name": "@inkforge/editor-react",
+      "file": "inkforge-editor-react-0.0.2.tgz",
+      "bytes": 53890,
+      "integrity": "sha512-RKCKUnQMp3t9Ynr8Q0n/idLvRhygqbMicOyVFPI6U7/YXIduTIjMkniqt0864utJd47jCwQVGrVTFdlLXhJgIg=="
+    }
+  ],
+  "consumerEvidence": {
+    "repository": "adisaktimtong/ui-component",
+    "path": "contracts/u07-owner-adapters-evidence.json",
+    "refKind": "uncommittedWorkingTree"
+  },
+  "checks": {
+    "physicalTarballs": "passed",
+    "node": {
+      "passed": 12
+    },
+    "headless": {
+      "passed": true,
+      "react": false,
+      "commonUi": false,
+      "browserGlobals": false
+    },
+    "optionalUiPeer": {
+      "passed": true,
+      "legacyReactRenderWithoutUi": true,
+      "optedInMissingPeerFails": true
+    },
+    "nextBuild": {
+      "passed": true,
+      "types": "actual emitted declarations with expected-invalid cases",
+      "skipLibCheck": false
+    },
+    "publicNegativeTypes": {
+      "passed": 9,
+      "actualCompilerRejections": true
+    },
+    "browser": {
+      "passed": 13,
+      "browser": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)"
+    },
+    "singleReact": true
+  },
+  "prototypeAcceptance": "Existing prototypes preserved, not accepted as LIB-03/full adapter",
+  "fullAdapterAcceptance": "notRun",
+  "combinedCertifiedRuntime": null,
+  "notRun": [
+    "LIB-03 engine-owned formatting/bookmarks",
+    "LIB-05 exact nested-field acknowledgments",
+    "full U07/CMS certification",
+    "production CSP for legacy editor inline styles",
+    "native OS IME/manual AT/browser-family matrix",
+    "combined-owner development StrictMode replay",
+    "exact declared pnpm 12.4.2 clean release-toolchain install"
+  ],
+  "commitPush": false,
+  "npmRegistryPublication": false
+}

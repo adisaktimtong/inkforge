@@ -43,3 +43,17 @@ Diff prototype against pinned source before adoption replaceDocument-only protot
 Pinned workspace declares pnpm 12.4.2, Node >=22.18.0 and scripts typecheck/test/test:browser/check:packages/validate Recheck actual assigned manifests/lockfiles/runtime before installing or running; package tests may allow zero tests Use focused affected contract/browser suites and inspect executed case counts before broad required owner gates
 
 No commands above have been run for application acceptance in this design task Record exact source+patch/package artifacts, actual command/CWD/runtime/OS/browser/IME, case/variant outcomes and remaining gates in [Evidence](evidence.md) No CI configuration or publish/deploy action added
+
+## U07-B current implementation
+
+The next user continuation assigns the [bounded pure-controller delivery](u07b-controller.md); [actual evidence](u07b-evidence.md) records its public package and exact case/source scope. E01–E04 primitives are implemented for the declared capabilities; the full design, extended commands/plugins and E05–E08 DOM/React/host acceptance remain partial. The original design-only statements above retain their historical scope.
+
+## U07-C current native-surface delivery
+
+[Controller-owned DOM/React decision](u07c-native-surface.md) and [actual evidence](u07c-evidence.md) qualify the supported engine surface and fixed Common UI toolbar path. Exact HTML/profile/host acknowledgment remains U07-D; full E05–E08/LIB-03 acceptance is not marked done by this cohort. Earlier U07-A/B evidence and committed source references retain their historical identities.
+## U07-D current field bridge
+
+[Host boundary](u07d-host-boundary.md) and [field-level evidence](u07d-evidence.md) deliver the exact acknowledgment/echo/prepare prerequisite. U07-A/B/C evidence remains historical and immutable. The next owner slice is automatic bound-control/registry integration; full all-field CMS Save/receipt and extended library capabilities remain open.
+## U07-E current retained field integration
+
+[Unchanged parent observation](u07e-parent-observation.md) is tested with the actual retained Builder registry/Inspector. The current cohort includes earlier U07-A/C/D gates; their versioned evidence remains historical at its recorded identity. All-field CMS Save, automatic delivery and extended editor/profile gates remain separate.

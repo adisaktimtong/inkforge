@@ -1,5 +1,5 @@
 {
-  "version": "0.2.1",
+  "version": "0.5.0",
   "scope": "ownedDesignDocumentsAndWorkItems",
   "ownerRepository": "adisaktimtong/inkforge",
   "entryRef": "docs/README.md",
@@ -366,6 +366,227 @@
         "Test"
       ],
       "format": "json"
+    },
+    {
+      "path": "contracts/shared-ui-adapter-v1.d.ts",
+      "role": "requirementClosureDesign",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Design",
+      "relatedStages": [
+        "Build",
+        "Test"
+      ],
+      "format": "typescriptDeclarationDesign"
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/u07-presentation.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07A-PRESENTATION",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui/U07-A",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-02-shared-ui/u07-evidence.md",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07A-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-02-shared-ui/U07-A",
+        "usage": "scopedRuntimeEvidence",
+        "related_stages": [
+          "Build"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07-presentation-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07b-controller.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07B-CONTROLLER",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-B",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07b-evidence.md",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07B-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-B",
+        "usage": "scopedRuntimeEvidence",
+        "related_stages": [
+          "Build"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07b-controller-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "relatedStages": [
+        "Build",
+        "Design"
+      ],
+      "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07c-native-surface.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07C-NATIVE-SURFACE",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-C",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07c-evidence.md",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07C-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-C",
+        "usage": "scopedRuntimeEvidence",
+        "related_stages": [
+          "Build"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07c-native-surface-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "relatedStages": [
+        "Build",
+        "Design"
+      ],
+      "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07d-host-boundary.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07D-HOST-BOUNDARY",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-D",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07d-evidence.md",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07D-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-D",
+        "usage": "scopedRuntimeEvidence",
+        "related_stages": [
+          "Build"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07d-host-boundary-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07E-PARENT-OBSERVATION",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-05-field-binding/U07-E",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07e-retained-host-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
     }
   ],
   "navigationBranch": "codex/library-documentation",
@@ -378,5 +599,66 @@
     "sourceBaseCommit": "7c759a5811ed94d0d3b334b014e70cdd5c4c5fd2",
     "publicationEvidenceOwner": "adisaktimtong/enterpises_cms",
     "scope": "sharedUiAdapterPublicContractsAndHandoff"
+  },
+  "currentDesignClosure": {
+    "refKind": "uncommittedWorkingTree",
+    "reason": "RR-07 concrete adapter declarations and synchronous guards",
+    "runtimeAcceptance": "notRun",
+    "publishedCommitUnchanged": true,
+    "acceptanceProfileRef": {
+      "repository": "adisaktimtong/enterpises_cms",
+      "path": "contracts/authoring-acceptance-profile.json",
+      "refKind": "uncommittedWorkingTree"
+    }
+  },
+  "currentImplementation": {
+    "workItem": "LIB-05-field-binding/U07-E",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
+    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "hostAcknowledgmentImplemented": true,
+    "retainedInspectorRegistryImplemented": true,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "completeLibraryAcceptance": "notRun",
+    "publishedCommitUnchanged": true
+  },
+  "previousPresentationImplementation": {
+    "workItem": "LIB-02-shared-ui/U07-A",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07-presentation-evidence.json",
+    "runtimeAcceptance": "passedForU07APresentationCohortOnly",
+    "completeLibraryAcceptance": "notRun",
+    "fullU07": "inProgress",
+    "publishedCommitUnchanged": true
+  },
+  "previousPureControllerImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-B",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07b-controller-evidence.json",
+    "runtimeAcceptance": "passedForU07BControllerOnly",
+    "completeEngineAcceptance": "notRun",
+    "fullU07": "inProgress",
+    "publishedCommitUnchanged": true
+  },
+  "previousNativeSurfaceImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-C",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07c-native-surface-evidence.json",
+    "runtimeAcceptance": "passedForU07CNativeSurfaceOnly",
+    "completeEngineAcceptance": "notRun",
+    "fullU07": "inProgress",
+    "hostAcknowledgmentImplemented": false,
+    "publishedCommitUnchanged": true
+  },
+  "previousHostFieldImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-D",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07d-host-boundary-evidence.json",
+    "runtimeAcceptance": "passedForU07DFieldBoundaryOnly",
+    "fullU07": "inProgress",
+    "hostAcknowledgmentImplemented": true,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "completeLibraryAcceptance": "notRun",
+    "publishedCommitUnchanged": true
   }
 }

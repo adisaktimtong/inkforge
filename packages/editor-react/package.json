@@ -19,12 +19,25 @@
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
     },
-    "./editor.css": "./dist/editor.css"
+    "./editor.css": "./dist/editor.css",
+    "./common-ui": {
+      "types": "./dist/common-ui.d.mts",
+      "import": "./dist/common-ui.mjs"
+    },
+    "./engine": {
+      "types": "./dist/engine.d.mts",
+      "import": "./dist/engine.mjs"
+    },
+    "./host": {
+      "types": "./dist/host.d.mts",
+      "import": "./dist/host.mjs"
+    }
   },
   "peerDependencies": {
     "@inkforge/editor-core": "workspace:*",
     "react": ">=18.2 <20",
-    "react-dom": ">=18.2 <20"
+    "react-dom": ">=18.2 <20",
+    "@adisaktimtong/ui-component": "0.1.0"
   },
   "scripts": {
     "build": "tsdown && cp src/editor.css dist/editor.css",
@@ -33,5 +46,10 @@
   },
   "dependencies": {
     "@inkforge/editor-html": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@adisaktimtong/ui-component": {
+      "optional": true
+    }
   }
 }

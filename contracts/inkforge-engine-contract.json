@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "mode": "designOnly",
-  "status": "designDraftNotImplemented",
+  "status": "partiallyImplementedControllerAndNativeSurface",
   "runtimeAcceptance": "notRun",
   "owningRepository": "adisaktimtong/inkforge",
   "workPackageRefs": [
@@ -508,7 +508,8 @@
       },
       "semantics": "Replace ordered selected range; inherited/stored marks for collapsed typing",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "replaceRange",
@@ -527,7 +528,8 @@
       },
       "semantics": "Delete ordered range and map caret to surviving boundary",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "deleteBackward",
@@ -538,7 +540,8 @@
       },
       "semantics": "Delete selection or provider-confirmed boundary range; schema-aware block join",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "deleteForward",
@@ -549,7 +552,8 @@
       },
       "semantics": "Delete selection or provider-confirmed boundary range; schema-aware block join",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "splitBlock",
@@ -558,7 +562,8 @@
       },
       "semantics": "Split semantic block; heading end creates following paragraph",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "insertHardBreak",
@@ -567,7 +572,8 @@
       },
       "semantics": "Insert inline hard break with mapped caret",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "joinBlocks",
@@ -577,7 +583,8 @@
       },
       "semantics": "Adjacent compatible blocks only; preserve descendants or reject",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "setMark",
@@ -588,7 +595,8 @@
       },
       "semantics": "Range split/map preserving other marks; collapsed intent delegates to stored marks",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "clearMark",
@@ -599,7 +607,8 @@
       },
       "semantics": "Range split/map preserving other marks; collapsed intent delegates to stored marks",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "setStoredMarks",
@@ -608,7 +617,8 @@
       },
       "semantics": "Transient typing intent; stateVersion change without document revision/history/dirty",
       "mayChangeDocument": false,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "setBlockType",
@@ -619,7 +629,8 @@
       },
       "semantics": "Change selected textblock types preserving inline descendants",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "wrapList",
@@ -698,14 +709,16 @@
       "payload": {},
       "semantics": "Traverse engine operation history group; restore selection/marks/IDs without ID allocator rewind",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "redo",
       "payload": {},
       "semantics": "Traverse engine operation history group; restore selection/marks/IDs without ID allocator rewind",
       "mayChangeDocument": true,
-      "existingEngineExport": false
+      "existingEngineExport": true,
+      "implementationScope": "createEngine granular controller; legacy React/host binding remains separate"
     },
     {
       "name": "replaceExternalDocument",
@@ -722,59 +735,73 @@
   "proposedControllerPorts": [
     {
       "name": "createEngine",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core createEngine"
     },
     {
       "name": "getSnapshot",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.getSnapshot"
     },
     {
       "name": "subscribe",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.subscribe"
     },
     {
       "name": "dispatch",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.dispatch"
     },
     {
       "name": "setSelection",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.setSelection"
     },
     {
       "name": "captureBookmark",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.captureBookmark"
     },
     {
       "name": "restoreBookmark",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.restoreBookmark"
     },
     {
       "name": "loadExternal",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.loadExternal"
     },
     {
       "name": "setReadOnly",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.setReadOnly"
     },
     {
       "name": "closeHistoryGroup",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.closeHistoryGroup"
     },
     {
       "name": "captureCheckpoint",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.captureCheckpoint"
     },
     {
       "name": "acknowledgeCheckpoint",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.acknowledgeCheckpoint"
     },
     {
       "name": "releaseCheckpoint",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.releaseCheckpoint"
     },
     {
       "name": "dispose",
-      "existingExport": false
+      "existingExport": true,
+      "publicLocation": "@inkforge/editor-core EngineController.dispose"
     }
   ],
   "pipeline": [
@@ -1963,5 +1990,70 @@
     "Source/tests were read, not executed.",
     "Vector and static checks cannot certify selection mapping or native Thai IME.",
     "No certified runtime or package release from this draft."
-  ]
+  ],
+  "currentImplementation": {
+    "workItem": "LIB-05-field-binding/U07-E",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md",
+    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
+    "reactEngineSurface": "InkforgeEngineEditor",
+    "nativeCoreBindingImplemented": true,
+    "hostFieldAcknowledgmentImplemented": true,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-all-field-coordination",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "retainedInspectorIntegrationImplemented": true
+  },
+  "previousPureControllerImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-B",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07b-controller.md",
+    "evidenceRef": "contracts/u07b-controller-evidence.json",
+    "status": "pureControllerDeliveredCompleteEnginePartial",
+    "runtimeAcceptance": "passedForU07BControllerOnly",
+    "legacyPrototypeAdopted": false,
+    "existingDesignEvidenceLimits": "Earlier source/read-only/vector status fields describe the pinned design snapshot; actual executed scope is in currentImplementation evidence",
+    "reactEngineBindingImplemented": false,
+    "hostFieldAcknowledgmentImplemented": false,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-03-inkforge-engine/U07-C"
+  },
+  "previousNativeSurfaceImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-C",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07c-native-surface.md",
+    "evidenceRef": "contracts/u07c-native-surface-evidence.json",
+    "status": "supportedNativeSurfaceDeliveredFullEnginePartial",
+    "runtimeAcceptance": "passedForU07CNativeSurfaceOnly",
+    "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
+    "reactEngineSurface": "InkforgeEngineEditor",
+    "nativeCoreBindingImplemented": true,
+    "hostFieldAcknowledgmentImplemented": false,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-03-inkforge-engine/U07-D"
+  },
+  "previousHostFieldImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-D",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07d-host-boundary.md",
+    "evidenceRef": "contracts/u07d-host-boundary-evidence.json",
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "runtimeAcceptance": "passedForU07DFieldBoundaryOnly",
+    "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
+    "reactEngineSurface": "InkforgeEngineEditor",
+    "nativeCoreBindingImplemented": true,
+    "hostFieldAcknowledgmentImplemented": true,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-bound-control-registry",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false
+  }
 }

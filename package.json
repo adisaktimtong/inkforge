@@ -10,13 +10,14 @@
   "scripts": {
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test": "node --test tests/contracts/*.test.mjs && turbo run test",
+    "test": "pnpm build:packages && node --test tests/contracts/*.test.mjs && turbo run test",
     "test:browser": "playwright test",
-    "check:packages": "pnpm build && publint packages/* && attw --pack --profile esm-only packages/* && node scripts/check-packed-packages.mjs",
+    "check:packages": "pnpm build && node scripts/lint-public-packages.mjs && node scripts/check-packed-packages.mjs",
     "lint": "eslint . --max-warnings=0",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm --filter react-playground build && pnpm --filter next-demo build && pnpm test:browser --project=chromium && pnpm check:packages"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm --filter react-playground build && pnpm --filter next-demo build && pnpm test:browser --project=chromium && pnpm check:packages",
+    "build:packages": "turbo run build --filter=@inkforge/editor-*"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",

@@ -1,4 +1,10 @@
-import type { BlockNode, DocumentNode, InlineNode, Mark } from '@inkforge/editor-core';
+import type {
+  BlockNode,
+  DocumentNode,
+  InlineNode,
+  Mark,
+  DeepReadonly,
+} from '@inkforge/editor-core';
 import {
   createDocument,
   createHardBreak,
@@ -18,6 +24,8 @@ export interface HtmlDiagnostic {
 }
 export interface HtmlParseOptions {
   maxInputLength?: number;
+  /** Only for validated host reference profiles. Never enables arbitrary custom schemes. */
+  referenceLinks?: boolean;
 }
 export interface HtmlParseResult {
   document: DocumentNode;
@@ -26,6 +34,7 @@ export interface HtmlParseResult {
 export interface HtmlSerializeOptions {
   className?: string;
   pretty?: boolean;
+  referenceLinks?: boolean;
 }
 
 const escape = (value: string, attribute = false) =>
@@ -33,9 +42,13 @@ const escape = (value: string, attribute = false) =>
     attribute ? /[&<>"']/g : /[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
   );
-const safeUrl = (url: string) =>
-  /^(?:https?:|mailto:|tel:|\/|#|\?|\.)/i.test(url.trim()) &&
-  !/^[a-z][a-z0-9+.-]*:/i.test(url.trim().replace(/^(?:https?:|mailto:|tel:)/i, ''));
+const safeUrl = (url: string, referenceLinks = false) =>
+  (referenceLinks &&
+    /^(?:cms-ref:(?:content|category|asset):[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|cms-route:[a-z][a-z0-9.-]*)$/.test(
+      url,
+    )) ||
+  (/^(?:https?:|mailto:|tel:|\/|#|\?|\.)/i.test(url.trim()) &&
+    !/^[a-z][a-z0-9+.-]*:/i.test(url.trim().replace(/^(?:https?:|mailto:|tel:)/i, '')));
 const allowedStyles = new Set([
   'color',
   'background-color',
@@ -243,7 +256,7 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
         delete token.attrs[attr];
       }
     if (token.attrs.href) token.attrs.href = decode(token.attrs.href);
-    if (token.attrs.href && !safeUrl(token.attrs.href)) {
+    if (token.attrs.href && !safeUrl(token.attrs.href, options.referenceLinks)) {
       diagnostics.push({
         code: 'UNSAFE_URL',
         message: 'Removed unsafe URL',
@@ -271,7 +284,12 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
       const next = mark ? [...marks, mark] : marks;
       const attrs = presentation(n);
       if (n.tag === 'a' && n.attrs.href)
-        return [createLink(n.attrs.href, inline(n.children, marks), attrs)];
+        return [
+          {
+            ...createLink(n.attrs.href, inline(n.children, marks), attrs),
+            ...(n.attrs.target === '_blank' ? { target: '_blank' as const } : {}),
+          },
+        ];
       if (n.tag === 'span' && (attrs.className || attrs.style))
         return inline(n.children, next).map((child) => {
           const className = [
@@ -359,7 +377,10 @@ const attrs = (className?: string, style?: string, override?: string) => {
   const cleanStyle = style ? safeStyle(style, []) : '';
   return `${cleanClass ? ` class="${escape(cleanClass, true)}"` : ''}${cleanStyle ? ` style="${escape(cleanStyle, true)}"` : ''}`;
 };
-export function serializeHtml(document: DocumentNode, options: HtmlSerializeOptions = {}): string {
+export function serializeHtml(
+  document: DeepReadonly<DocumentNode>,
+  options: HtmlSerializeOptions = {},
+): string {
   const tagForMark: Record<Mark, string> = {
     bold: 'strong',
     italic: 'em',
@@ -367,13 +388,16 @@ export function serializeHtml(document: DocumentNode, options: HtmlSerializeOpti
     strike: 's',
     code: 'code',
   };
-  const inlines = (nodes: InlineNode[]): string =>
+  const inlines = (nodes: DeepReadonly<InlineNode[]>): string =>
     nodes
       .map((n) => {
         if (n.type === 'hard-break') return `<br${attrs(n.className, n.style)}>`;
         if (n.type === 'link') {
-          const href = safeUrl(n.href) ? ` href="${escape(n.href, true)}"` : '';
-          return `<a${href}${attrs(n.className, n.style)}>${inlines(n.children)}</a>`;
+          const href = safeUrl(n.href, options.referenceLinks)
+            ? ` href="${escape(n.href, true)}"`
+            : '';
+          const target = n.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '';
+          return `<a${href}${target}${attrs(n.className, n.style)}>${inlines(n.children)}</a>`;
         }
         let out = escape(n.text);
         for (const mark of [...(n.marks ?? [])].reverse()) {
@@ -383,7 +407,7 @@ export function serializeHtml(document: DocumentNode, options: HtmlSerializeOpti
         return n.className || n.style ? `<span${attrs(n.className, n.style)}>${out}</span>` : out;
       })
       .join('');
-  const render = (nodes: BlockNode[]): string =>
+  const render = (nodes: DeepReadonly<BlockNode[]>): string =>
     nodes
       .map((n) =>
         n.type === 'paragraph'
@@ -399,3 +423,5 @@ export const serialize = serializeHtml;
 export const parse = parseHtml;
 export const toHtml = serializeHtml;
 export const serializeDocument = serializeHtml;
+
+export * from './profile.js';

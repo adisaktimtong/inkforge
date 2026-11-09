@@ -105,16 +105,19 @@ try {
     '@inkforge/editor-dom',
     '@inkforge/editor-source',
   ]) {
-    try {
-      run(
-        'node',
-        ['--input-type=module', '--eval', `await import(${JSON.stringify(specifier)})`],
-        consumer,
-      );
-      throw new Error(`Prohibited consumer import resolved: ${specifier}`);
-    } catch (error) {
-      if (error instanceof Error && error.message.startsWith('Prohibited')) throw error;
-    }
+    run(
+      'node',
+      [
+        '--input-type=module',
+        '--eval',
+        `
+      import assert from 'node:assert/strict';
+      try { await import(${JSON.stringify(specifier)}); assert.fail('Prohibited consumer import resolved'); }
+      catch(error) { assert.ok(['ERR_PACKAGE_PATH_NOT_EXPORTED','ERR_MODULE_NOT_FOUND'].includes(error.code), String(error)); }
+    `,
+      ],
+      consumer,
+    );
   }
 } finally {
   rmSync(packed, { recursive: true, force: true });

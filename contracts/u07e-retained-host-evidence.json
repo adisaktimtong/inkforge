@@ -1,0 +1,42 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-05-field-binding/U07-E",
+  "result": "passedForU07ERetainedFieldIntegrationOnly",
+  "refKind": "uncommittedWorkingTree",
+  "sourceBaseCommit": "50f27967886f75144a140cc5241be04893304e83",
+  "sourceSha256": {
+    "packages/editor-react/src/host.ts": "cde7bd05604af1a39c927649d4fd4b49972b9be02deffe09ca72fbd20d1ee547",
+    "tests/contracts/host-parent-observation.test.mjs": "41127891a3bc91e08e799c3cd7a9b9a8d777465a4440e7afa6bd73680cab8dc5"
+  },
+  "artifact": {
+    "name": "@inkforge/editor-react",
+    "file": "inkforge-editor-react-0.0.2.tgz",
+    "bytes": 100319,
+    "integrity": "sha512-saheTK0x1dZx/hwgEmjV2HTpSW1sHNyIoetO/TtQskCCvwj+nnLMnwYkre/Y+StlVEiyNr5N9iGIjpjhCIce7w=="
+  },
+  "actualEvidence": {
+    "repository": "adisaktimtong/pagebuilder",
+    "path": "contracts/u07e-inspector-registry-evidence.json",
+    "refKind": "uncommittedWorkingTree"
+  },
+  "command": "node scripts/check-bound-host.mjs",
+  "cwd": "/workspace/pagebuilder",
+  "caseRefs": [
+    "HP01",
+    "BE01",
+    "BE02",
+    "BE03",
+    "BE04",
+    "BE05",
+    "BE06",
+    "BED01"
+  ],
+  "coreChanged": false,
+  "priorNativeSurfaceChanged": false,
+  "hostFieldAckIsServerSaveAck": false,
+  "fullLibraryAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "commitPush": false
+}

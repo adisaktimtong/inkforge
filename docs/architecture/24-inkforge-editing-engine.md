@@ -224,3 +224,14 @@ Dispose idempotent/terminal: cancel adapter listeners/observers/async tools, cle
 [Test Plan](../work-items/LIB-03-inkforge-engine/test-plan.md) ใช้ source-pinned requirements + deterministic mapping vectors/race schedules และ actual native Thai IME/browser cohort Synthetic events ไม่ใช่หลักฐาน native IME ทั้งหมด Results แยก Core, browser, public package/Next, standalone และ combined CMS cohort ไม่มี case ใด passed จากการเพิ่ม spec/registry
 
 LIB-04 HTML policy/Go parity, LIB-02 DS, LIB-05 ack/barrier และ LIB-10 certified cohort ยังมี gates ของตัวเอง การออกแบบ kernel เสร็จไม่ทำให้ optional Source/Raw HTML/media/plugin enabled ใน cms-body-v1 และไม่เปลี่ยน `certifiedRuntime: null`
+
+## U07-B implemented controller subset
+
+[Implementation decision](../work-items/LIB-03-inkforge-engine/u07b-controller.md) / [actual evidence](../work-items/LIB-03-inkforge-engine/u07b-evidence.md) identify the new public createEngine/EngineController. Typed issued tokens, sidecar model IDs, granular operations/maps/history/checkpoints and pure composition protocol now exist for the declared subset. DOM/React engine ownership, host acknowledgments and the complete command/plugin catalogue above are not globally implemented. The original replaceDocument prototype remains separate and unchanged.
+
+## U07-C supported native binding
+
+[Current delivery](../work-items/LIB-03-inkforge-engine/u07c-native-surface.md) / [evidence](../work-items/LIB-03-inkforge-engine/u07c-evidence.md) now bind the public controller to one private DOM writer, an opt-in React engine surface and shared toolbar. The qualified Chromium input/IME/lifecycle subset is implemented; complete profile/host/command/browser-family acceptance above remains partial.
+## Implemented U07-D boundary
+
+[Host bridge and original-context amendment](../work-items/LIB-03-inkforge-engine/u07d-host-boundary.md) are implemented through editor-html/engine and editor-react/host, with a separate actual Builder port. [Evidence](../work-items/LIB-03-inkforge-engine/u07d-evidence.md) remains scoped to field delivery; a field ack does not acknowledge the server checkpoint.

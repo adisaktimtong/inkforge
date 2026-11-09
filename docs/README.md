@@ -32,3 +32,21 @@ Library-owned text engine and HTML implementation contracts/work items live here
 ## Documentation publication
 
 The user authorized commit/push of this design. This containing commit versions the current owner documents, schemas and planned work items; status remains draft/designOnly and runtime acceptance remains notRun. Earlier uncommitted/not-published statements describe the design snapshots before this publication. CMS records exact pushed library commits and current artifact hashes after remote verification; source baselines/prototypes remain separate. No application code, package release or runtime certification is included.
+
+## U07-A current owner presentation
+
+[Implementation scope](work-items/LIB-02-shared-ui/u07-presentation.md) and [actual evidence](work-items/LIB-02-shared-ui/u07-evidence.md) identify additive opt-in Common UI exports. The complete target adapter remains partial: engine-owned bookmarks and exact host-field delivery are downstream. Earlier committed design/source pins retain their original meaning.
+
+## U07-B pure controller implementation
+
+[Controller decision](work-items/LIB-03-inkforge-engine/u07b-controller.md) and [actual packed evidence](work-items/LIB-03-inkforge-engine/u07b-evidence.md) now identify createEngine/EngineController and granular model/selection/history/bookmark APIs. The legacy prototype stays separate. DOM/React engine binding and exact host delivery remain U07-C gates.
+
+## U07-C controller-owned native surface
+
+[Native/React decision](work-items/LIB-03-inkforge-engine/u07c-native-surface.md) / [actual packed evidence](work-items/LIB-03-inkforge-engine/u07c-evidence.md) identify InkforgeEngineEditor, InkforgeEngineField, guarded public bookmarks, native composition and borrowed-surface lifecycle. Exact host acknowledgment/profile integration remains U07-D.
+## U07-D exact host field boundary
+
+[Current decision](work-items/LIB-03-inkforge-engine/u07d-host-boundary.md) and [actual evidence](work-items/LIB-03-inkforge-engine/u07d-evidence.md) qualify canonical model/profile delivery, a standalone host and the actual Builder public port. CMS all-field/server Save acceptance remains separate.
+## U07-E retained host integration
+
+[Parent observation decision](work-items/LIB-03-inkforge-engine/u07e-parent-observation.md) and [owner evidence](../contracts/u07e-retained-host-evidence.json) qualify the retained public binding in the actual Builder Inspector. Unrelated parent changes preserve child drafts/history while old issued operations remain stale.

@@ -65,3 +65,17 @@ These compare `git diff --binary HEAD`, identify unreviewed existing tracked pro
 ## Relocation provenance
 
 ย้ายเอกสารนี้จาก `adisaktimtong/enterpises_cms:docs/work-items/LIB-03-inkforge-engine/evidence.md` ไป repo เจ้าของตามคำขอจัดแยกเอกสาร Original source SHA-256 ก่อนย้าย: `62e597d49a15c76f336b43b11325fc01a83c16a5d1ad32a93eb85ee417f6d40e` ตาราง hashes/commands/results ข้างต้นเป็นหลักฐานของ snapshot ณ เวลาที่ตรวจใน CMS เดิม ไม่ใช่ผลรันใหม่หลังย้าย ดู [current ownership/relocation record](https://github.com/adisaktimtong/enterpises_cms/blob/codex/cloud-environment-setup/contracts/document-ownership.json) สำหรับตำแหน่งและ digest ปัจจุบัน ไม่ยกระดับ runtime acceptance หรือยอมรับ prototypes จากการย้ายเอกสาร
+
+## U07-B current implementation
+
+The next user continuation assigns the [bounded pure-controller delivery](u07b-controller.md); [actual evidence](u07b-evidence.md) records its public package and exact case/source scope. E01–E04 primitives are implemented for the declared capabilities; the full design, extended commands/plugins and E05–E08 DOM/React/host acceptance remain partial. The original design-only statements above retain their historical scope.
+
+## U07-C current native-surface delivery
+
+[Controller-owned DOM/React decision](u07c-native-surface.md) and [actual evidence](u07c-evidence.md) qualify the supported engine surface and fixed Common UI toolbar path. Exact HTML/profile/host acknowledgment remains U07-D; full E05–E08/LIB-03 acceptance is not marked done by this cohort. Earlier U07-A/B evidence and committed source references retain their historical identities.
+## U07-D current field bridge
+
+[Host boundary](u07d-host-boundary.md) and [field-level evidence](u07d-evidence.md) deliver the exact acknowledgment/echo/prepare prerequisite. U07-A/B/C evidence remains historical and immutable. The next owner slice is automatic bound-control/registry integration; full all-field CMS Save/receipt and extended library capabilities remain open.
+## U07-E current retained field integration
+
+[Unchanged parent observation](u07e-parent-observation.md) is tested with the actual retained Builder registry/Inspector. The current cohort includes earlier U07-A/C/D gates; their versioned evidence remains historical at its recorded identity. All-field CMS Save, automatic delivery and extended editor/profile gates remain separate.

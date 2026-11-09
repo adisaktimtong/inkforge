@@ -17,7 +17,7 @@ This owner specification and [public port registry](../../contracts/shared-ui-ad
 
 At committed `9d7392d1aae9ef6c25040ce7c2318324f0a55d35`, InkForgeEditor has HTML value/defaultValue/onChange/onDiagnostics, disabled/readOnly, optional toolbar and forwarded HTMLDivElement ref Root/editor.css exports exist; new common-ui/controller ports remain proposed Public engine readiness cannot be inferred from dirty working-tree experiments
 
-Proposed optional `@inkforge/editor-react/common-ui` exports `createInkforgeCommonUiAdapter`, an immutable version1 descriptor that allocates no engine/session/DOM at import Add `uiAdapter?` and separate opt-in engineBinding to React editor through public types; editor-core remains React/UI/CMS/Builder-independent Omitted optional props retain legacy behavior
+Proposed optional `@inkforge/editor-react/common-ui` exports `createInkforgeCommonUiAdapter`, an immutable version1 descriptor that allocates no engine/session/DOM at import Add `uiAdapter?` and separate opt-in engineBinding to React editor through public types; editor-core remains React/UI/CMS/Builder-independent Omitted optional props retain legacy behavior. The no-argument factory issues a nominal opaque descriptor with kind/metadata only. Exact proposed descriptor, host-field, echo/ack and native-ref types: [shared-ui-adapter-v1.d.ts](../../contracts/shared-ui-adapter-v1.d.ts).
 
 ```ts
 type LegacyHtmlMode = { engineBinding?: never } & (
@@ -63,3 +63,11 @@ Authorized same-actor pre-expiry continuation preserves engine/IME/undo but inva
 ## 5. Delivery and proof
 
 Owner UA-IF01–06 slices are in the work-item plan; public engine bridge and native IME are LIB-03 dependencies, independent of full downstream CMS certification Prove standalone first with actual public artifacts, then combined host under exact versions/CSS/patch hashes Shared palette or a mock controller echo cannot certify controller readiness All runtime/native browser/AT/packed cases remain notRun; no implementation/dependency/test/CI source is added here
+
+## Declaration-level closure — RR-07
+
+The version1 adapter descriptor is explicitly nominal/opaque and issued by its owning no-argument factory. Public fields are kind and immutable metadata only; there is no supported public parts/slot override bag. Earlier view-parts wording describes private implementation composition. Metadata alone cannot forge factory identity or certify a capability. The proposed contract declarations in the owner contracts directory now define the exact registration/lease or host-field/snapshot/ack surface, with disjoint echo/value modes and native div ref preserved. UI synchronous guard returns undefined so Promise-returning pre-open handlers fail the contract. Declaration-only fixtures/type smoke do not prove actual package exports/engine behavior; all runtime/cohort gates remain notRun.
+
+## U07-A implemented subset
+
+[Current implementation](../work-items/LIB-02-shared-ui/u07-presentation.md) / [actual evidence](../work-items/LIB-02-shared-ui/u07-evidence.md) now qualify only the additive presentation boundary. The proposed full controller/field ports above remain downstream. Use emitted declarations and explicit capabilities for current adoption; metadata is not authorization and unsupported bridge props fail.

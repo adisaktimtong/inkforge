@@ -1,0 +1,5 @@
+{
+  "extends": "./packages/editor-react/tsconfig.json",
+  "compilerOptions": { "rootDir": "." },
+  "include": ["packages/editor-react/src", "internal/editor-dom/src/controller-dom.ts"]
+}

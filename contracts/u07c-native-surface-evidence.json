@@ -1,0 +1,417 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-03-inkforge-engine/U07-C",
+  "scope": "Supported controller-owned DOM/React/Common UI surface, not exact CMS host acknowledgment",
+  "result": "passedForU07CNativeSurfaceOnly",
+  "observedAtUtc": "2026-11-09T05:28:32.336106+00:00",
+  "clientTimezone": "Asia/Bangkok",
+  "observedAtClientTime": "2026-11-09T12:28:32.336106+07:00",
+  "sourceBaseCommit": "50f27967886f75144a140cc5241be04893304e83",
+  "refKind": "uncommittedWorkingTree",
+  "sourceSha256": {
+    "examples/engine-surface/page.tsx": "2b7e7e6da2944833d9de3a48b942902ffebf4e1b363daac0100d7421dc3f4416",
+    "examples/engine-surface/public-types.tsx": "24b86b116ad8650b9feb54646dac46673d3fd4f42f6abaf60b79c28d48a67974",
+    "internal/editor-dom/src/controller-dom.ts": "3485e8cbed1a442d29147b52d189d1937f4272d22f89d6f3be8ba61dc267a2b2",
+    "package.json": "7086a19cb9938921afd915de9ba1d6cadf10d664599dde05a14d24aa7c900689",
+    "packages/editor-core/package.json": "757fc541e5a4ea2cd09af9f90588bfd44801b789b8d046e93e553f8878717ec2",
+    "packages/editor-core/src/controller/commands.ts": "01419e8e362fdaa0d9c765e6375923b846bdc304c2c200253528f1d70e76cbd5",
+    "packages/editor-core/src/controller/index.ts": "bc37a93d6c5a458d6c82e0912ba1a6e903ccb44857e4bb836bcddbd9821e6697",
+    "packages/editor-core/src/controller/model.ts": "06619dc74c7338bc47866ef33049cc2f828cdb8482f4cc1701e2a2c443688d58",
+    "packages/editor-core/src/controller/types.ts": "992e8d616c50d17b5c4a3494da00c2a68ff9e2edba2254ee7eb6797b2a43b658",
+    "packages/editor-core/src/engine.ts": "69ccbd46f12f5a177a5033e5b6847921cd899228d9dc8d750dd636538db0b225",
+    "packages/editor-core/src/index.ts": "5b35f48428deb9bba7af6e8d896efe8cf755525a9dd9f44f050b0b18cad9cd5c",
+    "packages/editor-core/tsconfig.json": "a2c9d111afbf0904ad59fa3f6c16196292e37c146fa3b73cd70affd8ef01ce21",
+    "packages/editor-core/tsdown.config.ts": "5a89720b844a17a76bf9967d0b5582ea5ddafa419cb6e3a7ab222bfa703a2f98",
+    "packages/editor-react/package.json": "9ee440c75641d7e5cd9b3ff9927522dfe79b28ba78faa9288e744858dd98d4fb",
+    "packages/editor-react/src/common-ui.ts": "4450352b9c289a00192119f7419e2fc993b3f02fc7bbcac572a3cb42f3496d1f",
+    "packages/editor-react/src/editor.css": "b9ec599ed9ecbafd1859f81002ef3f8f395b359235dd679516397478caef46f3",
+    "packages/editor-react/src/engine.ts": "66332c4b6f964e4fd092ac6e9ada7ef3069e53d1aa7508cecd57141dd1b9a771",
+    "packages/editor-react/src/index.ts": "a9cf4de44249fa0deff16dbc228363a608033cf501eec03a9602dd73b5adaa5a",
+    "packages/editor-react/src/ui-adapter.ts": "1b6c31cae7c8bd1ee552ec315afb8a3f37eeca2b9ef1c09cb6ac28a9bfd840d0",
+    "packages/editor-react/tsconfig.json": "d73053b8b121a02d72558057329f59f19ec565ea273b998b1b9cc12404f4b7b7",
+    "packages/editor-react/tsdown.config.ts": "779ecff1e78ba632e61c25822335fae245c6b1c7e2c8a5452cf6fbc9c96361ef",
+    "playwright.engine.config.mjs": "dee34424aa3a3bba661c12a01a467d3cbb7749202f4960e2a146a0b95ddfcb1f",
+    "pnpm-lock.yaml": "314c7f4b40ba57aa4d5c573bcea6db2fcc42d31fd6d7a603d1c61d655cac444a",
+    "scripts/check-engine-surface.mjs": "a72f0d2e9dc08cf9a823c42d8ef07f805f532fc4ffe787c1b42158d28a68c5ef",
+    "tests/contracts/controller-dom-commands.test.mjs": "b34f0ee51ed49ece594084756f5b526dc0125e3dd61cbdca338e4381b957e33a",
+    "tests/contracts/controller.test.mjs": "44e65e59d10f88a1272a05144cb56720af0f7016a9272b46e8246cf1c2265beb",
+    "tests/engine-surface/development.spec.ts": "161c68e4482887b8d97cc57ac25a472a752d1ffcef165aadb4a0a0bfbf106753",
+    "tests/engine-surface/engine.spec.ts": "78a7b42a8ed26d874274130f5b8728c514a2a506c7b28e91da64f1fde1838e9b",
+    "tsconfig.base.json": "3503ff644450c4bb4511e1dd843be769967f8aa5b2c6aa90464453e9698520ef",
+    "tsconfig.engine-react.json": "f7cab0efc4c70c646ffde7ff01e05a67af316bc33128658cb1e02d8873d088e0"
+  },
+  "command": "node scripts/check-engine-surface.mjs",
+  "cwd": "/workspace/inkforge",
+  "runtime": {
+    "node": "v24.22.1",
+    "typescript": "7.0.2",
+    "tsdown": "0.23.0",
+    "npm": "11.9.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "reactDom": "19.3.1",
+    "nativeSurfacePlaywright": "1.63.0",
+    "legacyPresentationPlaywright": "1.64.1",
+    "chromium": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)",
+    "localPackPnpm": "11.25.0",
+    "declaredInkforgePnpm": "12.4.2"
+  },
+  "artifacts": [
+    {
+      "name": "@adisaktimtong/ui-component",
+      "file": "adisaktimtong-ui-component-0.1.0.tgz",
+      "bytes": 51272,
+      "integrity": "sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg=="
+    },
+    {
+      "name": "@pagebuilder/headless",
+      "file": "pagebuilder-headless-0.1.0.tgz",
+      "bytes": 105711,
+      "integrity": "sha512-luOogMquSTlLXTdXMumbPDQRqk65OrokrP0RCh/aOGJhyhRvmZMHsYdxXWSyN6yb4cX2bgKrdLn5NzkFYayvOg=="
+    },
+    {
+      "name": "@inkforge/editor-core",
+      "file": "inkforge-editor-core-0.0.2.tgz",
+      "bytes": 53230,
+      "integrity": "sha512-6TE31jU1P51tOLPAJrcWkohbj4hrK9We3ExUZQt3AyjjqdxY/LtW7qYB2L/jkK4prZT/TUITumNsv7o9LeU59Q=="
+    },
+    {
+      "name": "@inkforge/editor-html",
+      "file": "inkforge-editor-html-0.0.2.tgz",
+      "bytes": 29246,
+      "integrity": "sha512-hu4iDRhQCn3XglVu6p6LpukfBeQ2JAzMB1fU+t7fJpbsdPdY4drYMnY93saSygtnPWC1xP3ITlGPu7P1V9aTkw=="
+    },
+    {
+      "name": "@inkforge/editor-react",
+      "file": "inkforge-editor-react-0.0.2.tgz",
+      "bytes": 84460,
+      "integrity": "sha512-RNhOqbTiAqKYWrVgeMDxIGjbaiaPYiOorqOzEzWcP/x4q+33lqo5/sQK/3bQqNCRZ8GLiq+7EhCH08EocVlEaQ=="
+    }
+  ],
+  "checks": {
+    "packedPureController": {
+      "previousCases": 54,
+      "newAtomicCommands": 2
+    },
+    "nextProductionBuild": true,
+    "ssr": true,
+    "engineEntryWithoutUiPeer": true,
+    "publicNegativeExamples": 10,
+    "productionBrowser": 24,
+    "actualDevelopmentReplay": 2
+  },
+  "legacyPresentationRegressions": {
+    "physicalTarballs": "passed",
+    "node": {
+      "passed": 12
+    },
+    "headless": {
+      "passed": true,
+      "react": false,
+      "commonUi": false,
+      "browserGlobals": false
+    },
+    "optionalUiPeer": {
+      "passed": true,
+      "legacyReactRenderWithoutUi": true,
+      "optedInMissingPeerFails": true
+    },
+    "nextBuild": {
+      "passed": true,
+      "types": "actual emitted declarations with expected-invalid cases",
+      "skipLibCheck": false
+    },
+    "publicNegativeTypes": {
+      "passed": 9,
+      "actualCompilerRejections": true
+    },
+    "browser": {
+      "passed": 13,
+      "browser": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)"
+    },
+    "singleReact": true
+  },
+  "productionStats": {
+    "startTime": "2026-11-09T05:26:04.351Z",
+    "duration": 13168.099,
+    "expected": 24,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "developmentStats": {
+    "startTime": "2026-11-09T05:26:17.931Z",
+    "duration": 12824.825,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "caseIds": {
+    "nativeProduction": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C20",
+      "C21",
+      "C22",
+      "C23",
+      "C24"
+    ],
+    "development": [
+      "CD01",
+      "CD02"
+    ],
+    "newAtomicCommands": [
+      "CC01",
+      "CC02"
+    ],
+    "previousPureController": 54,
+    "existingLegacyNode": 12,
+    "existingLegacyBrowser": 13,
+    "newPublicTypeExamples": 10,
+    "previousPublicTypeExamples": 9
+  },
+  "nativeCompositionOracle": "Actual Chromium CDP Input.imeSetComposition/Input.insertText; not native OS keyboard/IME certification",
+  "nativeReplacementOracle": "Declared synthetic noncancelable text-replacement/DOM/input event schedule; not an OS autocorrect qualification",
+  "strictModeOracle": "Actual Next development reactStrictMode effect replay, plus native listener/observer baseline over three mount cycles",
+  "isolatedConsumers": {
+    "workDirectory": "/tmp/ui-u07-adapters-qkROfz",
+    "physicalTarballs": true,
+    "consumerSourceAliases": false,
+    "privateRuntimeDependency": false,
+    "oneReactResolution": true,
+    "sameTarballSetAcrossProductionAndDevelopment": true,
+    "finalDefaultFreshCohort": true,
+    "fastIterationResultAccepted": false,
+    "scratchNextCacheResetBeforeArtifactBuild": true
+  },
+  "ssrAndTypes": {
+    "safeNoneditableSeed": true,
+    "borrowedControllerNotDisposed": true,
+    "emittedDeclarations": "actual strict Next consumer",
+    "skipLibCheck": false,
+    "engineEntryWithoutOptionalUiPeer": true,
+    "privateDomImplementationBundled": true
+  },
+  "regressionFixes": [
+    {
+      "id": "C-F01",
+      "description": "One-time invalidation avoids repeated layout diagnostics after a context-stale composition"
+    },
+    {
+      "id": "C-F02",
+      "description": "Owned text tree reconciliation removes unmanaged text on explicit discard"
+    },
+    {
+      "id": "C-F03",
+      "description": "Scratch .next reset prevents stale managed node_modules bytes when local tarballs reuse a version"
+    },
+    {
+      "id": "C-F04",
+      "description": "Terminal disposal clears queued native mutations, owned DOM records and cached SSR seed before quarantine can return",
+      "case": "C23",
+      "preFixLog": "/tmp/u07c-terminal-oracle.log",
+      "preFixLogSha256": "97f2b88bef8163677ee70899deb10e3a25a299294c8a63988c572ac3a68c7155",
+      "preFixReactTarballIntegrity": "sha512-ioGWzsPddOCw5wft00nmjDQgja6u52fl+3oEGCRf3a6zKJLfbowFgSFg1Admdn8xVjiWETGrESgcdRlDFgYAIQ=="
+    }
+  ],
+  "logs": {
+    "fullFinal": "/tmp/u07c-full-final.log",
+    "rawReport": "/workspace/inkforge/.artifacts/u07c-engine-surface-report.json",
+    "production": "/workspace/inkforge/.artifacts/u07c-browser.json",
+    "development": "/workspace/inkforge/.artifacts/u07c-development.json",
+    "newTypes": "/workspace/inkforge/.artifacts/u07c-negative-types.txt",
+    "previousController": "/workspace/inkforge/.artifacts/u07c-controller.test.mjs.tap",
+    "newAtomicCommands": "/workspace/inkforge/.artifacts/u07c-controller-dom-commands.test.mjs.tap"
+  },
+  "logPolicy": "Session-local logs/tarballs are not Git-durable; versioned source/artifact identities and the runner reproduce the scoped result.",
+  "preservation": {
+    "enterpises_cms": {
+      "headUnchanged": true,
+      "allPriorFilesRetained": true,
+      "changedPreexistingPaths": [
+        "contracts/authoring-ui-adapter-contract.json",
+        "contracts/document-ownership.json",
+        "contracts/sdlc-document-map.json",
+        "docs/03-build/plan.md",
+        "docs/04-test/evidence.md",
+        "docs/architecture/26-authoring-ui-adapter-integration.md",
+        "docs/repository-documentation.md"
+      ]
+    },
+    "ui-component": {
+      "headUnchanged": true,
+      "allPriorFilesRetained": true,
+      "changedPreexistingPaths": [
+        "contracts/implementation-manifest.json",
+        "docs/README.md"
+      ]
+    },
+    "pagebuilder": {
+      "headUnchanged": true,
+      "allPriorFilesRetained": true,
+      "changedPreexistingPaths": []
+    },
+    "inkforge": {
+      "headUnchanged": true,
+      "allPriorFilesRetained": true,
+      "changedPreexistingPaths": [
+        "packages/editor-core/src/controller/commands.ts",
+        "packages/editor-core/src/controller/index.ts",
+        "packages/editor-core/src/controller/types.ts",
+        "packages/editor-react/src/common-ui.ts",
+        "packages/editor-react/src/ui-adapter.ts",
+        "contracts/document-map.json",
+        "contracts/inkforge-engine-contract.json",
+        "contracts/shared-ui-adapter.json",
+        "docs/README.md",
+        "docs/architecture/24-inkforge-editing-engine.md",
+        "docs/work-items/LIB-02-shared-ui/plan.md",
+        "docs/work-items/LIB-03-inkforge-engine/decision.md",
+        "docs/work-items/LIB-03-inkforge-engine/evidence.md",
+        "docs/work-items/LIB-03-inkforge-engine/plan.md",
+        "packages/editor-react/package.json",
+        "packages/editor-react/tsconfig.json",
+        "packages/editor-react/tsdown.config.ts"
+      ]
+    }
+  },
+  "commonUiRuntimeArtifactUnchangedFromU06": true,
+  "legacyPrototypeAdoptedByNewEngine": false,
+  "persistedAstAndCmsRichTextFormatsChanged": false,
+  "hostFieldAcknowledgmentImplemented": false,
+  "fullU07Acceptance": "notRun",
+  "combinedCertifiedRuntime": null,
+  "notRun": [
+    "exact canonical HTML/profile/hostField ack/echo/prepare and server receipt barriers",
+    "rich HTML slice paste, confirmed cut writer and drop",
+    "remaining list/link/layout/plugin commands and renderer profile acceptance",
+    "native OS Thai IME/manual AT/Firefox-WebKit-Safari/performance",
+    "production CSP for the new surface fixture",
+    "declared pnpm12.4.2 clean release installation",
+    "TypeScript lint under configured matching rules"
+  ],
+  "commitPush": false,
+  "packagePublication": false,
+  "deployment": false,
+  "goFrameworkOrLiveSettingsChanged": false,
+  "crossRepositoryDesignChecks": {
+    "result": "passed",
+    "mode": "designOnly",
+    "runtimeCasesExecuted": 0,
+    "command": [
+      "tools/design-checks/check.py",
+      "--workspace",
+      "/workspace",
+      "--tsc",
+      "/workspace/pagebuilder/node_modules/.bin/tsc",
+      "--report",
+      "/tmp/u07c-cross-repo-checks.json"
+    ],
+    "cwd": "/workspace/enterpises_cms",
+    "report": "/tmp/u07c-cross-repo-checks.json",
+    "checks": {
+      "api": {
+        "paths": 85,
+        "operations": 100,
+        "schemas": 152,
+        "existingSchemaCases": 129,
+        "closureSchemaCases": 106,
+        "semanticPolicyOracles": 10,
+        "screens": 31,
+        "bindings": 89
+      },
+      "documentIntegrity": {
+        "managedRecords": 270,
+        "frontMatter": 179,
+        "jsonFiles": 80,
+        "schemaFiles": 7,
+        "localJsonRefs": 474,
+        "markdownTargets": 1484
+      },
+      "publishedInputs": {
+        "pinnedOwnerArtifacts": 84,
+        "draftOwnerLocators": 67
+      },
+      "traceability": {
+        "contracts": [
+          {
+            "contract": "inkforge/contracts/inkforge-engine-contract.json",
+            "rules": 22,
+            "designedCases": 46
+          },
+          {
+            "contract": "enterpises_cms/contracts/nested-editor-coordination.json",
+            "rules": 18,
+            "designedCases": 43
+          },
+          {
+            "contract": "ui-component/contracts/common-ui-contract.json",
+            "rules": 20,
+            "designedCases": 40
+          },
+          {
+            "contract": "enterpises_cms/contracts/authoring-ui-adapter-contract.json",
+            "rules": 20,
+            "designedCases": 36
+          },
+          {
+            "contract": "enterpises_cms/contracts/inkforge-html-contract.json",
+            "rules": 20,
+            "designedCases": 18
+          }
+        ],
+        "pagebuilderFeatures": 24,
+        "pagebuilderCases": 48,
+        "uiFamilies": 74,
+        "uiExpandedCases": 124
+      },
+      "adapters": {
+        "handshakeShapes": 8,
+        "compatibilityCases": 6,
+        "fenceOracles": 21,
+        "metadataCases": 12,
+        "pinnedSourcePoints": 8
+      },
+      "tokensAndUi": {
+        "tokens": 255,
+        "tokenShapeCases": 8,
+        "tokenGraphCases": 9,
+        "declaredSrgbPairs": 17,
+        "configurationCases": 18
+      },
+      "assessmentArithmetic": {
+        "unchangedRubric": true,
+        "overallUnroundedScore": 92.25,
+        "overallScore": 92,
+        "scope": "Arithmetic only; qualitative levels require human/reviewer judgment"
+      },
+      "declarationSmoke": {
+        "result": "passed",
+        "compiler": "Version 7.0.2",
+        "expectedInvalidConsumers": 7,
+        "scope": "Proposed declarations + isolated dependency fixtures; no actual emitted package or engine"
+      }
+    },
+    "scope": "Document/contract/pin/traceability/declaration checks only; native runtime evidence is recorded separately above."
+  }
+}

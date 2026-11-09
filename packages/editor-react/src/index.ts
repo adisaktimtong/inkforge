@@ -1,15 +1,37 @@
 'use client';
 
+import { EditorInteractionContext, EditorUiBoundary, type InkforgeUiAdapterV1 } from './ui-adapter.js';
+export type { InkforgeUiAdapterV1 } from './ui-adapter.js';
 import { useToolbar } from './toolbar.js';
-import { parseHtml, serializeHtml, type HtmlDiagnostic } from '@inkforge/editor-html';
+import {
+  parseHtml,
+  serializeHtml,
+  contentProfileFingerprint,
+  type HtmlDiagnostic,
+  type ContentProfile,
+} from '@inkforge/editor-html';
+import { parseContentHtml } from '@inkforge/editor-html/browser';
+import {
+  createEditorEngine,
+  createDocument,
+  type EditorEngine,
+  type EngineSnapshot,
+  type EditorSelection,
+  type EngineResult,
+  type SaveCheckpoint,
+} from '@inkforge/editor-core';
 import {
   createElement,
   Fragment,
   forwardRef,
   useEffect,
+  useContext,
+  useLayoutEffect,
   useImperativeHandle,
   useMemo,
   useReducer,
+  useSyncExternalStore,
+  type Ref,
   useRef,
   type HTMLAttributes,
 } from 'react';
@@ -18,6 +40,8 @@ export interface InkForgeEditorProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'children' | 'dangerouslySetInnerHTML' | 'contentEditable' | 'defaultValue' | 'onChange'
 > {
+  /** Optional owner-issued Common UI presentation; does not grant engine/host bridge capabilities. */
+  uiAdapter?: InkforgeUiAdapterV1;
   /** Controlled HTML. Do not switch between controlled and uncontrolled usage. */
   value?: string;
   /** Initial HTML for an uncontrolled editor; later changes are ignored. */
@@ -30,11 +54,68 @@ export interface InkForgeEditorProps extends Omit<
   readOnly?: boolean;
   /** Show the optional formatting toolbar. Defaults to false. */
   toolbar?: boolean;
+  /** Optional host-owned engine. Its initial state replaces value/defaultValue. */
+  engine?: EditorEngine;
+  /** Immutable CMS content allowlist. Unsupported input is rejected without overwriting content. */
+  profile?: ContentProfile;
+  /** Save/dirty/undo API; the legacy forwarded ref remains the editable div. */
+  controllerRef?: Ref<InkForgeController>;
+  /** Host labels for registered content classes; never persisted as HTML. */
+  contentTokenLabels?: Readonly<Record<string, string>>;
 }
 
-function sanitize(html: string) {
+export interface InkForgeController {
+  readonly engine: EditorEngine;
+  getHtml():
+    | { status: 'ready'; html: string; snapshot: EngineSnapshot }
+    | { status: 'pending'; code: 'COMPOSITION_ACTIVE' }
+    | { status: 'rejected'; code: string };
+  undo(): void;
+  redo(): void;
+  focus(): void;
+  /** Atomic Source/host update. A stale dialog must never overwrite newer edits. */
+  applyHtml(
+    html: string,
+    context: { expectedSessionId: string; expectedRevision: number },
+  ): EngineResult;
+  createSaveCheckpoint():
+    | { status: 'created'; html: string; checkpoint: SaveCheckpoint }
+    | { status: 'rejected'; diagnostics: { code: string }[] };
+}
+export function useEditorSnapshot(engine: EditorEngine): EngineSnapshot {
+  return useSyncExternalStore(engine.subscribe, engine.getSnapshot, engine.getSnapshot);
+}
+function sanitize(html: string, profile?: ContentProfile) {
+  if (profile) {
+    if (typeof document === 'undefined')
+      return {
+        html: '',
+        document: createDocument(),
+        diagnostics: [] as HtmlDiagnostic[],
+        rejected: false,
+      };
+    const result = parseContentHtml(html, profile);
+    if (result.status === 'rejected')
+      return {
+        html: '',
+        document: createDocument(),
+        diagnostics: result.diagnostics.map((d) => ({ code: d.code, message: d.message })),
+        rejected: true,
+      };
+    return {
+      html: result.canonicalHtml,
+      document: result.document,
+      diagnostics: [] as HtmlDiagnostic[],
+      rejected: false,
+    };
+  }
   const result = parseHtml(html);
-  return { html: serializeHtml(result.document), diagnostics: result.diagnostics };
+  return {
+    html: serializeHtml(result.document),
+    document: result.document,
+    diagnostics: result.diagnostics,
+    rejected: false,
+  };
 }
 
 // Semantic offsets survive text-node coalescing and wrapper normalization.
@@ -50,17 +131,16 @@ const size = (node: Node): number =>
       : Array.from(node.childNodes).reduce((total, child) => total + size(child), 0) +
         Number(textBlock(node));
 
-function replaceHtml(element: HTMLDivElement, html: string) {
-  if (element.innerHTML === html) return;
+function readSelection(element: HTMLDivElement): EditorSelection | null {
   const selection = element.ownerDocument.getSelection();
-  const offset = (node: Node | null, position: number) => {
+  const offset = (node: Node | null, position: number): number | null => {
     if (!node || !element.contains(node)) return null;
     let result =
       node.nodeType === 3
         ? position
         : Array.from(node.childNodes)
             .slice(0, position)
-            .reduce((total, child) => total + size(child), 0);
+            .reduce((n, child) => n + size(child), 0);
     while (node !== element && node.parentNode) {
       for (let sibling = node.previousSibling; sibling; sibling = sibling.previousSibling)
         result += size(sibling);
@@ -70,15 +150,18 @@ function replaceHtml(element: HTMLDivElement, html: string) {
   };
   const anchor = selection && offset(selection.anchorNode, selection.anchorOffset);
   const focus = selection && offset(selection.focusNode, selection.focusOffset);
-  element.innerHTML = html;
-  if (anchor == null || focus == null || !selection) return;
+  return anchor == null || focus == null ? null : { anchor, focus };
+}
+function restoreSelection(element: HTMLDivElement, value: EditorSelection | null) {
+  const selection = element.ownerDocument.getSelection();
+  if (!value || !selection) return;
   const point = (position: number): [Node, number] => {
     const descend = (node: Node, remaining: number): [Node, number] => {
       if (node.nodeType === 3) return [node, Math.min(remaining, node.textContent?.length ?? 0)];
-      for (let index = 0; index < node.childNodes.length; index++) {
-        const child = node.childNodes[index]!;
+      for (let i = 0; i < node.childNodes.length; i++) {
+        const child = node.childNodes[i]!;
         const length = size(child);
-        if (child.nodeName === 'BR' && remaining <= 1) return [node, index + remaining];
+        if (child.nodeName === 'BR' && remaining <= 1) return [node, i + remaining];
         if (remaining < length || (child.nodeType === 3 && remaining === length))
           return descend(child, remaining);
         remaining -= length;
@@ -87,7 +170,27 @@ function replaceHtml(element: HTMLDivElement, html: string) {
     };
     return descend(element, position);
   };
-  selection.setBaseAndExtent(...point(anchor), ...point(focus));
+  selection.setBaseAndExtent(...point(value.anchor), ...point(value.focus));
+}
+function replaceHtml(element: HTMLDivElement, html: string, selection?: EditorSelection | null) {
+  const nextSelection = selection === undefined ? readSelection(element) : selection;
+  if (element.innerHTML !== html) element.innerHTML = html;
+  restoreSelection(element, nextSelection);
+}
+
+// Native Enter can create div paragraphs. Normalize only editing artifacts;
+// source, paste and externally supplied HTML still use the strict profile unchanged.
+function editingHtml(element: HTMLDivElement): string {
+  const copy = element.cloneNode(true) as HTMLDivElement;
+  for (const div of copy.querySelectorAll('div')) {
+    if (div.querySelector('p,div,h1,h2,h3,h4,h5,h6,ul,ol')) continue;
+    const paragraph = element.ownerDocument.createElement('p');
+    for (const attribute of Array.from(div.attributes))
+      paragraph.setAttribute(attribute.name, attribute.value);
+    paragraph.append(...Array.from(div.childNodes));
+    div.replaceWith(paragraph);
+  }
+  return copy.innerHTML;
 }
 
 function boundary(node: Node, root: HTMLElement, tags: RegExp): Element | null {
@@ -186,17 +289,30 @@ function insertFragment(root: HTMLDivElement, range: Range, fragment: DocumentFr
   selection.addRange(range);
 }
 
-/** A browser-owned contentEditable surface with the shared HTML boundary. */
+/** Contenteditable adapter; committed document/history/save baseline belong to the pure engine. */
 export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
+  function InkForgeEditor(props, ref) {
+    if ('engineBinding' in props && props.engineBinding !== undefined)
+      throw new Error('INKFORGE_ENGINE_BINDING_NOT_IMPLEMENTED');
+    return createElement(EditorUiBoundary, { adapter: props.uiAdapter,
+      children: createElement(InkForgeEditorContent, { ...props, ref }) });
+  },
+);
+const InkForgeEditorContent = forwardRef<HTMLDivElement, InkForgeEditorProps>(
   function InkForgeEditor(
     {
+      uiAdapter: _uiAdapter,
       value,
       defaultValue,
       onChange,
       onDiagnostics,
-      disabled = false,
+      disabled: disabledProp = false,
       readOnly = false,
       toolbar = false,
+      engine: providedEngine,
+      profile,
+      controllerRef,
+      contentTokenLabels,
       className,
       tabIndex,
       onInput,
@@ -212,9 +328,45 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
     },
     forwardedRef,
   ) {
+    const ui = useContext(EditorInteractionContext);
+    // Initial hydration readiness is a gate, not a recurring editing-mode change.
+    // Presentation updates must never toggle contentEditable during native IME.
+    const uiReadyOnce = useRef(ui === null || ui.status === 'ready');
+    useLayoutEffect(() => { if (ui?.status === 'ready') uiReadyOnce.current = true; }, [ui?.status]);
+    const disabled = disabledProp || (!uiReadyOnce.current && ui?.status === 'pending');
     const element = useRef<HTMLDivElement>(null);
     const initial = useRef<ReturnType<typeof sanitize> | null>(null);
-    if (!initial.current) initial.current = sanitize(value ?? defaultValue ?? '');
+    if (providedEngine && (value !== undefined || defaultValue !== undefined))
+      throw new Error('Use engine or value/defaultValue, not both');
+    if (!initial.current)
+      initial.current = profile
+        ? sanitize('', profile)
+        : sanitize(
+            providedEngine
+              ? serializeHtml(providedEngine.getSnapshot().document)
+              : (value ?? defaultValue ?? ''),
+          );
+    const localEngine = useRef<EditorEngine | null>(null);
+    if (!localEngine.current)
+      localEngine.current = createEditorEngine({ document: initial.current.document });
+    const engine = providedEngine ?? localEngine.current;
+    const binding = useRef({
+      engine,
+      profile: profile ? contentProfileFingerprint(profile) : null,
+      controlled: value !== undefined,
+    });
+    if (
+      binding.current.engine !== engine ||
+      binding.current.profile !== (profile ? contentProfileFingerprint(profile) : null) ||
+      binding.current.controlled !== (value !== undefined)
+    )
+      throw new Error(
+        'Remount InkForgeEditor when changing engine, content profile, or controlled mode',
+      );
+    const engineSnapshot = useEditorSnapshot(engine);
+    const localMutation = useRef(false);
+    const localRevision = useRef<string | null>(null);
+    const profileInitialized = useRef(false);
     const committed = useRef(initial.current.html);
     const immediateEcho = useRef<string | null>(null);
     const diagnosedInitial = useRef(false);
@@ -222,12 +374,16 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
     const [, requestReconcile] = useReducer((revision: number) => revision + 1, 0);
     const composing = useRef(false);
     const browserEmpty = useRef(false);
+    const lastTypingTime = useRef(0);
     const pendingValue = useRef<ReturnType<typeof sanitize> | null>(null);
     const callbacks = useRef({ onChange, onDiagnostics });
     callbacks.current = { onChange, onDiagnostics };
     useImperativeHandle(forwardedRef, () => element.current!, []);
 
-    const controlled = useMemo(() => (value === undefined ? null : sanitize(value)), [value]);
+    const controlled = useMemo(
+      () => (value === undefined ? null : sanitize(value, profile)),
+      [value, profile],
+    );
     useEffect(() => {
       if (diagnosedValue.current === controlled) return;
       diagnosedValue.current = controlled;
@@ -239,26 +395,204 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         immediateEcho.current = null;
         if (!echo) callbacks.current.onDiagnostics?.(controlled.diagnostics);
       }
-      if (controlled && composing.current) pendingValue.current = controlled;
+      if (controlled && !controlled.rejected && composing.current)
+        pendingValue.current = controlled;
     }, [controlled]);
 
     useEffect(() => {
-      if (!controlled || composing.current || !element.current) return;
+      if (
+        !controlled ||
+        controlled.rejected ||
+        composing.current ||
+        !element.current ||
+        (profile && !profileInitialized.current)
+      )
+        return;
       if (controlled.html !== committed.current) {
         immediateEcho.current = null;
         browserEmpty.current = false;
         replaceHtml(element.current, controlled.html);
         formatting.invalidate();
         committed.current = controlled.html;
+        engine.load(controlled.document, {
+          expectedSessionId: engine.getSnapshot().sessionId,
+          origin: 'unsaved',
+        });
       }
     });
 
-    const commit = (normalize: boolean, diagnostics: HtmlDiagnostic[] = []) => {
+    useEffect(() => {
+      if (!profile || profileInitialized.current || !element.current) return;
+      const source = providedEngine
+        ? serializeHtml(engine.getSnapshot().document, { referenceLinks: true })
+        : (value ?? defaultValue ?? '');
+      const next = sanitize(source, profile);
+      callbacks.current.onDiagnostics?.(next.diagnostics);
+      if (next.rejected) return;
+      profileInitialized.current = true;
+      committed.current = next.html;
+      replaceHtml(element.current, next.html);
+      if (!providedEngine)
+        engine.load(next.document, {
+          expectedSessionId: engine.getSnapshot().sessionId,
+          origin: 'persisted',
+        });
+      requestReconcile();
+    }, [engine, profile, providedEngine, value, defaultValue]);
+    useEffect(() => {
+      if (
+        localMutation.current ||
+        composing.current ||
+        !element.current ||
+        engineSnapshot !== engine.getSnapshot() ||
+        localRevision.current === `${engineSnapshot.sessionId}:${engineSnapshot.revision}`
+      )
+        return;
+      const next = sanitize(
+        serializeHtml(engineSnapshot.document, { referenceLinks: !!profile }),
+        profile,
+      );
+      if (next.rejected) return;
+      committed.current = next.html;
+      replaceHtml(element.current, next.html);
+    }, [engineSnapshot.document, engineSnapshot.sessionId, profile]);
+    const history = (kind: 'undo' | 'redo') => {
+      if (disabled || readOnly || composing.current || (profile && !profileInitialized.current))
+        return;
+      const result = engine.dispatch(
+        { kind },
+        { expectedSessionId: engine.getSnapshot().sessionId },
+      );
+      if (result.status === 'committed') {
+        const next = sanitize(
+          serializeHtml(result.snapshot.document, { referenceLinks: !!profile }),
+          profile,
+        );
+        if (!next.rejected && element.current) {
+          committed.current = next.html;
+          immediateEcho.current = next.html;
+          replaceHtml(element.current, next.html, result.snapshot.selection);
+          callbacks.current.onChange?.(next.html);
+        }
+      }
+    };
+    useEffect(() => {
+      const root = element.current;
+      if (!root || composing.current) return;
+      if (root === root.ownerDocument.activeElement)
+        restoreSelection(root, engineSnapshot.selection);
+    }, [engineSnapshot.selection]);
+    useEffect(() => {
+      const root = element.current;
+      if (!root) return;
+      const track = () => {
+        if (composing.current || localMutation.current || root !== root.ownerDocument.activeElement)
+          return;
+        const selection = readSelection(root);
+        if (selection)
+          engine.dispatch(
+            { kind: 'setSelection', selection },
+            { expectedSessionId: engine.getSnapshot().sessionId },
+          );
+      };
+      root.ownerDocument.addEventListener('selectionchange', track);
+      return () => root.ownerDocument.removeEventListener('selectionchange', track);
+    }, [engine]);
+    useImperativeHandle(
+      controllerRef,
+      () => ({
+        engine,
+        applyHtml: (html, context) => {
+          if (disabled || readOnly || (profile && !profileInitialized.current))
+            return { status: 'rejected', diagnostics: [{ code: 'READ_ONLY' }] };
+          if (composing.current)
+            return { status: 'rejected', diagnostics: [{ code: 'COMPOSITION_ACTIVE' }] };
+          const next = sanitize(html, profile);
+          if (next.rejected || next.diagnostics.length)
+            return {
+              status: 'rejected',
+              diagnostics: next.diagnostics.map((d) => ({ code: d.code })),
+            };
+          const result = engine.dispatch(
+            { kind: 'replaceDocument', document: next.document, selection: null },
+            context,
+          );
+          if (result.status === 'committed' && element.current) {
+            committed.current = next.html;
+            immediateEcho.current = next.html;
+            replaceHtml(element.current, next.html, null);
+            formatting.invalidate();
+            callbacks.current.onChange?.(next.html);
+          }
+          return result;
+        },
+        createSaveCheckpoint: () => {
+          if (profile && !profileInitialized.current)
+            return { status: 'rejected', diagnostics: [{ code: 'PROFILE_NOT_READY' }] };
+          if (composing.current)
+            return { status: 'rejected', diagnostics: [{ code: 'COMPOSITION_ACTIVE' }] };
+          const next = sanitize(
+            serializeHtml(engine.getSnapshot().document, { referenceLinks: !!profile }),
+            profile,
+          );
+          if (next.rejected)
+            return { status: 'rejected', diagnostics: [{ code: 'INVALID_CONTENT' }] };
+          const result = engine.createSaveCheckpoint();
+          return result.status === 'created' ? { ...result, html: next.html } : result;
+        },
+        focus: () => element.current?.focus(),
+        undo: () => history('undo'),
+        redo: () => history('redo'),
+        getHtml: () => {
+          if (profile && !profileInitialized.current)
+            return { status: 'rejected' as const, code: 'PROFILE_NOT_READY' };
+          if (composing.current || engine.getSnapshot().composing)
+            return { status: 'pending' as const, code: 'COMPOSITION_ACTIVE' as const };
+          const next = sanitize(
+            serializeHtml(engine.getSnapshot().document, { referenceLinks: !!profile }),
+            profile,
+          );
+          return next.rejected
+            ? { status: 'rejected' as const, code: 'INVALID_CONTENT' }
+            : { status: 'ready' as const, html: next.html, snapshot: engine.getSnapshot() };
+        },
+      }),
+      [engine, profile, disabled, readOnly],
+    );
+    const commit = (
+      normalize: boolean,
+      diagnostics: HtmlDiagnostic[] = [],
+      historyGroup?: string,
+    ) => {
       if (!element.current || composing.current) return;
-      const raw = element.current.innerHTML;
+      const raw = profile ? editingHtml(element.current) : element.current.innerHTML;
       const placeholder = /^(?:<br>|<(?:p|div)(?: [^>]*)?><br><\/(?:p|div)>)$/.test(raw);
-      const next = sanitize(browserEmpty.current && placeholder ? '' : raw);
+      const next = sanitize(browserEmpty.current && placeholder ? '' : raw, profile);
       callbacks.current.onDiagnostics?.([...diagnostics, ...next.diagnostics]);
+      if (next.rejected) {
+        replaceHtml(element.current, committed.current);
+        return;
+      }
+      localMutation.current = true;
+      const transaction = engine.dispatch(
+        {
+          kind: 'replaceDocument',
+          document: next.document,
+          selection: readSelection(element.current),
+          ...(historyGroup ? { historyGroup } : {}),
+        },
+        { expectedSessionId: engine.getSnapshot().sessionId },
+      );
+      localMutation.current = false;
+      if (transaction.status !== 'rejected')
+        localRevision.current = `${transaction.snapshot.sessionId}:${transaction.snapshot.revision}`;
+      if (transaction.status === 'rejected') {
+        replaceHtml(element.current, committed.current);
+        callbacks.current.onDiagnostics?.(
+          transaction.diagnostics.map((d) => ({ code: d.code, message: d.code })),
+        );
+        return;
+      }
       if (normalize) replaceHtml(element.current, next.html);
       if (next.html !== committed.current) {
         committed.current = next.html;
@@ -270,19 +604,49 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
     const formatting = useToolbar(
       element,
       toolbar,
-      disabled || readOnly || composing.current,
+      disabled || readOnly || composing.current || (!!profile && !profileInitialized.current),
       () => commit(false),
-      () => disabled || readOnly || composing.current,
+      () => disabled || readOnly || composing.current || (!!profile && !profileInitialized.current),
       () => commit(true),
+      profile,
+      contentTokenLabels,
     );
+    const previousContext = useRef(ui?.interactionContextKey);
+    useLayoutEffect(() => {
+      if (previousContext.current !== ui?.interactionContextKey) {
+        previousContext.current = ui?.interactionContextKey;
+        formatting.invalidate();
+      }
+    }, [ui?.interactionContextKey]);
     useEffect(() => {
       const root = element.current;
-      const handler = (event: Event) => formatting.beforeInput(event as InputEvent);
+      const handler = (event: Event) => {
+        const input = event as InputEvent;
+        if (input.inputType === 'historyUndo' || input.inputType === 'historyRedo') {
+          event.preventDefault();
+          history(input.inputType === 'historyUndo' ? 'undo' : 'redo');
+          return;
+        }
+        if (root && !composing.current) {
+          if (performance.now() - lastTypingTime.current > 750) engine.closeHistoryGroup();
+          const selection = readSelection(root);
+          if (selection)
+            engine.dispatch(
+              { kind: 'setSelection', selection },
+              { expectedSessionId: engine.getSnapshot().sessionId },
+            );
+        }
+        formatting.beforeInput(input);
+      };
       root?.addEventListener('beforeinput', handler);
       return () => root?.removeEventListener('beforeinput', handler);
     });
     const finishComposition = () => {
       composing.current = false;
+      engine.dispatch(
+        { kind: 'endComposition' },
+        { expectedSessionId: engine.getSnapshot().sessionId },
+      );
       requestReconcile();
       const pending = pendingValue.current;
       pendingValue.current = null;
@@ -291,6 +655,10 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         replaceHtml(element.current, pending.html);
         formatting.invalidate();
         committed.current = pending.html;
+        engine.load(pending.document, {
+          expectedSessionId: engine.getSnapshot().sessionId,
+          origin: 'unsaved',
+        });
       } else {
         formatting.finishComposition();
         commit(true);
@@ -304,20 +672,31 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       role: 'textbox',
       'aria-multiline': true,
       'aria-disabled': disabled || undefined,
-      'aria-readonly': readOnly || disabled || undefined,
+      'aria-readonly':
+        readOnly || disabled || (!!profile && !profileInitialized.current) || undefined,
       className: ['inkforge-editor', className].filter(Boolean).join(' '),
       tabIndex: disabled ? -1 : (tabIndex ?? 0),
-      contentEditable: !disabled && !readOnly,
+      contentEditable: !disabled && !readOnly && (!profile || profileInitialized.current),
       suppressContentEditableWarning: true,
       // This never changes after mount: React must not reconcile browser edits.
       dangerouslySetInnerHTML: { __html: initial.current.html },
       onPointerDown(event) {
+        engine.closeHistoryGroup();
         formatting.activate(true);
         onPointerDown?.(event);
       },
       onKeyDown(event) {
         formatting.activate();
         onKeyDown?.(event);
+        if (
+          !event.defaultPrevented &&
+          (event.ctrlKey || event.metaKey) &&
+          !event.altKey &&
+          ['z', 'y'].includes(event.key.toLowerCase())
+        ) {
+          event.preventDefault();
+          history(event.key.toLowerCase() === 'y' || event.shiftKey ? 'redo' : 'undo');
+        }
       },
       onFocus(event) {
         if (formatting.container.current?.contains(event.relatedTarget as Node | null))
@@ -326,14 +705,26 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       },
       onInput(event) {
         if (!disabled && !readOnly && !formatting.running.current) {
+          const now = performance.now();
+          if (now - lastTypingTime.current > 750) engine.closeHistoryGroup();
+          lastTypingTime.current = now;
           browserEmpty.current = /^(?:<br>|<(?:p|div)(?: [^>]*)?><br><\/(?:p|div)>)$/.test(
             event.currentTarget.innerHTML,
           );
-          commit(false);
+          commit(
+            false,
+            [],
+            ['insertText', 'deleteContentBackward', 'deleteContentForward'].includes(
+              (event.nativeEvent as InputEvent).inputType,
+            )
+              ? 'typing:' + (event.nativeEvent as InputEvent).inputType
+              : undefined,
+          );
         }
         onInput?.(event);
       },
       onBlur(event) {
+        engine.closeHistoryGroup();
         if (composing.current) finishComposition();
         else if (!formatting.container.current?.contains(event.relatedTarget as Node | null))
           commit(true);
@@ -344,6 +735,10 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       onCompositionStart(event) {
         formatting.startComposition();
         composing.current = true;
+        engine.dispatch(
+          { kind: 'beginComposition' },
+          { expectedSessionId: engine.getSnapshot().sessionId },
+        );
         requestReconcile();
         onCompositionStart?.(event);
       },
@@ -373,7 +768,12 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
           /<(?:p|div|h[1-6]|ul|ol|section|article|li)\b/i.test(source)
             ? source
             : `<p>${source}</p>`,
+          profile,
         );
+        if (next.rejected) {
+          callbacks.current.onDiagnostics?.(next.diagnostics);
+          return;
+        }
         const selection = element.current.ownerDocument.getSelection();
         if (
           !selection?.rangeCount ||
@@ -391,6 +791,10 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
         browserEmpty.current = false;
         insertFragment(element.current, selection.getRangeAt(0), template.content);
         commit(true, next.diagnostics);
+      },
+      onClick(event) {
+        if ((event.target as Element).closest?.('a')) event.preventDefault();
+        attributes.onClick?.(event);
       },
       onDrop(event) {
         onDrop?.(event);

@@ -1,4 +1,10 @@
-import { parseHtml, serializeHtml } from '@inkforge/editor-html';
+import { EditorButton } from './ui-adapter.js';
+import {
+  parseHtml,
+  serializeHtml,
+  isProfileHref,
+  type ContentProfile,
+} from '@inkforge/editor-html';
 import {
   ancestor,
   editInline,
@@ -43,6 +49,8 @@ export function useToolbar(
   commit: () => void,
   unavailable: () => boolean,
   onLeave: () => void,
+  profile?: ContentProfile,
+  tokenLabels: Readonly<Record<string, string>> = {},
 ) {
   const container = useRef<HTMLDivElement>(null);
   const running = useRef(false);
@@ -323,8 +331,14 @@ export function useToolbar(
       .replace(/&/g, '&amp;')
       .replace(/"/g, '&quot;')
       .replace(/</g, '&lt;');
-    const safe = parseHtml('<p><a href="' + escaped + '">link</a></p>');
-    const html = serializeHtml(safe.document);
+    if (profile && !isProfileHref(input.trim(), profile)) {
+      setError('Choose a URL allowed by this website.');
+      return;
+    }
+    const safe = parseHtml('<p><a href="' + escaped + '">link</a></p>', {
+      referenceLinks: !!profile,
+    });
+    const html = serializeHtml(safe.document, { referenceLinks: !!profile });
     if (!input.trim() || safe.diagnostics.length || !html.includes('<a href=')) {
       setError('Enter a safe URL (https://, mailto:, or a relative URL).');
       return;
@@ -596,7 +610,7 @@ export function useToolbar(
           text?: string,
         ) =>
           createElement(
-            'button',
+            EditorButton,
             {
               key: label,
               type: 'button',
@@ -611,10 +625,22 @@ export function useToolbar(
                 ].includes(label) || undefined,
               'aria-label': label,
               'aria-pressed': active,
-              'aria-haspopup': ['Text style', 'Text color', 'Highlight', 'Link'].includes(label)
+              'aria-haspopup': [
+                'Text style',
+                'Text color',
+                'Highlight',
+                'Link',
+                'Content style',
+              ].includes(label)
                 ? 'dialog'
                 : undefined,
-              'aria-expanded': ['Text style', 'Text color', 'Highlight', 'Link'].includes(label)
+              'aria-expanded': [
+                'Text style',
+                'Text color',
+                'Highlight',
+                'Link',
+                'Content style',
+              ].includes(label)
                 ? popup === label
                 : undefined,
               disabled: locked,
@@ -655,7 +681,7 @@ export function useToolbar(
             );
           controls.push(button(action[0], controls.length, () => run(index), pressed[index]));
         });
-        for (const alignment of ['Left', 'Center', 'Right', 'Justify'])
+        for (const alignment of profile ? [] : ['Left', 'Center', 'Right', 'Justify'])
           controls.push(
             button(
               'Align ' + alignment.toLowerCase(),
@@ -664,7 +690,9 @@ export function useToolbar(
               alignment.toLowerCase() === currentAlignment,
             ),
           );
-        for (const name of ['Text color', 'Highlight', 'Link'])
+        for (const name of profile
+          ? ['Link', ...(profile.tokenClasses.length ? ['Content style'] : [])]
+          : ['Text color', 'Highlight', 'Link'])
           controls.push(button(name, controls.length, (target) => open(name, target)));
         controls.push(button('Clear formatting', controls.length, () => inline({ clear: true })));
         if (popup)
@@ -687,146 +715,190 @@ export function useToolbar(
               },
               createElement('div', { className: 'inkforge-panel-heading' }, popup),
               popup === 'Text style'
-                ? actions.slice(5, 9).map((action, index) =>
-                    createElement(
-                      'button',
-                      {
-                        key: action[0],
-                        type: 'button',
-                        onClick: () =>
-                          apply((root, range) => {
-                            formatBlocks(root, range, action[3]!);
-                          }, true),
-                      },
-                      action[0],
-                    ),
-                  )
-                : popup === 'Link'
-                  ? createElement(
-                      'div',
-                      null,
+                ? actions
+                    .slice(5, 9)
+                    .filter((action) => !profile || action[0] !== 'Heading 1')
+                    .map((action) =>
                       createElement(
-                        'label',
-                        null,
-                        'URL',
-                        createElement('input', {
-                          value: input,
-                          placeholder: 'https://example.com',
-                          onKeyDown: (event) => {
-                            if (event.key === 'Enter') {
-                              event.preventDefault();
-                              applyLink();
-                            }
-                          },
-                          onChange: (event) => setInput(event.currentTarget.value),
-                          'aria-invalid': !!error,
-                        }),
-                      ),
-                      error && createElement('p', { role: 'alert' }, error),
-                      createElement(
-                        'button',
+                        EditorButton,
                         {
-                          type: 'button',
-                          className: 'inkforge-primary',
-                          onClick: applyLink,
-                        },
-                        'Apply link',
-                      ),
-                      createElement(
-                        'button',
-                        {
+                          key: action[0],
                           type: 'button',
                           onClick: () =>
                             apply((root, range) => {
-                              const anchor = ancestor(range.startContainer, root, 'a');
-                              if (anchor && range.collapsed)
-                                preserve(range, () => unlinkAnchor(anchor));
-                              else editInline(root, range, { href: null });
+                              formatBlocks(root, range, action[3]!);
                             }, true),
                         },
-                        'Remove link',
+                        action[0],
                       ),
                     )
-                  : createElement(
-                      'div',
-                      null,
+                : popup === 'Content style' && profile
+                  ? [...profile.tokenClasses, ''].map((token) =>
                       createElement(
-                        'div',
-                        { className: 'inkforge-swatches' },
-                        ...[
-                          '#111827',
-                          '#64748b',
-                          '#dc2626',
-                          '#ea580c',
-                          '#eab308',
-                          '#16a34a',
-                          '#2563eb',
-                          '#9333ea',
-                          '#ffffff',
-                        ].map((color) =>
-                          createElement('button', {
-                            key: color,
-                            type: 'button',
-                            'aria-label': color,
-                            style: { backgroundColor: color },
-                            onClick: () =>
-                              inline(
-                                {
-                                  property: popup === 'Text color' ? 'color' : 'background-color',
-                                  value: color,
-                                },
-                                true,
-                              ),
-                          }),
-                        ),
-                      ),
-                      createElement(
-                        'label',
-                        null,
-                        'Custom color',
-                        createElement('input', {
-                          type: 'color',
-                          value: /^#[0-9a-f]{6}$/i.test(input) ? input : '#2563eb',
-                          onChange: (event) => setInput(event.currentTarget.value),
-                        }),
-                      ),
-                      createElement('input', {
-                        'aria-label': 'Hex color',
-                        value: input,
-                        onChange: (event) => setInput(event.currentTarget.value),
-                      }),
-                      createElement(
-                        'button',
+                        EditorButton,
                         {
-                          type: 'button',
-                          className: 'inkforge-primary',
-                          onClick: () => {
-                            if (/^#[0-9a-f]{6}$/i.test(input))
-                              inline(
-                                {
-                                  property: popup === 'Text color' ? 'color' : 'background-color',
-                                  value: input,
-                                },
-                                true,
-                              );
-                          },
-                        },
-                        'Apply color',
-                      ),
-                      createElement(
-                        'button',
-                        {
+                          key: token,
                           type: 'button',
                           onClick: () =>
-                            inline(
-                              { property: popup === 'Text color' ? 'color' : 'background-color' },
-                              true,
-                            ),
+                            apply((root, range) => {
+                              const blocks = Array.from(root.querySelectorAll('p,h2,h3,h4')).filter(
+                                (block) => range.intersectsNode(block),
+                              );
+                              preserve(range, () => {
+                                for (const block of blocks) {
+                                  const category = ['typo-', 'text-', 'bg-', 'font-'].find((kind) =>
+                                    token.startsWith(profile.classPrefix + kind),
+                                  );
+                                  const classes = Array.from(block.classList).filter((c) =>
+                                    !token
+                                      ? !profile.tokenClasses.includes(c)
+                                      : category
+                                        ? !c.startsWith(profile.classPrefix + category)
+                                        : c !== token,
+                                  );
+                                  if (token) classes.push(token);
+                                  if (classes.length)
+                                    block.setAttribute('class', classes.join(' '));
+                                  else block.removeAttribute('class');
+                                }
+                              });
+                            }, true),
                         },
-                        'Reset color',
+                        token
+                          ? (tokenLabels[token] ??
+                              token
+                                .slice(profile.classPrefix.length)
+                                .replace(/^(?:typo|text|bg|font)-/, '')
+                                .replace(/-/g, ' '))
+                          : 'Reset content style',
                       ),
-                    ),
-              createElement('button', { type: 'button', onClick: () => close(true) }, 'Cancel'),
+                    )
+                  : popup === 'Link'
+                    ? createElement(
+                        'div',
+                        null,
+                        createElement(
+                          'label',
+                          null,
+                          'URL',
+                          createElement('input', {
+                            value: input,
+                            placeholder: 'https://example.com',
+                            onKeyDown: (event) => {
+                              if (event.key === 'Enter') {
+                                event.preventDefault();
+                                applyLink();
+                              }
+                            },
+                            onChange: (event) => setInput(event.currentTarget.value),
+                            'aria-invalid': !!error,
+                          }),
+                        ),
+                        error && createElement('p', { role: 'alert' }, error),
+                        createElement(
+                          EditorButton,
+                          {
+                            type: 'button',
+                            className: 'inkforge-primary',
+                            onClick: applyLink,
+                          },
+                          'Apply link',
+                        ),
+                        createElement(
+                          EditorButton,
+                          {
+                            type: 'button',
+                            onClick: () =>
+                              apply((root, range) => {
+                                const anchor = ancestor(range.startContainer, root, 'a');
+                                if (anchor && range.collapsed)
+                                  preserve(range, () => unlinkAnchor(anchor));
+                                else editInline(root, range, { href: null });
+                              }, true),
+                          },
+                          'Remove link',
+                        ),
+                      )
+                    : createElement(
+                        'div',
+                        null,
+                        createElement(
+                          'div',
+                          { className: 'inkforge-swatches' },
+                          ...[
+                            '#111827',
+                            '#64748b',
+                            '#dc2626',
+                            '#ea580c',
+                            '#eab308',
+                            '#16a34a',
+                            '#2563eb',
+                            '#9333ea',
+                            '#ffffff',
+                          ].map((color) =>
+                            createElement(EditorButton, {
+                              key: color,
+                              type: 'button',
+                              'aria-label': color,
+                              style: { backgroundColor: color },
+                              onClick: () =>
+                                inline(
+                                  {
+                                    property: popup === 'Text color' ? 'color' : 'background-color',
+                                    value: color,
+                                  },
+                                  true,
+                                ),
+                            }),
+                          ),
+                        ),
+                        createElement(
+                          'label',
+                          null,
+                          'Custom color',
+                          createElement('input', {
+                            type: 'color',
+                            value: /^#[0-9a-f]{6}$/i.test(input) ? input : '#2563eb',
+                            onChange: (event) => setInput(event.currentTarget.value),
+                          }),
+                        ),
+                        createElement('input', {
+                          'aria-label': 'Hex color',
+                          value: input,
+                          onChange: (event) => setInput(event.currentTarget.value),
+                        }),
+                        createElement(
+                          EditorButton,
+                          {
+                            type: 'button',
+                            className: 'inkforge-primary',
+                            onClick: () => {
+                              if (/^#[0-9a-f]{6}$/i.test(input))
+                                inline(
+                                  {
+                                    property: popup === 'Text color' ? 'color' : 'background-color',
+                                    value: input,
+                                  },
+                                  true,
+                                );
+                            },
+                          },
+                          'Apply color',
+                        ),
+                        createElement(
+                          EditorButton,
+                          {
+                            type: 'button',
+                            onClick: () =>
+                              inline(
+                                { property: popup === 'Text color' ? 'color' : 'background-color' },
+                                true,
+                              ),
+                          },
+                          'Reset color',
+                        ),
+                      ),
+              createElement(EditorButton, { type: 'button', onClick: () => close(true) }, 'Cancel'),
             ),
           );
         return controls;

@@ -1,1 +1,18 @@
-/* Versioned content contract placeholder. No editor UI styles belong here. */
+/* Content contract v1. Use this same file in preview and public rendering. */
+.inkforge-content {
+  overflow-wrap: anywhere;
+}
+.inkforge-content .rte-typo-body,
+.inkforge-content.rte-typo-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.inkforge-content .rte-typo-lead,
+.inkforge-content.rte-typo-lead {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+.inkforge-content .rte-text-brand,
+.inkforge-content.rte-text-brand {
+  color: var(--content-brand);
+}

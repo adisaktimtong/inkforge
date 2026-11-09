@@ -1,7 +1,7 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "mode": "designOnly",
-  "status": "proposedNotImplemented",
+  "status": "partiallyImplementedPresentationOnly",
   "runtimeAcceptance": "notRun",
   "ownerRepository": "adisaktimtong/inkforge",
   "adapterApiVersion": 1,
@@ -19,14 +19,16 @@
       "id": "IFA-01",
       "name": "createInkforgeCommonUiAdapter",
       "entry": "@inkforge/editor-react/common-ui",
-      "existingExport": false,
-      "contract": "Optional proposed subpath returns version-1 UI descriptor from public Common UI exports without importing Builder/CMS."
+      "existingExport": true,
+      "contract": "Optional proposed subpath returns version-1 UI descriptor from public Common UI exports without importing Builder/CMS.",
+      "implementationScope": "U07-A presentation only; full engine/host capability remains open"
     },
     {
       "id": "IFA-02",
       "name": "InkForgeEditorProps.uiAdapter",
-      "existingExport": false,
-      "contract": "Opt-in renderer/toolbar/field/overlay view descriptor; existing HTMLDivElement ref and value/defaultValue API retain legacy meaning."
+      "existingExport": true,
+      "contract": "Opt-in renderer/toolbar/field/overlay view descriptor; existing HTMLDivElement ref and value/defaultValue API retain legacy meaning.",
+      "implementationScope": "U07-A presentation only; full engine/host capability remains open"
     },
     {
       "id": "IFA-03",
@@ -62,5 +64,119 @@
     "documentRefKind": "containingGitCommit",
     "scope": "designOnly",
     "runtimeAcceptance": "notRun"
+  },
+  "declarationsRef": "contracts/shared-ui-adapter-v1.d.ts",
+  "descriptorPolicy": {
+    "mode": "nominalOpaqueFactoryOnly",
+    "factoryArguments": "none in v1",
+    "publicFields": [
+      "kind",
+      "metadata"
+    ],
+    "publicPartsOrSlotOverrides": false,
+    "authenticity": "Owner-issued runtime identity/brand; JSON metadata never grants authenticity/capability",
+    "allocation": "Factory descriptor reusable and stateless; no engine/session/global active-editor state",
+    "acceptance": "Full emitted declaration/packed actual consumer checks remain implementation gates"
+  },
+  "hostFieldContract": {
+    "entry": "@inkforge/editor-react proposed public types, no Builder/CMS import",
+    "snapshot": "Reference-stable immutable; echo requires acceptedRequestId + acceptedChildToken + exact HTML/profile and same binding, not equal string alone",
+    "controllerOwnership": "Borrowed engine remains external; surface unmount unsubscribes, terminal owner disposal separate",
+    "fieldAuthority": "Only engineBinding/hostField in engine mode; legacy HTML value callbacks are disjoint",
+    "fence": "Opaque original ticket checked again at final mutation; no new authorization meaning or restamping"
+  },
+  "acceptanceProfileRef": {
+    "repository": "adisaktimtong/enterpises_cms",
+    "path": "contracts/authoring-acceptance-profile.json",
+    "refKind": "uncommittedWorkingTree"
+  },
+  "currentImplementation": {
+    "workItem": "LIB-05-field-binding/U07-E",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07e-retained-host-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md",
+    "runtimeAcceptance": "passedForU07ERetainedFieldIntegrationOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": true,
+    "publishedCommitUnchanged": true,
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-all-field-coordination",
+    "retainedInspectorIntegrationImplemented": true
+  },
+  "engineDependencyProgress": {
+    "workItem": "LIB-03-inkforge-engine/U07-C",
+    "publicControllerExists": true,
+    "evidenceRef": "contracts/u07c-native-surface-evidence.json",
+    "reactEngineBindingImplemented": false,
+    "exactHostFieldDeliveryImplemented": false,
+    "reactEngineSurfaceImplemented": true
+  },
+  "previousPresentationImplementation": {
+    "workItem": "LIB-02-shared-ui/U07-A",
+    "refKind": "uncommittedWorkingTree",
+    "status": "partialU07PresentationDelivered",
+    "evidenceRef": "contracts/u07-presentation-evidence.json",
+    "decisionRef": "docs/work-items/LIB-02-shared-ui/u07-presentation.md",
+    "runtimeAcceptance": "passedForU07APresentationCohortOnly",
+    "completeAdapterAcceptance": "notRun",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface"
+    ],
+    "publishedCommitUnchanged": true
+  },
+  "previousNativeSurfaceImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-C",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07c-native-surface-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07c-native-surface.md",
+    "runtimeAcceptance": "passedForU07CNativeSurfaceOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": false,
+    "publishedCommitUnchanged": true
+  },
+  "previousHostFieldImplementation": {
+    "workItem": "LIB-03-inkforge-engine/U07-D",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07d-host-boundary-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07d-host-boundary.md",
+    "runtimeAcceptance": "passedForU07DFieldBoundaryOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": true,
+    "publishedCommitUnchanged": true,
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-bound-control-registry"
   }
 }

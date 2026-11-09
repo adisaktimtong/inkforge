@@ -10,7 +10,10 @@
   "type": "module",
   "sideEffects": false,
   "dependencies": {
-    "@inkforge/editor-core": "workspace:*"
+    "@inkforge/editor-core": "workspace:*",
+    "dompurify": "3.4.15",
+    "parse5": "8.0.1",
+    "sanitize-html": "2.17.7"
   },
   "files": [
     "dist"
@@ -27,11 +30,18 @@
     "./server": {
       "types": "./dist/server.d.mts",
       "import": "./dist/server.mjs"
+    },
+    "./engine": {
+      "types": "./dist/engine.d.mts",
+      "import": "./dist/engine.mjs"
     }
   },
   "scripts": {
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/sanitize-html": "2.16.0"
   }
 }
