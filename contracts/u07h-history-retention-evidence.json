@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-05-nested-editor/U07-H",
+  "result": "passedForU07HLocalDeliveryAndGuardsOnly",
+  "refKind": "uncommittedPatchAtVerification",
+  "sourceBaseCommit": "587485305e33460564da59e3eb4bb05e292d6555",
+  "sourceSha256": {
+    "packages/editor-core/src/controller/index.ts": "a4a1e573b22508b528bf8a972061a763bd8738af2ab8ceefe855253bf27dc4e0",
+    "packages/editor-core/src/controller/types.ts": "9be3d231a0fff6034cd479a1b7dae44342c4afc8be1a1ba84fa68da42cedca59",
+    "packages/editor-react/src/host.ts": "a492d4501cceb449f7dbb03ec8f6da2fc59244808b410bf6501a22215f128721",
+    "packages/editor-react/src/standalone-host.ts": "6c757bb5f01814f76755a721c92f5530cf5920641ff95ac3e5567ea85cd0e39c",
+    "internal/editor-dom/src/controller-dom.ts": "4e9e7a3a2f56acc1327bec365a48cf8e8fe512ee9290568916bf35faedc4767c"
+  },
+  "artifact": {
+    "name": "@inkforge/editor-react",
+    "file": "inkforge-editor-react-0.0.2.tgz",
+    "bytes": 104944,
+    "integrity": "sha512-wZRPig4I735iLDWXPiOJiy7g+Agc9F7296+mcAP4BC3YSoc0uMnD4v/kYbJs3l677EdG8DrDa5HdwQ94zT72Rw=="
+  },
+  "actualEvidence": {
+    "repository": "adisaktimtong/enterpises_cms",
+    "path": "contracts/u07h-authoring-delivery-evidence.json"
+  },
+  "fullLibraryAcceptance": "notRun",
+  "liveBackendAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "publicationAtVerification": "pendingUserAuthorizedPeriodicPush"
+}

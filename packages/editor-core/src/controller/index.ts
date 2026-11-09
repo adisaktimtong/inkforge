@@ -67,6 +67,7 @@ const capabilities = freeze([
   'compositionProtocol',
 ]);
 interface HistoryEntry {
+  id: string;
   forward: readonly Primitive[];
   inverse: readonly Primitive[];
   before: ModelSelection | null;
@@ -232,7 +233,9 @@ export function createEngine(options: CreateEngineOptions): EngineController {
   let history: readonly HistoryEntry[] = [],
     redo: readonly HistoryEntry[] = [],
     grouping = false,
-    lastClock = -Infinity;
+    lastClock = -Infinity,
+    historySerial = 0,
+    historyGroupId: string | null = null;
   let composition: {
     id: string;
     range: ModelSelection;
@@ -259,6 +262,7 @@ export function createEngine(options: CreateEngineOptions): EngineController {
       sessionId: sessionId(),
       revision,
       stateVersion,
+      historyGroupId,
       selectionEpoch,
       token,
       document: asDocument(tree),
@@ -368,10 +372,12 @@ export function createEngine(options: CreateEngineOptions): EngineController {
     }
     validateDraft(draft);
     let nextHistory = history,
-      nextRedo = redo;
+      nextRedo = redo,
+      nextHistoryId = historyGroupId;
     const now = contentChanged ? clockValue() : lastClock;
     if (contentChanged && !replay) {
       const entry: HistoryEntry = {
+        id: `${instanceId}:history:${session}:${historySerial + 1}`,
         forward: draft.forward,
         inverse: draft.inverse,
         before: selection,
@@ -395,6 +401,7 @@ export function createEngine(options: CreateEngineOptions): EngineController {
       const nextEntry = merge
         ? {
             ...entry,
+            id: previous.id,
             forward: [...previous.forward, ...entry.forward],
             inverse: [...entry.inverse, ...previous.inverse],
             before: previous.before,
@@ -405,9 +412,11 @@ export function createEngine(options: CreateEngineOptions): EngineController {
       const list = [...(merge ? history.slice(0, -1) : history), freeze(nextEntry)];
       while (list.length > limits.maxHistoryEntries || byteSize(list) > limits.maxHistoryBytes)
         list.shift();
+      nextHistoryId = nextEntry.id;
       nextHistory = list;
       nextRedo = [];
     } else if (replay) {
+      nextHistoryId = `${instanceId}:history:${session}:${historySerial + 1}`;
       const entry = (replay === 'undo' ? history : redo).at(-1)!;
       if (replay === 'undo') {
         nextHistory = history.slice(0, -1);
@@ -427,6 +436,8 @@ export function createEngine(options: CreateEngineOptions): EngineController {
     composition = null;
     if (contentChanged) {
       revision++;
+      historySerial++;
+      historyGroupId = nextHistoryId;
       lastClock = now;
       bookmarks.clear();
     }
@@ -629,6 +640,7 @@ export function createEngine(options: CreateEngineOptions): EngineController {
         storedMarks = null;
         history = [];
         redo = [];
+        historyGroupId = null;
         grouping = false;
         checkpoints.clear();
         bookmarks.clear();
@@ -708,6 +720,7 @@ export function createEngine(options: CreateEngineOptions): EngineController {
       locked = true;
       try {
         disposed = true;
+        historyGroupId = null;
         tree = makeTree({ type: 'document', children: [] }, allocate);
         baseline = null;
         selection = null;

@@ -56,3 +56,6 @@ The user authorized commit/push of this design. This containing commit versions 
 ## U07-G current exact Save integration
 
 [Staged Save checkpoint acknowledgment](work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md) is exercised by the CMS normalized scripted-transport cohort. Field delivery remains separate from server Save; live backend/authorization and full library acceptance remain open.
+## U07-H automatic local delivery prerequisite
+
+[Owner decision](work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md) and [evidence](../contracts/u07h-history-retention-evidence.json) qualify grouped exact local delivery and draft guards through actual CMS-owned packed/native tests; full application/live backend/complete library acceptance remains separate.

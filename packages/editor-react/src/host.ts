@@ -39,6 +39,7 @@ export interface HostFieldEdit {
   readonly capturedHostFenceRef: string;
   readonly child: ChildToken;
   readonly canonicalHtml: string;
+  readonly historyGroupId?: string;
   readonly profile: ProfileIdentity;
 }
 export type HostFieldAck = Readonly<{
@@ -67,6 +68,8 @@ export interface PublicHostFieldPort {
   /** Original owner/auth/binding context, excluding the expected parent sequence advance. */
   isContextCurrent(reference: string): boolean;
   isFenceCurrent(reference: string): boolean;
+  /** Optional on legacy custom ports. Hold an original context until a pending operation ends. */
+  retainContextFence?(reference: string): (() => void) | null;
   submitFieldEdit(edit: HostFieldEdit): Promise<HostFieldAck>;
 }
 export interface FieldBindingStatus {
@@ -83,6 +86,7 @@ export interface PreparedField {
   readonly fieldBindingId: string;
   readonly bindingEpoch: number;
   readonly child: ChildToken;
+  readonly historyGroupId: string | null;
   readonly canonicalHtml: string;
   readonly profile: ProfileIdentity;
   readonly parent: ParentToken;
@@ -117,7 +121,7 @@ export interface EngineFieldBinding {
   captureHostFence(): HostFence;
   prepareField(): FieldPrepareResult;
   isPreparedCurrent(field: PreparedField): boolean;
-  flush(): Promise<FieldDeliveryResult>;
+  flush(options?: Readonly<{ groupHistory?: boolean }>): Promise<FieldDeliveryResult>;
   stagePreparedField(field: PreparedField): FieldStageResult;
   acceptExternalValue(
     options?: Readonly<{ discardLocal?: boolean }>,
@@ -194,6 +198,20 @@ export function createEngineFieldBinding(
   const listeners = new Set<() => void>(),
     prepared = new WeakMap<PreparedField, ControllerToken>();
   const echoes = new Map<string, Readonly<{ edit: HostFieldEdit; parent: ParentToken }>>();
+  const contextHolds = new Set<() => void>();
+  function holdContext(reference: string): (() => void) | null {
+    const raw = host.retainContextFence?.(reference);
+    if (host.retainContextFence && !raw) return null;
+    let active = true;
+    const release = () => {
+      if (!active) return;
+      active = false;
+      contextHolds.delete(release);
+      raw?.();
+    };
+    contextHolds.add(release);
+    return release;
+  }
   let pending: Readonly<{ edit: HostFieldEdit; base: HostFieldSnapshot }> | null = null;
   let status: FieldBindingStatus;
   const safeSurface = () => {
@@ -326,6 +344,7 @@ export function createEngineFieldBinding(
       fieldBindingId: h.fieldBindingId,
       bindingEpoch: h.bindingEpoch,
       child: child(e),
+      historyGroupId: s.historyGroupId,
       canonicalHtml: witness.canonicalHtml,
       profile: codec.profile,
       parent: copy(h.parent),
@@ -459,9 +478,13 @@ export function createEngineFieldBinding(
         isCurrent: (r) =>
           !disposed && contextCurrent(host.getSnapshot()) && host.isContextCurrent(r),
       };
+      const releaseContext = holdContext(field.capturedHostFenceRef);
+      if (!releaseContext) return blocked('CONTEXT_RETENTION_UNAVAILABLE');
       const captured = e.captureCheckpoint({ expected, fence: contextFence });
-      if (captured.status === 'rejected')
+      if (captured.status === 'rejected') {
+        releaseContext();
         return blocked(...captured.diagnostics.map((d) => d.code));
+      }
       const checkpoint = captured.checkpoint;
       const edit = freeze({
         requestId: `${field.fieldBindingId}:${field.bindingEpoch}:${e.getSnapshot().engineInstanceId}:${++sequence}`,
@@ -567,22 +590,32 @@ export function createEngineFieldBinding(
           if (released) return;
           released = true;
           e.releaseCheckpoint(checkpoint);
+          releaseContext();
         },
       };
       return freeze({ status: 'staged', stage: Object.freeze(stage) });
     },
-    async flush() {
+    async flush({ groupHistory = false } = {}) {
+      if (typeof groupHistory !== 'boolean') return blocked('INVALID_HISTORY_MODE');
       if (busy || pending) return blocked('DELIVERY_PENDING');
       const result = prepare();
       if (result.status === 'blocked') return result;
       if (!binding.isPreparedCurrent(result.field)) return blocked('STALE_PREPARATION');
       const f = result.field,
         base = freeze(copy(host.getSnapshot()));
+      const releaseContext = holdContext(f.capturedHostFenceRef);
+      if (!releaseContext) return blocked('CONTEXT_RETENTION_UNAVAILABLE');
+      if (!binding.isPreparedCurrent(f)) {
+        releaseContext();
+        return blocked('STALE_PREPARATION');
+      }
+      const historyGroupId = groupHistory ? f.historyGroupId : null;
       const edit = freeze({
         requestId: `${f.fieldBindingId}:${f.bindingEpoch}:${e.getSnapshot().engineInstanceId}:${++sequence}`,
         capturedHostFenceRef: f.capturedHostFenceRef,
         child: f.child,
         canonicalHtml: f.canonicalHtml,
+        ...(historyGroupId ? { historyGroupId } : {}),
         profile: f.profile,
       });
       pending = { edit, base };
@@ -597,6 +630,7 @@ export function createEngineFieldBinding(
         problem('HOST_SUBMISSION_FAILED', 'rejected');
         return blocked('HOST_SUBMISSION_FAILED');
       } finally {
+        releaseContext();
         pending = null;
         busy = false;
         if (!disposed) observeUnchangedField(host.getSnapshot());
@@ -646,6 +680,7 @@ export function createEngineFieldBinding(
       baseline = freeze({ ...baseline, html: '', lifecycle: 'disposed' });
       offEngine();
       offHost();
+      for (const release of [...contextHolds]) release();
       if (!e.getSnapshot().disposed) {
         const result = e.dispose();
         // An owner may revoke from the controller's own Save/dispatch observer.

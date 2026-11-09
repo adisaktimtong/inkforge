@@ -551,7 +551,9 @@ export function mountEngineDom(
   }
   function captureDraft() {
     if (!pending) return;
-    const node = records.get(pending.blockId)?.dom ?? root,
+    // Unknown mutations may lie outside the original selection block. Quarantine
+    // preserves the entire field as plain text for review, never as model HTML.
+    const node = quarantined ? root : (records.get(pending.blockId)?.dom ?? root),
       value = domText(node);
     if (value.length > options.maxNativeTextUtf16) {
       pending.invalid = true;

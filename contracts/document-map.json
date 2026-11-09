@@ -639,6 +639,32 @@
       "metadataSource": "registryOnly",
       "primaryStage": "Test",
       "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07H-HISTORY-RETENTION",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-05-nested-editor/U07-H",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07h-history-retention-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
     }
   ],
   "navigationBranch": "codex/library-documentation",
@@ -664,16 +690,15 @@
     }
   },
   "currentImplementation": {
-    "workItem": "LIB-05-nested-editor/U07-G",
+    "workItem": "LIB-05-nested-editor/U07-H",
     "refKind": "uncommittedWorkingTree",
-    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
-    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
-    "exactStagedSavedCheckpointImplemented": true,
-    "normalizedTransportScriptedOnly": true,
-    "liveBackendAcceptance": "notRun",
+    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
+    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
+    "automaticLocalDeliveryPrerequisiteImplemented": true,
     "completeLibraryAcceptance": "notRun",
+    "liveBackendAcceptance": "notRun",
     "certifiedRuntime": null,
-    "publishedCommitUnchanged": true
+    "historicalPublishedDesignPinsUnchanged": true
   },
   "previousPresentationImplementation": {
     "workItem": "LIB-02-shared-ui/U07-A",
@@ -732,6 +757,18 @@
     "runtimeAcceptance": "passedForU07FLocalCaptureOnly",
     "localAllFieldsCaptureImplemented": true,
     "serverReceiptAcknowledgmentImplemented": false,
+    "completeLibraryAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "publishedCommitUnchanged": true
+  },
+  "previousSaveCaptureImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-G",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "exactStagedSavedCheckpointImplemented": true,
+    "normalizedTransportScriptedOnly": true,
+    "liveBackendAcceptance": "notRun",
     "completeLibraryAcceptance": "notRun",
     "certifiedRuntime": null,
     "publishedCommitUnchanged": true

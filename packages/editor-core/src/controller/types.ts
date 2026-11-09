@@ -54,6 +54,8 @@ export interface ControllerSnapshot {
   readonly engineInstanceId: string;
   readonly sessionId: string;
   readonly revision: number;
+  /** Identity of the latest content edit history unit; transient, not an open-group flag. */
+  readonly historyGroupId: string | null;
   readonly stateVersion: number;
   readonly selectionEpoch: number;
   readonly token: ControllerToken;

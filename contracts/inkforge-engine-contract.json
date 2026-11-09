@@ -1992,19 +1992,19 @@
     "No certified runtime or package release from this draft."
   ],
   "currentImplementation": {
-    "workItem": "LIB-05-nested-editor/U07-G",
+    "workItem": "LIB-05-nested-editor/U07-H",
     "refKind": "uncommittedWorkingTree",
-    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
-    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md",
+    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
     "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
-    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
     "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
     "reactEngineSurface": "InkforgeEngineEditor",
     "nativeCoreBindingImplemented": true,
     "hostFieldAcknowledgmentImplemented": true,
     "fullEngineAcceptance": "notRun",
     "certifiedRuntime": null,
-    "nextWorkItem": "LIB-05-delivery-history-and-draft-guards",
+    "nextWorkItem": "LIB-05-product-draft-flow-and-logical-focus",
     "legacyEditorEngineBindingPropEnabled": false,
     "allFieldsCmsSaveBarrierImplemented": false,
     "retainedInspectorIntegrationImplemented": true,
@@ -2012,7 +2012,8 @@
     "serverReceiptAcknowledgmentImplemented": true,
     "exactStagedSavedCheckpointImplemented": true,
     "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
-    "liveBackendAcceptance": "notRun"
+    "liveBackendAcceptance": "notRun",
+    "historyIdentityAndRetainedContextImplemented": true
   },
   "previousPureControllerImplementation": {
     "workItem": "LIB-03-inkforge-engine/U07-B",
@@ -2098,5 +2099,28 @@
     "retainedInspectorIntegrationImplemented": true,
     "localAllFieldsCapturePrerequisiteImplemented": true,
     "serverReceiptAcknowledgmentImplemented": false
+  },
+  "previousSaveReconciliationImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-G",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
+    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
+    "reactEngineSurface": "InkforgeEngineEditor",
+    "nativeCoreBindingImplemented": true,
+    "hostFieldAcknowledgmentImplemented": true,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-delivery-history-and-draft-guards",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "retainedInspectorIntegrationImplemented": true,
+    "localAllFieldsCapturePrerequisiteImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": true,
+    "exactStagedSavedCheckpointImplemented": true,
+    "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
+    "liveBackendAcceptance": "notRun"
   }
 }

@@ -49,6 +49,7 @@ export function createStandaloneHostField(
     origin: 'ownerLoad',
   });
   let fenceCounter = 0;
+  const pins = new Map<string, number>();
   const listeners = new Set<() => void>(),
     fences = new Map<string, HostFieldSnapshot>();
   const records = new Map<string, { payload: string; ack: HostFieldAck }>();
@@ -96,8 +97,28 @@ export function createStandaloneHostField(
     captureFence() {
       const id = `standalone:${options.fieldBindingId}:${++fenceCounter}`;
       fences.set(id, snapshot);
-      while (fences.size > limit) fences.delete(fences.keys().next().value!);
+      while (fences.size > limit) {
+        const oldest = [...fences.keys()].find((k) => !pins.has(k));
+        if (!oldest) {
+          fences.delete(id);
+          throw Error('CONTEXT_FENCE_CAPACITY');
+        }
+        fences.delete(oldest);
+        if (oldest === id) throw Error('CONTEXT_FENCE_CAPACITY');
+      }
       return id;
+    },
+    retainContextFence(reference) {
+      if (!port.isContextCurrent(reference)) return null;
+      pins.set(reference, (pins.get(reference) ?? 0) + 1);
+      let active = true;
+      return () => {
+        if (!active) return;
+        active = false;
+        const n = pins.get(reference) ?? 0;
+        if (n <= 1) pins.delete(reference);
+        else pins.set(reference, n - 1);
+      };
     },
     isContextCurrent(reference) {
       const captured = fences.get(reference);
@@ -184,6 +205,7 @@ export function createStandaloneHostField(
         }),
       });
       fences.clear();
+      pins.clear();
       emit();
       return true;
     },
@@ -191,6 +213,7 @@ export function createStandaloneHostField(
       if (snapshot.lifecycle !== 'active') return;
       snapshot = Object.freeze({ ...snapshot, lifecycle: 'suspended' });
       fences.clear();
+      pins.clear();
       emit();
     },
     resume(interactionContextKey) {
@@ -203,12 +226,14 @@ export function createStandaloneHostField(
       });
       records.clear();
       fences.clear();
+      pins.clear();
       emit();
     },
     dispose() {
       if (snapshot.lifecycle === 'disposed') return;
       snapshot = Object.freeze({ ...snapshot, lifecycle: 'disposed', html: '' });
       fences.clear();
+      pins.clear();
       records.clear();
       emit();
       listeners.clear();

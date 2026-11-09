@@ -91,11 +91,11 @@
     "refKind": "uncommittedWorkingTree"
   },
   "currentImplementation": {
-    "workItem": "LIB-05-nested-editor/U07-G",
+    "workItem": "LIB-05-nested-editor/U07-H",
     "refKind": "uncommittedWorkingTree",
-    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
-    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
-    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md",
+    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
     "capabilities": [
       "scopedTheme",
       "nativeButtons",
@@ -111,13 +111,14 @@
     "legacyEditorEngineBindingPropEnabled": false,
     "allFieldsCmsSaveBarrierImplemented": false,
     "certifiedRuntime": null,
-    "nextWorkItem": "LIB-05-delivery-history-and-draft-guards",
+    "nextWorkItem": "LIB-05-product-draft-flow-and-logical-focus",
     "retainedInspectorIntegrationImplemented": true,
     "localAllFieldsCapturePrerequisiteImplemented": true,
     "serverReceiptAcknowledgmentImplemented": true,
     "exactStagedSavedCheckpointImplemented": true,
     "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
-    "liveBackendAcceptance": "notRun"
+    "liveBackendAcceptance": "notRun",
+    "historyIdentityAndRetainedContextImplemented": true
   },
   "engineDependencyProgress": {
     "workItem": "LIB-03-inkforge-engine/U07-C",
@@ -233,5 +234,34 @@
     "retainedInspectorIntegrationImplemented": true,
     "localAllFieldsCapturePrerequisiteImplemented": true,
     "serverReceiptAcknowledgmentImplemented": false
+  },
+  "previousSaveReconciliationImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-G",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07g-save-checkpoint-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md",
+    "runtimeAcceptance": "passedForU07GSaveSessionScriptedTransportOnly",
+    "capabilities": [
+      "scopedTheme",
+      "nativeButtons",
+      "compositeField",
+      "legacyHtmlSurface",
+      "controllerSurface",
+      "engineToolbar"
+    ],
+    "fullAdapterAcceptance": "notRun",
+    "hostFieldAcknowledgmentImplemented": true,
+    "publishedCommitUnchanged": true,
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-delivery-history-and-draft-guards",
+    "retainedInspectorIntegrationImplemented": true,
+    "localAllFieldsCapturePrerequisiteImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": true,
+    "exactStagedSavedCheckpointImplemented": true,
+    "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
+    "liveBackendAcceptance": "notRun"
   }
 }
