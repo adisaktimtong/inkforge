@@ -1992,19 +1992,19 @@
     "No certified runtime or package release from this draft."
   ],
   "currentImplementation": {
-    "workItem": "LIB-05-nested-editor/U07-H",
+    "workItem": "LIB-03-inkforge-engine/U07-I",
     "refKind": "uncommittedWorkingTree",
-    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md",
-    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07i-explicit-termination.md",
+    "evidenceRef": "contracts/u07i-explicit-termination-evidence.json",
     "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
-    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
+    "runtimeAcceptance": "passedForU07IExitFlowOnly",
     "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
     "reactEngineSurface": "InkforgeEngineEditor",
     "nativeCoreBindingImplemented": true,
     "hostFieldAcknowledgmentImplemented": true,
     "fullEngineAcceptance": "notRun",
     "certifiedRuntime": null,
-    "nextWorkItem": "LIB-05-product-draft-flow-and-logical-focus",
+    "nextWorkItem": "Remaining editor/common/renderer/AI feature and acceptance cohorts",
     "legacyEditorEngineBindingPropEnabled": false,
     "allFieldsCmsSaveBarrierImplemented": false,
     "retainedInspectorIntegrationImplemented": true,
@@ -2013,7 +2013,8 @@
     "exactStagedSavedCheckpointImplemented": true,
     "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
     "liveBackendAcceptance": "notRun",
-    "historyIdentityAndRetainedContextImplemented": true
+    "historyIdentityAndRetainedContextImplemented": true,
+    "nonmutatingTerminationProbeImplemented": true
   },
   "previousPureControllerImplementation": {
     "workItem": "LIB-03-inkforge-engine/U07-B",
@@ -2122,5 +2123,29 @@
     "exactStagedSavedCheckpointImplemented": true,
     "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
     "liveBackendAcceptance": "notRun"
+  },
+  "previousLocalDeliveryImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-H",
+    "refKind": "uncommittedWorkingTree",
+    "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md",
+    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
+    "status": "fieldBoundaryDeliveredCompleteLibraryPartial",
+    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
+    "reactEngineSurfaceEntry": "@inkforge/editor-react/engine",
+    "reactEngineSurface": "InkforgeEngineEditor",
+    "nativeCoreBindingImplemented": true,
+    "hostFieldAcknowledgmentImplemented": true,
+    "fullEngineAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "nextWorkItem": "LIB-05-product-draft-flow-and-logical-focus",
+    "legacyEditorEngineBindingPropEnabled": false,
+    "allFieldsCmsSaveBarrierImplemented": false,
+    "retainedInspectorIntegrationImplemented": true,
+    "localAllFieldsCapturePrerequisiteImplemented": true,
+    "serverReceiptAcknowledgmentImplemented": true,
+    "exactStagedSavedCheckpointImplemented": true,
+    "serverReceiptAcknowledgmentScope": "normalizedScriptedTransportOnly",
+    "liveBackendAcceptance": "notRun",
+    "historyIdentityAndRetainedContextImplemented": true
   }
 }

@@ -187,6 +187,8 @@ export interface CreateEngineOptions {
 }
 export interface EngineController {
   getSnapshot(): ControllerSnapshot;
+  /** Nonmutating live-token/lock check; composition is allowed for explicit terminal cleanup. */
+  checkTermination(context: DispatchContext): ControllerResult;
   subscribe(listener: () => void): () => void;
   /** Synchronous capture scope. It never spans a task/await and rejects reentrant mutation. */
   withReadBarrier<T>(

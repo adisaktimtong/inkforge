@@ -460,6 +460,12 @@ export function createEngine(options: CreateEngineOptions): EngineController {
   }
   const controller: EngineController = {
     getSnapshot: () => snapshot,
+    checkTermination(context) {
+      return enter(context, (fences) => {
+        finalFence(fences);
+        return noChange();
+      });
+    },
     withReadBarrier(context, read) {
       let owns = false;
       try {

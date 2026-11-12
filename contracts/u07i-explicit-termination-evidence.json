@@ -1,0 +1,53 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-03-inkforge-engine/U07-I",
+  "result": "passedForU07IExitFlowOnly",
+  "scope": "Nonmutating controller termination readiness exercised by actual CMS whole-owner explicit discard",
+  "cmsEvidenceRef": "../enterpises_cms/contracts/u07i-authoring-exit-evidence.json",
+  "sourceBaseCommit": "4607eaca78679d07e4e7b326781913a31afc79fd",
+  "sourceSha256": {
+    "inkforge/internal/editor-dom/src/controller-dom.ts": "4e9e7a3a2f56acc1327bec365a48cf8e8fe512ee9290568916bf35faedc4767c",
+    "inkforge/packages/editor-core/src/controller/commands.ts": "01419e8e362fdaa0d9c765e6375923b846bdc304c2c200253528f1d70e76cbd5",
+    "inkforge/packages/editor-core/src/controller/index.ts": "7796cb660b595e3d070d9e78b65eb9140e47b6480f7ffc245074571ad3276cfc",
+    "inkforge/packages/editor-core/src/controller/model.ts": "06619dc74c7338bc47866ef33049cc2f828cdb8482f4cc1701e2a2c443688d58",
+    "inkforge/packages/editor-core/src/controller/types.ts": "9f80ab7d4eaf152c87d4c7abd2dd60cea1f59c991b0374c39162167019d6634e",
+    "inkforge/packages/editor-react/src/host.ts": "a492d4501cceb449f7dbb03ec8f6da2fc59244808b410bf6501a22215f128721",
+    "inkforge/packages/editor-react/src/standalone-host.ts": "6c757bb5f01814f76755a721c92f5530cf5920641ff95ac3e5567ea85cd0e39c",
+    "inkforge/scripts/check-engine-surface.mjs": "a72f0d2e9dc08cf9a823c42d8ef07f805f532fc4ffe787c1b42158d28a68c5ef",
+    "inkforge/scripts/check-host-boundary.mjs": "d1a1c41821bacb605488260b2061d42ad0029ffcb181b67b05870562befae13b"
+  },
+  "artifacts": [
+    {
+      "name": "@inkforge/editor-core",
+      "file": "inkforge-editor-core-0.0.2.tgz",
+      "bytes": 53875,
+      "integrity": "sha512-IgAN7B5QxJP8jzI8knO3kYA7VHxp6hY4iJyBXl7tSnuuUFdvBreXC/zdZ9zuCw9Vmdu5/+Y9LmtOqEnmUh90zw=="
+    },
+    {
+      "name": "@inkforge/editor-html",
+      "file": "inkforge-editor-html-0.0.2.tgz",
+      "bytes": 31789,
+      "integrity": "sha512-a7VOyce3Q7r80qURLJCPENqx6NulRH+oo8WAO7Dfye6Tgj1Wo8Er/Rxmt++UxkyfKR+vIXDdoloVheFy3KMWBQ=="
+    },
+    {
+      "name": "@inkforge/editor-react",
+      "file": "inkforge-editor-react-0.0.2.tgz",
+      "bytes": 102525,
+      "integrity": "sha512-tc3kMPjQazDWsH5b0X6PJNf2YF+qg0+ogTUDwKd7VrEksTDYHKiRAafj1AK7nH+e349etQ2BIXIlL9iAzFTh/A=="
+    }
+  ],
+  "cmsChecks": {
+    "packedHeadlessCases": 28,
+    "nextBuildStrictDeclarations": true,
+    "actualNegativeTypeExamples": 8,
+    "nativeProductionCases": 12,
+    "actualDevelopmentCases": 1
+  },
+  "runtimeAcceptance": "scopedPackedAndNativeConsumersOnly",
+  "fullLibraryAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "registryPublication": false,
+  "deployment": false
+}

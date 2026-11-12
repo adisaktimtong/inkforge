@@ -59,3 +59,7 @@ The user authorized commit/push of this design. This containing commit versions 
 ## U07-H automatic local delivery prerequisite
 
 [Owner decision](work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md) and [evidence](../contracts/u07h-history-retention-evidence.json) qualify grouped exact local delivery and draft guards through actual CMS-owned packed/native tests; full application/live backend/complete library acceptance remains separate.
+
+## U07-I explicit terminal discard prerequisite
+
+[Nonmutating termination readiness](work-items/LIB-03-inkforge-engine/u07i-explicit-termination.md) and [scoped evidence](../contracts/u07i-explicit-termination-evidence.json) support the CMS whole-owner Save / Discard / Cancel flow. Composition remains blocked for Save/capture and may only be discarded by the explicit owner command. Complete engine/live backend/browser/AT acceptance stays open.

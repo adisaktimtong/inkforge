@@ -665,6 +665,32 @@
       "metadataSource": "registryOnly",
       "primaryStage": "Test",
       "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u07i-explicit-termination.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U07I-TERMINATION",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U07-I",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "contracts/u07i-explicit-termination-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
     }
   ],
   "navigationBranch": "codex/library-documentation",
@@ -690,11 +716,11 @@
     }
   },
   "currentImplementation": {
-    "workItem": "LIB-05-nested-editor/U07-H",
+    "workItem": "LIB-03-inkforge-engine/U07-I",
     "refKind": "uncommittedWorkingTree",
-    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
-    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
-    "automaticLocalDeliveryPrerequisiteImplemented": true,
+    "evidenceRef": "contracts/u07i-explicit-termination-evidence.json",
+    "runtimeAcceptance": "passedForU07IExitFlowOnly",
+    "nonmutatingTerminationProbeImplemented": true,
     "completeLibraryAcceptance": "notRun",
     "liveBackendAcceptance": "notRun",
     "certifiedRuntime": null,
@@ -772,5 +798,16 @@
     "completeLibraryAcceptance": "notRun",
     "certifiedRuntime": null,
     "publishedCommitUnchanged": true
+  },
+  "previousLocalDeliveryImplementation": {
+    "workItem": "LIB-05-nested-editor/U07-H",
+    "refKind": "uncommittedWorkingTree",
+    "evidenceRef": "contracts/u07h-history-retention-evidence.json",
+    "runtimeAcceptance": "passedForU07HLocalDeliveryAndGuardsOnly",
+    "automaticLocalDeliveryPrerequisiteImplemented": true,
+    "completeLibraryAcceptance": "notRun",
+    "liveBackendAcceptance": "notRun",
+    "certifiedRuntime": null,
+    "historicalPublishedDesignPinsUnchanged": true
   }
 }
