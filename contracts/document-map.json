@@ -870,6 +870,18 @@
     "packedIntegrationRegression": "passedForU07IExitFlowOnly",
     "runtimeSourceChanged": false,
     "ciJobExecution": "notRun",
-    "certifiedRuntime": null
+    "certifiedRuntime": null,
+    "ciPolicy": {
+      "decisionRef": "docs/work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md",
+      "status": "ciWorkflowRemovedOnWorkBranchByExplicitUserRequest",
+      "removedWorkflow": ".github/workflows/ci.yml",
+      "retainedWorkflows": [
+        ".github/workflows/release-pr.yml",
+        ".github/workflows/publish.yml"
+      ],
+      "localChecksRetained": true,
+      "historicalFailedRunsRetained": true,
+      "mergeToOtherBranchesPerformed": false
+    }
   }
 }

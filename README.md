@@ -15,11 +15,15 @@ pnpm install --frozen-lockfile
 pnpm validate
 ```
 
-Preparation verifies the exact Common UI source/artifact pin in [private build inputs](contracts/private-build-inputs.json). Its ignored tarball is a development dependency; the public optional peer remains unchanged. Missing or modified bytes fail before replacing an input. It does not publish UI, select a registry, change sibling source or require a temporary pnpm override. CI uses the same helper. A private sibling checkout needs appropriate read access (`UI_COMPONENT_READ_TOKEN` where the default token cannot read it); enter credentials in CI settings, not source or chat. Actual GitHub job success is separate from local verification.
+Preparation verifies the exact Common UI source/artifact pin in [private build inputs](contracts/private-build-inputs.json). Its ignored tarball is a development dependency; the public optional peer remains unchanged. Missing or modified bytes fail before replacing an input. It does not publish UI, select a registry, change sibling source or require a temporary pnpm override. Release workflows use the same helper. A private sibling checkout needs appropriate read access (`UI_COMPONENT_READ_TOKEN` where the default token cannot read it); enter credentials in CI settings, not source or chat. Actual GitHub job success is separate from local verification.
 
 Run `pnpm test:frozen-install` after preparation to exercise clean source export, frozen/offline repeat, input retention and actual package build/contracts. `INKFORGE_PNPM_STORE` selects a cache; `INKFORGE_INSTALL_OFFLINE=1` requires it to be populated. [U08-A](docs/work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md) records scope and verification limits. The existing full `pnpm validate` gate is broader than this scoped install/build check. `pnpm test:contracts` runs the eight owner contract files; `pnpm test:integration` requires the sibling Page Builder/Common UI checkouts and runs their existing packed A–E integration pipeline, including both public host fixtures. Every new contract fixture must be explicitly classified.
 
 Public packages use the `@inkforge` npm scope. Consumers may import only entries declared in each package's `exports`; `internal/*` and `apps/*` are private and are never published. `@inkforge/editor-react` peers `@inkforge/editor-core`, React, and React DOM; future internal adapters must be bundled rather than left as runtime dependencies.
+
+## CI policy
+
+The user requested removal of the automatic CI workflow on 2026-11-12. `.github/workflows/ci.yml` is removed from the current work branch, including its push/pull-request checks and manual release-candidate job. Run `pnpm lint`, `pnpm typecheck`, `pnpm test` and the documented packed integration checks locally. The release-PR workflow on main and approval-gated manual publish workflow remain available. Historical failed runs stay in GitHub history. A workflow still present on another branch follows that branch's version until this change is merged there.
 
 ## Release contract
 
