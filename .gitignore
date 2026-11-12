@@ -14,3 +14,6 @@ artifacts/
 # Declaration output accidentally emitted beside the private DOM source.
 internal/editor-dom/src/controller-dom.d.ts
 internal/editor-dom/src/controller-dom.d.ts.map
+
+# Pinned sibling source checkout used only by CI build-input preparation.
+.build-inputs/

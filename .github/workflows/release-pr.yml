@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: '24'
           cache: pnpm
+      - uses: ./.github/actions/prepare-ui-peer
+        with:
+          repository-token: ${{ secrets.UI_COMPONENT_READ_TOKEN || github.token }}
       - run: pnpm install --frozen-lockfile
       - uses: changesets/action@v1.9.0
         with:

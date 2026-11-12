@@ -11,8 +11,8 @@
   "dependencies": {
     "@inkforge/editor-content": "workspace:*",
     "next": "16.3.5",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "@inkforge/editor-react": "workspace:*",
     "@inkforge/editor-core": "workspace:*"
   }

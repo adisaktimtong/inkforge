@@ -23,6 +23,9 @@ jobs:
           node-version: '24'
           registry-url: https://registry.npmjs.org
           cache: pnpm
+      - uses: ./.github/actions/prepare-ui-peer
+        with:
+          repository-token: ${{ secrets.UI_COMPONENT_READ_TOKEN || github.token }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm validate

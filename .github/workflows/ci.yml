@@ -10,8 +10,11 @@ jobs:
           version: '12.4.2'
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: pnpm
+      - uses: ./.github/actions/prepare-ui-peer
+        with:
+          repository-token: ${{ secrets.UI_COMPONENT_READ_TOKEN || github.token }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build
       - run: pnpm --filter react-playground build && pnpm --filter next-demo build
@@ -22,7 +25,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
-        node: ['22.18.0', '24']
+        node: ['24']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +36,9 @@ jobs:
         with:
           node-version: '${{ matrix.node }}'
           cache: pnpm
+      - uses: ./.github/actions/prepare-ui-peer
+        with:
+          repository-token: ${{ secrets.UI_COMPONENT_READ_TOKEN || github.token }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm validate

@@ -51,5 +51,10 @@
     "@adisaktimtong/ui-component": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@adisaktimtong/ui-component": "file:../../artifacts/build-inputs/ui-component-0.1.0.tgz",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   }
 }

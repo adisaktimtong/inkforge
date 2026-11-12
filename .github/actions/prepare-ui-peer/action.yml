@@ -1,0 +1,30 @@
+name: Prepare pinned private UI build input
+description: Build the exact sibling source commit and verify its accepted tarball integrity.
+inputs:
+  repository-token:
+    description: Read access to the sibling repository when it is private.
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: composite
+  steps:
+    - name: Read pinned source commit
+      id: pin
+      shell: bash
+      run: |
+        node --input-type=module <<'JS'
+        import {readFileSync, appendFileSync} from 'node:fs';
+        const pin=JSON.parse(readFileSync('contracts/private-build-inputs.json')).commonUi;
+        if(!/^[a-f0-9]{40}$/.test(pin.sourceCommit)) throw Error('Invalid source commit');
+        appendFileSync(process.env.GITHUB_OUTPUT, 'commit='+pin.sourceCommit+'\n');
+        JS
+    - uses: actions/checkout@v4
+      with:
+        repository: adisaktimtong/ui-component
+        ref: ${{ steps.pin.outputs.commit }}
+        path: .build-inputs/ui-component
+        token: ${{ inputs.repository-token }}
+        persist-credentials: false
+    - name: Build and validate private input
+      shell: bash
+      run: node scripts/prepare-ui-peer.mjs --repository .build-inputs/ui-component

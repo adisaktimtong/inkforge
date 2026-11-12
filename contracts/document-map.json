@@ -691,6 +691,57 @@
       "metadataSource": "registryOnly",
       "primaryStage": "Test",
       "format": "json"
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md",
+      "role": "currentImplementationDecision",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U08A-REPRODUCIBLE-INSTALL",
+        "artifact_type": "decision",
+        "sdlc_stage": "Build",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U08-A",
+        "usage": "currentImplementationDecision",
+        "related_stages": [
+          "Design",
+          "Test"
+        ]
+      }
+    },
+    {
+      "path": "docs/work-items/LIB-03-inkforge-engine/u08a-evidence.md",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "yamlFrontMatter",
+      "metadata": {
+        "document_id": "IF-U08A-EVIDENCE",
+        "artifact_type": "evidence",
+        "sdlc_stage": "Test",
+        "status": "inReview",
+        "mode": "implementation",
+        "owner_repository": "adisaktimtong/inkforge",
+        "work_item": "LIB-03-inkforge-engine/U08-A",
+        "usage": "scopedRuntimeEvidence",
+        "related_stages": [
+          "Build"
+        ]
+      }
+    },
+    {
+      "path": "contracts/private-build-inputs.json",
+      "role": "privateBuildInputContract",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Build",
+      "format": "json"
+    },
+    {
+      "path": "contracts/u08a-reproducible-install-evidence.json",
+      "role": "scopedRuntimeEvidence",
+      "metadataSource": "registryOnly",
+      "primaryStage": "Test",
+      "format": "json"
     }
   ],
   "navigationBranch": "codex/library-documentation",
@@ -809,5 +860,16 @@
     "liveBackendAcceptance": "notRun",
     "certifiedRuntime": null,
     "historicalPublishedDesignPinsUnchanged": true
+  },
+  "currentBuildToolchain": {
+    "workItem": "LIB-03-inkforge-engine/U08-A",
+    "refKind": "uncommittedWorkingTree",
+    "inputManifestRef": "contracts/private-build-inputs.json",
+    "evidenceRef": "contracts/u08a-reproducible-install-evidence.json",
+    "frozenInstallAcceptance": "passedForU08AFrozenInstallAndBuildOnly",
+    "packedIntegrationRegression": "passedForU07IExitFlowOnly",
+    "runtimeSourceChanged": false,
+    "ciJobExecution": "notRun",
+    "certifiedRuntime": null
   }
 }

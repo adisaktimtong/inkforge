@@ -88,3 +88,7 @@ The next user continuation assigns the [bounded pure-controller delivery](u07b-c
 ## U07-H history identity and retained contexts
 
 [Actual history/retention owner decision](u07h-history-and-retention.md) supports the CMS automatic local delivery and guarded history/owner-exit protocol. Earlier evidence remains historical. Full logical-focus/product draft/router/SSO and complete engine/manual/release acceptance remain open.
+
+## U08-A reproducible private build inputs — 2026-11-12
+
+[Decision](u08a-reproducible-install.md) and [actual evidence](u08a-evidence.md) close the previously recorded frozen-owner-install blocker. The accepted Common UI artifact is rebuilt from a pinned sibling Git export or explicitly supplied and integrity-verified, then staged as an ignored development-only input. Clean frozen/offline repeat, eight input cases, 129 owner contracts, root tests, lint/typecheck and fresh packed A–I regression pass. Runtime source/public peers/formats remain unchanged; full library/CI/release/manual and pure Node 22 gates remain separate.

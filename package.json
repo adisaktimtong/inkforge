@@ -10,14 +10,18 @@
   "scripts": {
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test": "pnpm build:packages && node --test tests/contracts/*.test.mjs && turbo run test",
+    "test": "pnpm build:packages && pnpm test:contracts && turbo run test",
     "test:browser": "playwright test",
     "check:packages": "pnpm build && node scripts/lint-public-packages.mjs && node scripts/check-packed-packages.mjs",
     "lint": "eslint . --max-warnings=0",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm --filter react-playground build && pnpm --filter next-demo build && pnpm test:browser --project=chromium && pnpm check:packages",
-    "build:packages": "turbo run build --filter=@inkforge/editor-*"
+    "build:packages": "turbo run build --filter=@inkforge/editor-*",
+    "prepare:ui-peer": "node scripts/prepare-ui-peer.mjs",
+    "test:frozen-install": "node scripts/check-frozen-install.mjs",
+    "test:contracts": "node scripts/test-owner-contracts.mjs",
+    "test:integration": "node ../pagebuilder/scripts/check-bound-host.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",

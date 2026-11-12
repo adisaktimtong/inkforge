@@ -4,13 +4,20 @@ This repository is a pnpm 12.4.2/Turborepo workspace for independently versioned
 
 ## Requirements and setup
 
-Use Node `>=22.18.0` (Node 24 is the release runtime) and pnpm `12.4.2`.
+Use Node `24.x`, npm `11.x` and pnpm `12.4.2` for the workspace/Common UI build. The pure editor package Node `>=22.18.0` compatibility contract remains separate from this build cohort.
 
 ```sh
 corepack enable
+# Requires the sibling source repository; exports only its pinned Git commit.
+node scripts/prepare-ui-peer.mjs --repository ../ui-component
+# Alternatively: node scripts/prepare-ui-peer.mjs --artifact /path/to/accepted-ui.tgz
 pnpm install --frozen-lockfile
 pnpm validate
 ```
+
+Preparation verifies the exact Common UI source/artifact pin in [private build inputs](contracts/private-build-inputs.json). Its ignored tarball is a development dependency; the public optional peer remains unchanged. Missing or modified bytes fail before replacing an input. It does not publish UI, select a registry, change sibling source or require a temporary pnpm override. CI uses the same helper. A private sibling checkout needs appropriate read access (`UI_COMPONENT_READ_TOKEN` where the default token cannot read it); enter credentials in CI settings, not source or chat. Actual GitHub job success is separate from local verification.
+
+Run `pnpm test:frozen-install` after preparation to exercise clean source export, frozen/offline repeat, input retention and actual package build/contracts. `INKFORGE_PNPM_STORE` selects a cache; `INKFORGE_INSTALL_OFFLINE=1` requires it to be populated. [U08-A](docs/work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md) records scope and verification limits. The existing full `pnpm validate` gate is broader than this scoped install/build check. `pnpm test:contracts` runs the eight owner contract files; `pnpm test:integration` requires the sibling Page Builder/Common UI checkouts and runs their existing packed A–E integration pipeline, including both public host fixtures. Every new contract fixture must be explicitly classified.
 
 Public packages use the `@inkforge` npm scope. Consumers may import only entries declared in each package's `exports`; `internal/*` and `apps/*` are private and are never published. `@inkforge/editor-react` peers `@inkforge/editor-core`, React, and React DOM; future internal adapters must be bundled rather than left as runtime dependencies.
 

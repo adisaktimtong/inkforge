@@ -1,0 +1,23 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "scope": "Private development/build input; does not select a package registry or publish a package",
+  "runtime": {
+    "node": ">=24 <25",
+    "pnpm": "12.4.2",
+    "npmMajor": 11
+  },
+  "commonUi": {
+    "name": "@adisaktimtong/ui-component",
+    "version": "0.1.0",
+    "repository": "adisaktimtong/ui-component",
+    "sourceCommit": "e4a7a7391eb1e45928dbc2a849692a15cbfb7ebe",
+    "bytes": 51272,
+    "integrity": "sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg==",
+    "destination": "artifacts/build-inputs/ui-component-0.1.0.tgz"
+  },
+  "optionalPublicPeerUnchanged": true,
+  "registryPublication": false,
+  "deployment": false
+}

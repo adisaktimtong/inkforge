@@ -260,13 +260,13 @@ importers:
         version: link:../../packages/editor-react
       next:
         specifier: 16.3.5
-        version: 16.3.5(@playwright/test@1.63.0)(@types/node@24.10.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 16.3.5(@playwright/test@1.63.0)(@types/node@24.10.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.3.0
-        version: 19.3.0
+        specifier: 19.3.1
+        version: 19.3.1
       react-dom:
-        specifier: 19.3.0
-        version: 19.3.0(react@19.3.0)
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
 
   apps/react-playground:
     dependencies:
@@ -280,11 +280,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/editor-react
       react:
-        specifier: 19.3.0
-        version: 19.3.0
+        specifier: 19.3.1
+        version: 19.3.1
       react-dom:
-        specifier: 19.3.0
-        version: 19.3.0(react@19.3.0)
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       vite:
         specifier: 8.3.0
@@ -341,14 +341,35 @@ importers:
       '@inkforge/editor-html':
         specifier: workspace:*
         version: link:../editor-html
+    devDependencies:
+      '@adisaktimtong/ui-component':
+        specifier: file:../../artifacts/build-inputs/ui-component-0.1.0.tgz
+        version: file:artifacts/build-inputs/ui-component-0.1.0.tgz(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: '>=18.2 <20'
-        version: 19.3.0
+        specifier: 19.3.1
+        version: 19.3.1
       react-dom:
-        specifier: '>=18.2 <20'
-        version: 19.3.0(react@19.3.0)
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
 
 packages:
+  '@adisaktimtong/ui-component@file:artifacts/build-inputs/ui-component-0.1.0.tgz':
+    resolution:
+      {
+        integrity: sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg==,
+        tarball: file:artifacts/build-inputs/ui-component-0.1.0.tgz,
+      }
+    version: 0.1.0
+    engines: { node: '>=24 <25', npm: '>=11 <12' }
+    peerDependencies:
+      react: 19.3.1
+      react-dom: 19.3.1
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   '@andrewbranch/untar.js@1.0.4':
     resolution:
       {
@@ -3104,18 +3125,18 @@ packages:
         integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==,
       }
 
-  react-dom@19.3.0:
+  react-dom@19.3.1:
     resolution:
       {
-        integrity: sha512-JDk8dgif51OjFoDE70+OT9ICyYr+69HlmihNwp1+Nsfbna3t5sIiCa9ZJktDmQ4/1b/rn26hIAR2uYXDMr5r0Q==,
+        integrity: sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==,
       }
     peerDependencies:
-      react: ^19.3.0
+      react: ^19.3.1
 
-  react@19.3.0:
+  react@19.3.1:
     resolution:
       {
-        integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==,
+        integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==,
       }
     engines: { node: '>=0.10.0' }
 
@@ -3720,6 +3741,11 @@ packages:
       }
 
 snapshots:
+  '@adisaktimtong/ui-component@file:artifacts/build-inputs/ui-component-0.1.0.tgz(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    optionalDependencies:
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+
   '@andrewbranch/untar.js@1.0.4': {}
 
   '@arethetypeswrong/cli@0.18.5':
@@ -4969,16 +4995,16 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next@16.3.5(@playwright/test@1.63.0)(@types/node@24.10.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  next@16.3.5(@playwright/test@1.63.0)(@types/node@24.10.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@next/env': 16.3.5
       '@swc/helpers': 0.5.23
       baseline-browser-mapping: 2.11.23
       caniuse-lite: 1.0.30001810
       postcss: 8.5.23
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      styled-jsx: 5.1.6(react@19.3.0)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      styled-jsx: 5.1.6(react@19.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.3.5
       '@next/swc-darwin-x64': 16.3.5
@@ -5118,12 +5144,12 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-dom@19.3.0(react@19.3.0):
+  react-dom@19.3.1(react@19.3.1):
     dependencies:
-      react: 19.3.0
+      react: 19.3.1
       scheduler: 0.28.0
 
-  react@19.3.0: {}
+  react@19.3.1: {}
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -5278,10 +5304,10 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  styled-jsx@5.1.6(react@19.3.0):
+  styled-jsx@5.1.6(react@19.3.1):
     dependencies:
       client-only: 0.0.1
-      react: 19.3.0
+      react: 19.3.1
 
   supports-color@7.2.0:
     dependencies:

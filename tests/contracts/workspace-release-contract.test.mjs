@@ -36,14 +36,23 @@ describe('workspace and release contract', () => {
       assert.deepEqual(manifest.files, ['dist']);
       assert.ok(
         Object.keys(manifest.exports).every((entrypoint) =>
-          ['.', './browser', './server', './editor.css', './content.css'].includes(entrypoint),
+          [
+            '.',
+            './browser',
+            './server',
+            './engine',
+            './host',
+            './common-ui',
+            './editor.css',
+            './content.css',
+          ].includes(entrypoint),
         ),
         `${name} must not expose a deep or internal entry point`,
       );
     }
 
     const htmlExports = json('packages/editor-html/package.json').exports;
-    assert.deepEqual(Object.keys(htmlExports).sort(), ['.', './browser', './server']);
+    assert.deepEqual(Object.keys(htmlExports).sort(), ['.', './browser', './engine', './server']);
 
     const react = json('packages/editor-react/package.json');
     assert.equal(react.peerDependencies['@inkforge/editor-core'], 'workspace:*');

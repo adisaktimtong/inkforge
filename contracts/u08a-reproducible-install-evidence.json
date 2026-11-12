@@ -1,0 +1,888 @@
+{
+  "version": "0.1.0",
+  "mode": "implementation",
+  "ownerRepository": "adisaktimtong/inkforge",
+  "workItem": "LIB-03-inkforge-engine/U08-A",
+  "result": "passedForU08AFrozenInstallAndBuildOnly",
+  "scope": "U08-A private input preparation and clean frozen owner install/build; no package release or full library certification",
+  "observedAtUtc": "2026-11-12T09:47:59.780026+00:00",
+  "refKind": "uncommittedPatchAtVerification",
+  "sourceBaseCommits": {
+    "inkforge": "e2222e3ca56fe1eada1afa903f7b835f35bd51b9",
+    "enterpises_cms": "d14c7b72a99e88dca2032005d2785a05c7484ef3",
+    "pagebuilder": "73f46269dbc41fa733055f02179bb78aa2602cdb",
+    "ui-component": "e4a7a7391eb1e45928dbc2a849692a15cbfb7ebe"
+  },
+  "sourceSha256": {
+    "inkforge/.github/actions/prepare-ui-peer/action.yml": "b3aa2400fd37758f6fbd57a1be1e8bb7ea9868a0329fedc39e38b197e65cddd9",
+    "inkforge/.github/workflows/ci.yml": "af5cbe96ba353eee45c080d93dea76749a976d6600dedd6ca9fb847b9b8732cc",
+    "inkforge/.github/workflows/publish.yml": "dbd5ba12cfd50bf1077c96e820aa208f4fb1fe019bbb1e1f6c3b0e44bc0bd5b5",
+    "inkforge/.github/workflows/release-pr.yml": "3c425eade2ec57888d09195d85e733ab1447bfb641c792862c771b78493667e1",
+    "inkforge/.gitignore": "4a3a72fca30f8576a13bbba441bd12acf6b01912a5e968f855e754b1609655b5",
+    "inkforge/README.md": "89b774df1ad1588222ce6351b7a477358779f60b531b64bd9b532636f49de451",
+    "inkforge/apps/next-demo/package.json": "fee03ee32239428a7f62b54059fb10caa364a78e95f5f17015f4195bf5561051",
+    "inkforge/apps/react-playground/package.json": "fcb3e2a723ad5342caf068c0d082efc75abc498ac537bcf2b5baafaf735b8fb1",
+    "inkforge/contracts/private-build-inputs.json": "9092558f19953f4df5812f875de1c1257510c3a245d22eb6bbcdb526cc1d6861",
+    "inkforge/package.json": "362fbd4f7db061eb5d27b62efb4edc439af235422b5d31d8353b2295ebb488b3",
+    "inkforge/packages/editor-react/package.json": "8194f885e29968daed0ecd12b564f74c3d1048bcbb0ce55b426158d4b54503fc",
+    "inkforge/pnpm-lock.yaml": "56761c904d5af2813126e84c24f8903ea1dab6b4a3864cdf150344d0cfcebc36",
+    "inkforge/pnpm-workspace.yaml": "d473decad1569f8d249d683502b075be74e745fb9a8560d4e9a2c0e8a4273731",
+    "inkforge/scripts/check-controller.mjs": "f1fbbb7e940f962e7c1aeef516f78b4394ad4b366687690b66be85ab164e3e90",
+    "inkforge/scripts/check-engine-surface.mjs": "a72f0d2e9dc08cf9a823c42d8ef07f805f532fc4ffe787c1b42158d28a68c5ef",
+    "inkforge/scripts/check-frozen-install.mjs": "5b678cc1c0d66d0e763bb399020d7baade13c64480340ffbbbd30402e0458e3a",
+    "inkforge/scripts/check-host-boundary.mjs": "d1a1c41821bacb605488260b2061d42ad0029ffcb181b67b05870562befae13b",
+    "inkforge/scripts/check-packed-packages.mjs": "cfc9b97922d68638d11514a66a820719a863d626631efb39d6bba5749c8308a8",
+    "inkforge/scripts/lint-public-packages.mjs": "1b3a700168fcfb26e7fb6bb72082c5f2e4f08168f97f3a89fe49dd44e4f7884e",
+    "inkforge/scripts/prepare-ui-peer.mjs": "ad4ccbbabcea2e01af9b02f71f89767793cf75de41714fc5a95489efdf21e914",
+    "inkforge/scripts/test-owner-contracts.mjs": "e7ffc2ff682bbf6ba8bcc7dd3aa4798dcd9a29efe11db70aeaf48d455c308464",
+    "inkforge/tests/contracts/workspace-release-contract.test.mjs": "8b6d957d6aa618cb4bd91c839e111c9659a2c04d10740f64e8dd7258871f5109"
+  },
+  "runtime": {
+    "node": "v24.22.1",
+    "pnpm": "12.4.2",
+    "npm": "11.9.0",
+    "rolldown": "1.2.8",
+    "rolldownIdentity": "resolved through realpath of installed tsdown package; frozen owner lock restored the recorded version"
+  },
+  "commands": {
+    "inputFromPinnedSource": "UI_NPM_CACHE=/tmp/u01-npm-cache UI_NPM_OFFLINE=1 node scripts/prepare-ui-peer.mjs --repository /workspace/ui-component",
+    "installVerifier": "PATH=/tmp/authoring-bin:$PATH NODE_USE_ENV_PROXY=1 INKFORGE_PNPM_STORE=/tmp/u07i-pnpm-store INKFORGE_INSTALL_OFFLINE=1 node scripts/check-frozen-install.mjs",
+    "ownerTests": "PATH=/tmp/authoring-bin:$PATH NODE_USE_ENV_PROXY=1 pnpm test",
+    "packedRegression": "PATH=/tmp/authoring-bin:$PATH NODE_USE_ENV_PROXY=1 node tools/authoring-checks/check-exit.mjs"
+  },
+  "cwd": {
+    "owner": "/workspace/inkforge",
+    "packedRegression": "/workspace/enterpises_cms"
+  },
+  "input": {
+    "name": "@adisaktimtong/ui-component",
+    "version": "0.1.0",
+    "repository": "adisaktimtong/ui-component",
+    "sourceCommit": "e4a7a7391eb1e45928dbc2a849692a15cbfb7ebe",
+    "bytes": 51272,
+    "integrity": "sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg==",
+    "destination": "artifacts/build-inputs/ui-component-0.1.0.tgz"
+  },
+  "inputRebuiltFromPinnedGitSource": {
+    "result": "preparedPrivateBuildInput",
+    "name": "@adisaktimtong/ui-component",
+    "destination": "/workspace/inkforge/artifacts/build-inputs/ui-component-0.1.0.tgz",
+    "integrity": "sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg==",
+    "unchanged": false,
+    "sourceCommit": "e4a7a7391eb1e45928dbc2a849692a15cbfb7ebe",
+    "npmVersion": "11.9.0"
+  },
+  "checks": {
+    "actualInputPreparationCases": 8,
+    "cleanFrozenInstall": true,
+    "repeatedOfflineFrozenInstallWithoutInputChanges": true,
+    "matchingDevelopmentPeerCohort": true,
+    "actualOwnerPackageBuild": true,
+    "actualOwnerContractCases": 129
+  },
+  "rootTestEntry": {
+    "result": "passed",
+    "ownerContractCases": 129,
+    "sameOwnerCasesAsInstallVerifier": true,
+    "workspaceVitestAdditionalCases": 0,
+    "workspaceVitestDoesNotAddRuntimeEvidence": true
+  },
+  "freshPackedRegression": {
+    "result": "passedForU07IExitFlowOnly",
+    "checks": {
+      "packedHeadlessCases": 28,
+      "nextBuildStrictDeclarations": true,
+      "actualNegativeTypeExamples": 8,
+      "nativeProductionCases": 12,
+      "actualDevelopmentCases": 1
+    },
+    "runtimeCaseCount": 41,
+    "actualInvalidPublicTypeExamplesSeparate": 8,
+    "sameSixArtifacts": [
+      {
+        "name": "@adisaktimtong/ui-component",
+        "file": "adisaktimtong-ui-component-0.1.0.tgz",
+        "bytes": 51272,
+        "integrity": "sha512-Q33sHerES66XIXqMv7+Lxxvhj31p9oF2/A8vqNHLPM3iCZIag8wojIuqrqz8DY7bPcEkxEKvFcqOsu4SYDGkjg=="
+      },
+      {
+        "name": "@pagebuilder/headless",
+        "file": "pagebuilder-headless-0.1.0.tgz",
+        "bytes": 114447,
+        "integrity": "sha512-/P+Vu7hGjlCXezy9XXEvAbnOtdpZuYbe7ZjW+cf7MU37hmlUhZ10qjbgI9u15EQZIaMpQMikfwUN0QB91p36OA=="
+      },
+      {
+        "name": "@inkforge/editor-core",
+        "file": "inkforge-editor-core-0.0.2.tgz",
+        "bytes": 53896,
+        "integrity": "sha512-OH/jdXh773nrEZEVUw0Ol3zZr5G4h+NOmnrEw7maCHcKbqEAAdR9F/03mP3rG3QIo8Vt77eBfm4R8Efk4D+fbg=="
+      },
+      {
+        "name": "@inkforge/editor-html",
+        "file": "inkforge-editor-html-0.0.2.tgz",
+        "bytes": 31873,
+        "integrity": "sha512-VWiRFFjjzRCdER/nQ3IQLhHH0sJHK1GUwAN3qm1fXOTXEOAQLqC0CqO5ddGQgyEaORw6rGVv8D8fXISZwAhPSA=="
+      },
+      {
+        "name": "@inkforge/editor-react",
+        "file": "inkforge-editor-react-0.0.2.tgz",
+        "bytes": 102687,
+        "integrity": "sha512-htx67I5ieI6dqZ+QwWXxnQjs1Ze4aJr3STc297V25bF50OCyTzleafYhQb5i30D582KVIMWmgilA+3ASnB8Eiw=="
+      },
+      {
+        "name": "@cms/authoring-coordinator",
+        "file": "cms-authoring-coordinator-0.1.0.tgz",
+        "integrity": "sha512-zmCG75UmOmkc+k2bRKNTxUWM1kpFQM4U0Ih0lebL6ElkbGIYWxc4PtfQX6RB/KNqm9VVyUdKfidFDh2Xn+vcwg==",
+        "bytes": 22682
+      }
+    ],
+    "predecessorRegression": {
+      "save": {
+        "packedHeadlessCases": 32,
+        "nextBuildStrictDeclarations": true,
+        "actualNegativeTypeExamples": 8,
+        "nativeProductionCases": 8,
+        "actualDevelopmentCases": 1
+      },
+      "previous": {
+        "save": {
+          "packedHeadlessCases": 29,
+          "nextBuildStrictDeclarations": true,
+          "actualNegativeTypeExamples": 8,
+          "nativeProductionCases": 6,
+          "actualDevelopmentCases": 1
+        },
+        "previous": {
+          "capture": {
+            "headlessWithoutReactUiOrDom": true,
+            "packedCases": 23,
+            "nextBuildAndStrictActualDeclarations": true,
+            "actualNegativeTypeExamples": 8,
+            "nativeProductionCases": 7,
+            "actualDevelopmentCases": 1
+          },
+          "previous": {
+            "registry": {
+              "packedRegistryCases": 6,
+              "packedUnchangedParentRegression": 1,
+              "registryWithoutReactOrUi": true,
+              "nextBuildAndStrictActualDeclarations": true,
+              "actualNegativeTypeExamples": 4,
+              "productionInspectorBrowserCases": 6,
+              "actualDevelopmentReplayCases": 1
+            },
+            "boundary": {
+              "packedHeadlessCases": 20,
+              "hostImportsWithoutReactOrUi": true,
+              "nextBuildAndStrictActualDeclarations": true,
+              "actualNegativeTypeExamples": 6,
+              "nativeBrowserCases": 8
+            },
+            "surface": {
+              "packedPureController": {
+                "previousCases": 54,
+                "newAtomicCommands": 2
+              },
+              "nextProductionBuild": true,
+              "ssr": true,
+              "engineEntryWithoutUiPeer": true,
+              "publicNegativeExamples": 10,
+              "productionBrowser": 24,
+              "actualDevelopmentReplay": 2
+            },
+            "legacy": {
+              "physicalTarballs": "passed",
+              "node": {
+                "passed": 12
+              },
+              "headless": {
+                "passed": true,
+                "react": false,
+                "commonUi": false,
+                "browserGlobals": false
+              },
+              "optionalUiPeer": {
+                "passed": true,
+                "legacyReactRenderWithoutUi": true,
+                "optedInMissingPeerFails": true
+              },
+              "nextBuild": {
+                "passed": true,
+                "types": "actual emitted declarations with expected-invalid cases",
+                "skipLibCheck": false
+              },
+              "publicNegativeTypes": {
+                "passed": 9,
+                "actualCompilerRejections": true
+              },
+              "browser": {
+                "passed": 13,
+                "browser": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)"
+              },
+              "singleReact": true
+            }
+          }
+        }
+      }
+    },
+    "sealedPredecessor": "freshSourceAndArtifactsVerified",
+    "sourceFingerprintAtRuntimeBeforeEvidenceRegistryUpdates": "8badc226dc0f5108a611710929f4b06b3eb702f4a95476b6079c01d45c04957d",
+    "installedFingerprint": "34066c0ec095a5a314150a9ce8ab7c3a0c0a15c46ed565646f1a0177b9760be5"
+  },
+  "inputPreparationCases": [
+    "missingInputDoesNotCreateDestination",
+    "wrongSizeDoesNotCreateDestination",
+    "sameSizeCorruptionRejected",
+    "acceptedInputStaged",
+    "repeatPreservesInputAndMtime",
+    "failureRetainsAcceptedInput",
+    "destinationSymlinkProtectsExistingFile",
+    "parentSymlinkRejected"
+  ],
+  "staticWorkflowAndLockChecks": {
+    "result": "passed",
+    "frozenWorkflowInstallSitesWithPriorPreparation": {
+      "ci.yml": 2,
+      "publish.yml": 1,
+      "release-pr.yml": 1
+    },
+    "workflowTriggersAndPublishApprovalEnvironmentUnchanged": true,
+    "addedLockedPackages": [
+      "@adisaktimtong/ui-component@file:artifacts/build-inputs/ui-component-0.1.0.tgz",
+      "react-dom@19.3.1",
+      "react@19.3.1"
+    ],
+    "removedLockedPackages": [
+      "react-dom@19.3.0",
+      "react@19.3.0"
+    ],
+    "existingPackageResolutionsUnchanged": true
+  },
+  "frozenManifestAndLockSha256": {
+    "apps/next-demo/package.json": "fee03ee32239428a7f62b54059fb10caa364a78e95f5f17015f4195bf5561051",
+    "apps/react-playground/package.json": "fcb3e2a723ad5342caf068c0d082efc75abc498ac537bcf2b5baafaf735b8fb1",
+    "internal/editor-dom/package.json": "778f78753a9ef89100ee3417842f07e4bfd117f2a6f08f778deb4f6193078525",
+    "internal/editor-source/package.json": "df5de4d636d5ea78fee9e144bbfe17c9d677adbdd2d12824da97b0a83cafef65",
+    "package.json": "362fbd4f7db061eb5d27b62efb4edc439af235422b5d31d8353b2295ebb488b3",
+    "packages/editor-checks/package.json": "7f6f500409170448eedf4b158d03f4bad6bc23868320f9b51e047a18e8d230f6",
+    "packages/editor-content/package.json": "8707e1ae7fbc547ee1005a1ee384637001fa93ae16b69fe9c48dce04f38eb4a5",
+    "packages/editor-core/package.json": "757fc541e5a4ea2cd09af9f90588bfd44801b789b8d046e93e553f8878717ec2",
+    "packages/editor-html/package.json": "6b9dfe2930b9eba23adb189dcfd829b1e60a4c6313927b422b1fe1b9e0009882",
+    "packages/editor-react/package.json": "8194f885e29968daed0ecd12b564f74c3d1048bcbb0ce55b426158d4b54503fc",
+    "pnpm-lock.yaml": "56761c904d5af2813126e84c24f8903ea1dab6b4a3864cdf150344d0cfcebc36",
+    "pnpm-workspace.yaml": "d473decad1569f8d249d683502b075be74e745fb9a8560d4e9a2c0e8a4273731"
+  },
+  "runtimeSourcePreservation": {
+    "inkforge": {
+      "allPriorFilesRetained": true,
+      "changedPreexistingPathsAtRuntimeVerification": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/publish.yml",
+        ".github/workflows/release-pr.yml",
+        ".gitignore",
+        "README.md",
+        "apps/next-demo/package.json",
+        "apps/react-playground/package.json",
+        "package.json",
+        "packages/editor-react/package.json",
+        "pnpm-lock.yaml",
+        "tests/contracts/workspace-release-contract.test.mjs"
+      ],
+      "runtimeSourceFilesVerifiedUnchanged": 27,
+      "runtimeSourceManifestSha256": "d8336868d778708513be35423cde227e56ddc586b57f324c3c96a25a7181cbe9"
+    },
+    "enterpises_cms": {
+      "allPriorFilesRetained": true,
+      "changedPreexistingPathsAtRuntimeVerification": [],
+      "runtimeSourceFilesVerifiedUnchanged": 7,
+      "runtimeSourceManifestSha256": "2af4aea8b191e59b13e3e50ca9f08831502d005ebf1631659cb871c6eedbd529"
+    },
+    "pagebuilder": {
+      "allPriorFilesRetained": true,
+      "changedPreexistingPathsAtRuntimeVerification": [],
+      "runtimeSourceFilesVerifiedUnchanged": 27,
+      "runtimeSourceManifestSha256": "642085a1084b3df7922808770b1ad750a9f3e244a94772563f7cb1d28db3ff7c"
+    },
+    "ui-component": {
+      "allPriorFilesRetained": true,
+      "changedPreexistingPathsAtRuntimeVerification": [],
+      "runtimeSourceFilesVerifiedUnchanged": 24,
+      "runtimeSourceManifestSha256": "0d99e752623c079a5ed7b3630d30d03b817f3ceb3c33724b6ae0b77beb6c700b"
+    }
+  },
+  "historicalEvidenceSha256Unchanged": {
+    "inkforge/contracts/u07-presentation-evidence.json": "129b87a1de1a86a503ed3d4d51059519f02582bc434740b7901a49e8e3dff533",
+    "inkforge/contracts/u07b-controller-evidence.json": "e6449bdbdb2c43848f3189278d25ec571c241e9c86c1bbfa7b3795e01fe7a9fc",
+    "inkforge/contracts/u07c-native-surface-evidence.json": "da37870fabd0946e19888a52e1bfbb630819611ba533e7be96792913d2e0b784",
+    "inkforge/contracts/u07d-host-boundary-evidence.json": "a3098af0575558f9c11136baf1ba4eab1f3339d88c8b5a219b2092263e0a79d1",
+    "inkforge/contracts/u07e-retained-host-evidence.json": "9cc58a9ff66dd9ce0a795ca111316a15354d0d2ca1230cc098743d7529acede2",
+    "inkforge/contracts/u07f-staged-capture-evidence.json": "51f6b424361b6c06fb72d7e645178674754e46327eb92da92d23d5b19ef6ea6d",
+    "inkforge/contracts/u07g-save-checkpoint-evidence.json": "b71d484d1b404d66b35d46da1340041e5055ea9f42bf9ead843b7c9dd55986fc",
+    "inkforge/contracts/u07h-history-retention-evidence.json": "249ee1c80d6552b89bbfddad0ec6a568d520ee7472d1af5780a13695d91cff7c",
+    "inkforge/contracts/u07i-explicit-termination-evidence.json": "2d14e2644a42e1f026897511279b8586a9e1c4008ed5d641db97ff5cb22cd6e6",
+    "inkforge/docs/work-items/LIB-02-shared-ui/u07-evidence.md": "87d36ba87f92d15876d54e3b939385dd6e6ef1ca13468bd6260fd26c476224d5",
+    "inkforge/docs/work-items/LIB-03-inkforge-engine/u07b-evidence.md": "9c78deb2feb004b630947ebd1f68f22f4fbd1f09d79545c38ce37d328e7d463f",
+    "inkforge/docs/work-items/LIB-03-inkforge-engine/u07c-evidence.md": "3aec02553d82dcf2828ccb16d65d2695cff57cc1e8cc1e64459db2c6109d07f4",
+    "inkforge/docs/work-items/LIB-03-inkforge-engine/u07d-evidence.md": "ad97df542946e9540341640b649d77714203b6cd0e9bef98ac1c1d94e9897683",
+    "enterpises_cms/contracts/u07f-authoring-capture-evidence.json": "4fc79798a4cb8ae3eef320ef6bc75a308f65f4a5cd0d9aabe74b3294708a491c",
+    "enterpises_cms/contracts/u07g-authoring-save-evidence.json": "dd146a0e7952bcf845e80335ef931439bc02e67f766e0194954b1e03c6d8a03e",
+    "enterpises_cms/contracts/u07h-authoring-delivery-evidence.json": "a6b31b0b4e7cfbc89d2db6cfb8f7c89a1ba623b8fdc3e760114931a3ec64c623",
+    "enterpises_cms/contracts/u07i-authoring-exit-evidence.json": "4eb219e78e4ae4a19a881c29b684d2062faf7ef9460c581a23de7cadcd806286",
+    "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07f-evidence.md": "721d7bdeb3fff70cd549e8fb773e57a30c2a5410c2f857f0be5886e73fca17c8",
+    "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07g-evidence.md": "d5cc3fcfdaf99b19b6a64fe363e8d0d71042e1ee1a88b76e3109886503b1e37f",
+    "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07h-evidence.md": "2e1b82bea3a859e694ce9b7234cb30188cf75a55cdee28ce673ac2b4767af3d1",
+    "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07i-evidence.md": "24483e2c56a59a9f9b66806a3db51d280338da13fb4aaf3cb7c7374694e1f536",
+    "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07i-exit-flow.md": "5880190ee78cb779c20e245fd2066ddf7270b7d36db8016d8355f33513fad7a0",
+    "pagebuilder/contracts/u07-presentation-evidence.json": "b28ead145f3def40828a59b8add98bb235aba0d79b737d2226375834be3901fa",
+    "pagebuilder/contracts/u07d-field-binding-evidence.json": "0a7bf95847fd4b9d1158452ea559a68897182b876cbb155703386a71807dd613",
+    "pagebuilder/contracts/u07e-inspector-registry-evidence.json": "15787d81aa931c50b589d149656ffc91be3005a32145450231bd1bb3878ba226",
+    "pagebuilder/contracts/u07f-batch-evidence.json": "ebaf07c4272c1d9fc9d0932f8fe871e005247f596216aa35c8fe8e8edd2ced80",
+    "pagebuilder/contracts/u07h-grouped-delivery-evidence.json": "66242e97f8b5e10d3a826291c85ed4da4452fb091f856259c9d619968d1811b4",
+    "pagebuilder/docs/work-items/LIB-02-shared-ui/u07-evidence.md": "af7eb21ffe36498951bfd87e7d8d07cb608909f4679338de52e0fb2d5bcd60f6",
+    "pagebuilder/docs/work-items/LIB-05-field-binding/u07e-evidence.md": "3065a8a295c2fe385fdfbb95474fcef2beb7488551616ea722434c29b1fecc98",
+    "ui-component/contracts/u07-owner-adapters-evidence.json": "8d42a4e563aa7e195f3202eaab8413eecea7072f97e3a74e6835eb59f5f1e5b9",
+    "ui-component/contracts/u07i-consumer-tooling-evidence.json": "a7e5f8a27813137e6c01ea845a1f17d2c916930f0b1edb31c92ff6721bdb026f",
+    "ui-component/docs/work-items/LIB-02-common-ui/u07-evidence.md": "02a7ff0e8464ac207d7988e3a66e1a4997f5979191c2793d70425c96011f0c6f"
+  },
+  "optionalPublicPeerUnchanged": true,
+  "publicExportsUnchanged": true,
+  "privateBuildInputBundledIntoPublicPackage": false,
+  "commonUiTarballUnchanged": true,
+  "cmsPagebuilderUiRuntimeSourceUnchanged": true,
+  "temporaryPnpmOverrideUsedForFinalInstall": false,
+  "frozenLockfileMutatedDuringInstall": false,
+  "persistedFormatsChanged": false,
+  "goFrameworkOrLiveConfigurationChanged": false,
+  "fullLibraryRuntimeAcceptance": "notRun",
+  "fullCmsRuntimeAcceptance": "notRun",
+  "certifiedRuntime": null,
+  "ciJobExecution": "notRun; local scripts and YAML/preparation ordering verified only",
+  "node22PurePackageCompatibility": "notRun; public support contract retained, full shared UI build cohort is Node 24",
+  "registryPublication": false,
+  "deployment": false,
+  "limits": [
+    "Private sibling CI checkout requires suitable read access; existing/default token success was not inferred from local Git access.",
+    "Only owner root fixtures run under pnpm test:contracts. The two public-package integration fixtures run through the real Builder-led packed cohort, both repeated in fresh A–I regression.",
+    "No new product feature or complete browser/OS IME/AT/performance/release certification is claimed.",
+    "The install is reproducible after explicitly preparing the integrity-pinned ignored input. A bare checkout with no input is not advertised as registry-independent installation."
+  ],
+  "diagnosticFailuresNotAcceptance": [
+    "Original clean export: outdated optional-peer lockfile",
+    "Plain refresh: npm registry 404; offline cache failure also reproduced",
+    "Initial root contract run: two packed fixture imports absent from owner root and stale public-export whitelist; fixed dispatcher/whitelist then repeated from clean export"
+  ],
+  "logs": {
+    "/workspace/inkforge/.artifacts/u08a-install-report.json": {
+      "sha256": "281fedd8e77026bf93b5e4793347e8fedcc15b50c2f89bf68ec7ea1ebd6d96f8",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/workspace/enterpises_cms/.artifacts/u07i-exit-report.json": {
+      "sha256": "dbd120b22bec17b47f426ef14578e650aa00a899aa59fd842f06ec36ac147678",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/u08-frozen-final.log": {
+      "sha256": "699ad217b8aab64b66ad4779b18934a9fd94722f7b45f4b0739a202a2d7c93d5",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/u08a-owner-test.log": {
+      "sha256": "f7f2572bfa02ebdec80c20f475826a672103ead9d6a051ab94e8a3a94a6e7d3b",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/u08a-authoring-regression.log": {
+      "sha256": "87ad7d939e35893c158e4f5b474e1f2753fe16ccbdd51e35c9904403d4d3fd54",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/u08-prepare-source.log": {
+      "sha256": "0c676f0f5b716a2caa4035520c4a6aa0310a0dd8f966b7cd7059174e7366ee5e",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/u08a-static-input-checks.json": {
+      "sha256": "19688e57f56b68268d3c4ce61cace81e6d2e9933f50a87f20021f1fa64585708",
+      "durability": "sessionLocal; regenerate with versioned verifier"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/clean-frozen-install.log": {
+      "sha256": "8bcec7f53812f22de4d75a10bd11a6af254c486422c0c05023e16e533c3516c9",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/owner-contract-tests.log": {
+      "sha256": "f88ba3fd5dfe5b12fd6cef46f1de9cec45758521ad7a30e669292ab15dbc9c30",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/peer-cohort.log": {
+      "sha256": "5ecf82a3fc1f9007eeea79ce3bf0d9c587150219ef245bb5a5a23609cdb562fb",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/npm-version.log": {
+      "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/reject-parent-link.log": {
+      "sha256": "3dc0c7086526f12f9b4aa7d54e64eda26909d8d159d307c0dcf7ba7d48668f97",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/stage-input.log": {
+      "sha256": "aabf6ab624fefab97fa14b647f5c04941cbdd8e810d2412b0a408b1c9eaf99e3",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/wrong-integrity.log": {
+      "sha256": "408301f6b46a7a98b26727cc8a463a1e227288a62d1fe1f2498486b98088ecc5",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/wrong-size.log": {
+      "sha256": "62c2da6142dd8ae63f46b7ca69bd4233ddcf492ce340562e22e66c369312cb1c",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/reject-destination-link.log": {
+      "sha256": "3dc0c7086526f12f9b4aa7d54e64eda26909d8d159d307c0dcf7ba7d48668f97",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/repeat-offline-frozen-install.log": {
+      "sha256": "27a4dc12313dd40f0c93a264ebcefbe62722566b0f794a0685c495981d3c79c6",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/pnpm-version.log": {
+      "sha256": "9e742a2b4fa5c337297c7cd77a6fd328d17b4afe12cb9121f6392cf7c35c00da",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/restore-input.log": {
+      "sha256": "aabf6ab624fefab97fa14b647f5c04941cbdd8e810d2412b0a408b1c9eaf99e3",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/owner-package-build.log": {
+      "sha256": "17112f8389afb1ecdb34a3b73075ea77b3bc31002317a588619d0106481eea05",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/idempotent-input.log": {
+      "sha256": "e2877d3081e672a21cfe78aba06b156e255d7ee0e3ce4c8654ad8b282cb85d1d",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/retain-input-on-failure.log": {
+      "sha256": "408301f6b46a7a98b26727cc8a463a1e227288a62d1fe1f2498486b98088ecc5",
+      "durability": "sessionLocal"
+    },
+    "/tmp/inkforge-u08-install-DyN2Tr/missing-input.log": {
+      "sha256": "da905ff2aad8cb3ec7398fd766d66a173269a9e82ce884a229b6887533d9dabb",
+      "durability": "sessionLocal"
+    },
+    "/tmp/u08a-owner-lint.log": {
+      "sha256": "b543827ce56a63357c629028555ecec2cc964dda33dbbf2a9a2872b1a2ab20f8",
+      "durability": "sessionLocal"
+    },
+    "/tmp/u08a-owner-typecheck.log": {
+      "sha256": "66fde0b4ac8289baf1c0907d185fe35cac5d3df3b18923b2705a82d36547f37f",
+      "durability": "sessionLocal"
+    }
+  },
+  "publicationAtVerification": "notYetCommitted; periodic source push authorized",
+  "publicationHistoryRef": "../enterpises_cms/contracts/authoring-publication-history.json",
+  "crossRepositoryChecks": {
+    "result": "passed",
+    "runtimeCasesExecuted": 0,
+    "scope": "Static document/navigation/schema checks only",
+    "checks": {
+      "api": {
+        "paths": 85,
+        "operations": 100,
+        "schemas": 152,
+        "existingSchemaCases": 129,
+        "closureSchemaCases": 106,
+        "semanticPolicyOracles": 10,
+        "screens": 31,
+        "bindings": 89
+      },
+      "documentIntegrity": {
+        "managedRecords": 313,
+        "frontMatter": 203,
+        "jsonFiles": 98,
+        "schemaFiles": 7,
+        "localJsonRefs": 474,
+        "markdownTargets": 1705
+      },
+      "publishedInputs": {
+        "pinnedOwnerArtifacts": 84,
+        "draftOwnerLocators": 95
+      },
+      "traceability": {
+        "contracts": [
+          {
+            "contract": "inkforge/contracts/inkforge-engine-contract.json",
+            "rules": 22,
+            "designedCases": 46
+          },
+          {
+            "contract": "enterpises_cms/contracts/nested-editor-coordination.json",
+            "rules": 18,
+            "designedCases": 43
+          },
+          {
+            "contract": "ui-component/contracts/common-ui-contract.json",
+            "rules": 20,
+            "designedCases": 40
+          },
+          {
+            "contract": "enterpises_cms/contracts/authoring-ui-adapter-contract.json",
+            "rules": 20,
+            "designedCases": 36
+          },
+          {
+            "contract": "enterpises_cms/contracts/inkforge-html-contract.json",
+            "rules": 20,
+            "designedCases": 18
+          }
+        ],
+        "pagebuilderFeatures": 24,
+        "pagebuilderCases": 48,
+        "uiFamilies": 74,
+        "uiExpandedCases": 124
+      },
+      "adapters": {
+        "handshakeShapes": 8,
+        "compatibilityCases": 6,
+        "fenceOracles": 21,
+        "metadataCases": 12,
+        "pinnedSourcePoints": 8
+      },
+      "tokensAndUi": {
+        "tokens": 255,
+        "tokenShapeCases": 8,
+        "tokenGraphCases": 9,
+        "declaredSrgbPairs": 17,
+        "configurationCases": 18
+      },
+      "assessmentArithmetic": {
+        "unchangedRubric": true,
+        "overallUnroundedScore": 92.25,
+        "overallScore": 92,
+        "scope": "Arithmetic only; qualitative levels require human/reviewer judgment"
+      },
+      "declarationSmoke": {
+        "result": "passed",
+        "compiler": "Version 7.0.2",
+        "expectedInvalidConsumers": 7,
+        "scope": "Proposed declarations + isolated dependency fixtures; no actual emitted package or engine"
+      },
+      "artifactsSha256": {
+        "enterpises_cms/README.md": "26c58fa3fa2bc74bd034aec3812d6246037d459bbfe0fbdc8070469dbe900b37",
+        "enterpises_cms/docs/01-plan/intent.md": "159a66aa86f606e694507614452b32f87c351b230a09eaaee0381865df0379d7",
+        "enterpises_cms/docs/02-design/requirements.md": "e46088b8cbe62ddba79882d84c9a51c778bfa86d101c1c00bef370551b33cd95",
+        "enterpises_cms/docs/02-design/spec.md": "4254191751b37770ea8b74bbcbcd8983955ec643b592b3b660f2fb5feef2eba0",
+        "enterpises_cms/docs/03-build/plan.md": "4be8beca3d00a9b7199b4418b18fbacd22d843f63bef1cd1e3fc201399ab5c07",
+        "enterpises_cms/docs/04-test/evidence.md": "a236f7450969e83d29f48ad2eb5b03b37ec387e11d1550596df98c8b44dbf0be",
+        "enterpises_cms/docs/04-test/test-plan.md": "38a935bf9aa7b89a3e0d74f583bfad2fe5337e62361003fd58d6460980f5b338",
+        "enterpises_cms/docs/05-deploy/release-plan.md": "2fc81cc42752416b79c016cefa9f058b02b2ccb2b936c8f6c5283592b83c92db",
+        "enterpises_cms/docs/06-maintain/maintenance-plan.md": "7722b561d487b05b304daf6cb0d9ac9aca6d221ddbf57f121df5646fbcfe5b9b",
+        "enterpises_cms/docs/IMPLEMENTATION-BASELINE.md": "7a61032c35a48dc5bc8df971a784a074254a50c236dbf8945cbb22c0cd8b21ef",
+        "enterpises_cms/docs/README.md": "30672fe95edc52ef7986d139b3dd80dbd7bb2ddc58a99dc430edfeb6e7917fd4",
+        "enterpises_cms/docs/analysis/01-system-design-environment-review.md": "efa2515f226a1050815d02fe6992b7b49e77069b4a11f23a8d15dc32b3321251",
+        "enterpises_cms/docs/analysis/02-pagebuilder-inkforge-integration-review.md": "c6b8f9e2d8364b5d24e070e50f7be664e98bd25c79efa250a40783e659113a5a",
+        "enterpises_cms/docs/analysis/10-implementation-readiness-assessment.md": "34f1d71b4c798b3d71082cdfb11dc0d29e9a8a1bef30cefd833725432818b12a",
+        "enterpises_cms/docs/analysis/11-library-code-baseline-review.md": "9c653daff47b7235153783c4df5937c51c217397f5202a0d8b5e06d71e4e3cba",
+        "enterpises_cms/docs/analysis/12-pagebuilder-common-ai-deep-review.md": "518859934c6b654070a9e2a7ef16ec612ea1bc5d663c248a79bdf520104a47f3",
+        "enterpises_cms/docs/architecture/01-stack-and-service-boundaries.md": "d9871b6b283a52abc9ffb70d667eef41a2d10697fa8004f43a80f08c8acb96c0",
+        "enterpises_cms/docs/architecture/02-human-ai-sdlc.md": "10c8fc267ae861f4343f182f080c6f4004e10b09ac34f53935a9c76e34fec932",
+        "enterpises_cms/docs/architecture/03-cms-application-design.md": "d0805c054eb8ffb69fb895e9d9498f3242569b7a3a0697c020c068de4581d7fb",
+        "enterpises_cms/docs/architecture/04-shared-design-system.md": "ac399d67465b4e98ad84a9636a4a49452b45fc14794777822f8cabd5070429a4",
+        "enterpises_cms/docs/architecture/05-data-media-and-public-delivery.md": "e54825ca292f9d376fd6ba3cb9846c0dd82299ef41738a89c103320cb6115377",
+        "enterpises_cms/docs/architecture/06-domain-data-and-contracts.md": "6ec6911018853dd35648a440d1b98fecad54c51aa4984f05ecc595b7f27697f0",
+        "enterpises_cms/docs/architecture/07-identity-and-permission-contract.md": "817c41a610543db1070b89f322d5df8f2c4ddfcfefe2f17b01cc4c5e8fee95cf",
+        "enterpises_cms/docs/architecture/08-authoring-and-rendering-contract.md": "f7a5fc60498ac82ba74e67e08e540cee29f2357dedc2969e59ce8c533d4010a1",
+        "enterpises_cms/docs/architecture/09-quality-and-operational-design.md": "2a87439904075817947e3cea268b3a8359deff1146d32f95f99d835bb6388f47",
+        "enterpises_cms/docs/architecture/10-security-and-authorization-design.md": "ef3aeb0dabe32cecca979c4ef827efff472d5040c011a200835d23d682da6bab",
+        "enterpises_cms/docs/architecture/11-postgresql-integrity-and-transactions.md": "d515bb3dd17d77d2ebdb21c72047a4c8a20370c5ec338a88a444185000f1fbfc",
+        "enterpises_cms/docs/architecture/12-library-integration-readiness.md": "f42e2c8581057bfe21f5983ae4f08951154e793d41c8f627bdd3bc78ec31a7ee",
+        "enterpises_cms/docs/architecture/13-links-and-reference-resolution.md": "46a0e9fe40317ef801f94680f80132a48238affad8a33e220dd1bef69f12ed67",
+        "enterpises_cms/docs/architecture/14-data-binding-and-widget-runtime.md": "b422d68520f6a366aac696e653e7855f3084aefe8c52184f3886446dfdd37fe7",
+        "enterpises_cms/docs/architecture/15-public-consistency-and-delivery-events.md": "f0277a14d669595a5d8bcf0f572fef086ae7402222602846917e7ed69829e1fa",
+        "enterpises_cms/docs/architecture/16-library-first-delivery-plan.md": "f706473c16d7009cfad70d02652b1c769ed3aeafee09e86d85d52e5a1bafbfe0",
+        "enterpises_cms/docs/architecture/17-library-evolution-from-existing-code.md": "8b198f691757fc28b2707c6094c719e89ca0e70c04810e1fb653ed814b51410d",
+        "enterpises_cms/docs/architecture/18-pagebuilder-common-elements-and-ai-composition.md": "55a634acc2f4c2ea70a83ca66049d56dda076a84a93516477006398ff28543cd",
+        "enterpises_cms/docs/architecture/19-artifact-driven-ai-sdlc.md": "7b10b842fd56f1e2c9b0b7712612ed9dc286d755b503a06b343be66a1e1f22cb",
+        "enterpises_cms/docs/conceptual-design/01-system-overview.md": "76af2119d6cb59a0faf23960d3a17bfee1d015b208799972a53b9b71070271c2",
+        "enterpises_cms/docs/conceptual-design/02-business-modules.md": "847c148d9aae72765d7e81b575804ccdfb49627594775d034c822aada29c5e3d",
+        "enterpises_cms/docs/conceptual-design/03-shared-foundation.md": "27ceb803e1b89c431e7b571ffa5844755e66ddcfde42c0a118877335a88e3509",
+        "enterpises_cms/docs/conceptual-design/04-permission-and-workflow.md": "1d2e21b743552b56b2f6b4152d4c4cffa8a63e139ebd9157cb5a3d156a8ca221",
+        "enterpises_cms/docs/conceptual-design/05-conceptual-relationships.md": "1226495aff01b63381ce2d85a8f13bc2007251b1f42dbbd7f50d5b0df24341aa",
+        "enterpises_cms/docs/conceptual-design/06-user-journeys.md": "774977157ae5566d2ca08b91b9261782308844fc5bd8966f31b737e6acbef0ad",
+        "enterpises_cms/docs/conceptual-design/07-scope-and-priorities.md": "044978aafb5f8e3c3283a972795a242b6ae46d51cb5dd5a83a0e56defabea651",
+        "enterpises_cms/docs/conceptual-design/08-design-next-steps.md": "9bf6423869de31d0008e8874b4ac90db5dc8658b99f847d63ad62e83cc61d092",
+        "enterpises_cms/docs/conceptual-design/09-workflow-diagrams.md": "55fc4c98d5cc2f98411eb136c63c37ea64f0d765fbbb54f1a1beb0fd50395ae9",
+        "enterpises_cms/docs/modules/01-role-and-permission-management.md": "9f7a2ce9855d8566d818e0e706b45cb8dcae56a9a4d7c494e92741f79b0acb0c",
+        "enterpises_cms/docs/modules/02-website-management-editing-workspace.md": "3c333b409199368dfb43f55bb196e2b9f500e1790e09ee5d5b428798b73e464c",
+        "enterpises_cms/docs/modules/02-website-management-fields-and-save-scopes.md": "41eeadf36d521be5598c5d000ef7e99ac0a7a9a8a2282b3160dfe9f02d61b024",
+        "enterpises_cms/docs/modules/02-website-management-functional-draft.md": "5d7e73f57e13a5f547f5570cd6ee8cb161830e45e487b3a146f40bf2e78ee0fe",
+        "enterpises_cms/docs/modules/02-website-management-save-and-conflict.md": "ede5c4d2bcc6467b065455ddb6a1ec2c608cf42227fb256df3a387c27e69f111",
+        "enterpises_cms/docs/modules/02-website-management-specification.md": "510d5b19577d1432cb42806ea29e6e2d75c1698e3907c04eff7473390b5d6001",
+        "enterpises_cms/docs/modules/02-website-management.md": "d908e9fd7330c59f82e84d3928756bb898dda4b6b74e1e1a866b6bb2269d22c7",
+        "enterpises_cms/docs/modules/03-business-modules-specification.md": "b859332cd28f529acc1dd65175a8f1728a04422813ebba9d8729034777920943",
+        "enterpises_cms/docs/templates/decision.md": "63d2e7c55b107cbfd86cee5c543e3cee090d6d0e7c0b6595da29ea966ea9ff80",
+        "enterpises_cms/docs/templates/eval-plan.md": "0881542b746cc1bc5f0c92fb1085c21bd9ba6563ff3d69d720719adf0130dac3",
+        "enterpises_cms/docs/templates/evidence.md": "8118f6e245e61c3b5119ffbd1c1c839dbe88b97f2ae5e8df9cf3aa52a2425f41",
+        "enterpises_cms/docs/templates/intent.md": "8c251a82df1593da0b8fdb3845387e06887f8a5e39c6b695c1f302b1b4aec571",
+        "enterpises_cms/docs/templates/maintenance-plan.md": "a5e8df57bc0694aea4fd27584d80ed4ea98a2ef3d456088f0cc84776329558f0",
+        "enterpises_cms/docs/templates/plan.md": "dc1111a214a12da383cf15022b521d7fcc5bd88c3b5bbe6d6f78e175af4fa91e",
+        "enterpises_cms/docs/templates/release-plan.md": "4d6b01cfb6eb9a0b41ead3c91ae2ad0695839ccf75b2892ba1e469bf872f0dac",
+        "enterpises_cms/docs/templates/requirements.md": "cb30ca2ade0338e49493e6cb5f4a5efeed7dd40f628e873de39c4ce795c16f84",
+        "enterpises_cms/docs/templates/spec.md": "7d9cfd00abceb859ad1bad35d7f6b01fdb13cd24645acf36a6e89b716a3048d9",
+        "enterpises_cms/docs/templates/test-plan.md": "134706cd0291d2964207cbf33d88f51df0ddd014cd0b4a422b2e3f4630f6756c",
+        "enterpises_cms/docs/ux/01-screen-and-interaction-specification.md": "af601ba3ca60a7ca68d938b4b3f39c670829ceab70c4e814cfdd3fe300dbb65f",
+        "enterpises_cms/docs/work-items/README.md": "5d8b899af22f1362879a0ac0538719ddf7c7b2b59ad06804bcda311c71496f87",
+        "enterpises_cms/AGENTS.md": "1d51db98b61c41740c0d20fe0636efab4edb4aa8adca2c72af0159c1ae066043",
+        "enterpises_cms/enterprise-cms-conceptual-design-v3.md": "cd00766a3d1eb8dde81462454fc4f6c607d6b82dcd80563e915c168deafb195f",
+        "enterpises_cms/contracts/README.md": "06fea5800c1542f77270dbee391f196b76d9b217ffc8ff67b234757ff07864c9",
+        "enterpises_cms/contracts/compatibility-manifest.json": "6bf41c61dd7b5d9da33e4cff490723de7f3ca8de671e09b34d39add5c2a8c538",
+        "enterpises_cms/contracts/content-catalog.json": "9c608e8bbf2a328f59367323cbd8e05643dfaae70929fb032c8552e449b571eb",
+        "enterpises_cms/contracts/data-integrity.json": "d4f88d846f5ea5f6f0b15ee2b18b567931820e8673ae6f7fbeee10b9014d311c",
+        "enterpises_cms/contracts/data-runtime-scenarios.json": "b942eaa0b25240c12a51e8b8b1fb1b0d9e64b248a9285d858b61892937d62b42",
+        "enterpises_cms/contracts/data-source-catalog.json": "b0ab9d2a779f7840c25f3055d427af8a369c02b29947d954d23c4703acc1fabb",
+        "enterpises_cms/contracts/default-role-bundles.json": "c9cbf76dc34ee19bd0a05156ccaaca516e8e85d3652d4a536c381e1a8087dfe7",
+        "enterpises_cms/contracts/design-tokens.json": "76ab4d76075cbdecfd3bf274eb87bcc966bf973d30a28560c7186ae55725fc3f",
+        "enterpises_cms/contracts/library-design-baseline.json": "744614a2771940fbeb7fbeb4ef28226c0fd7fba46264512ca8cc8b81de024c0f",
+        "enterpises_cms/contracts/library-integration-scenarios.json": "8bfe17db861b5d515afa8cd29f278e1da7dff243fa0954c21ab2e4f1f8292f0a",
+        "enterpises_cms/contracts/link-reference-contract.json": "1b3a35927828940b2c38ff9024278beb4a7b80f2e44978600befba9f1d16f986",
+        "enterpises_cms/contracts/openapi.json": "6da3147729b464ab2a10fdfc231bbabd59086a319c516aeb39d48f17be8aaf3f",
+        "enterpises_cms/contracts/pagebuilder-ai-composition.json": "bcd3ea5ed4c7eaf8aad3fa0c3f604416db1d1d89196615351f8540ccb8d1a203",
+        "enterpises_cms/contracts/pagebuilder-ai-plan-fixtures.json": "95ee6655edf982fd75f73d877e9088e1c61046e4a5f40e0fcffc9ef39574f7c2",
+        "enterpises_cms/contracts/pagebuilder-ai-plan.example.json": "7b0be3bc34536c06d2624ea35679dc2a4e1a72e41a294f557fd04e6cccc91d36",
+        "enterpises_cms/contracts/pagebuilder-ai-plan.pattern-example.json": "e9f64c32595a4b82192c46c389c85b55ae6829cd58de3b78885c8e00fd872b2d",
+        "enterpises_cms/contracts/pagebuilder-ai-plan.schema.json": "a164b36de9b9f4402c99745e9025f0af663eee585f052ae620395d17a035dfc9",
+        "enterpises_cms/contracts/pagebuilder-common-catalog.json": "fcf29398de71d97411ef0a2ac8e4603bef0ce5d998a1221046a216290764de5e",
+        "enterpises_cms/contracts/permissions.json": "5fe883a49fe7150989f4b417c507a4a7e8a12cb101f391e502ecaa410418de26",
+        "enterpises_cms/contracts/public-delivery-contract.json": "54528d6bfc10591e945f4c7689dfaa4b0730c4efca71a209a8104c23ac2a83d8",
+        "enterpises_cms/contracts/public-delivery-scenarios.json": "cd415b87da7b4c9a401f45d5afcc207043e1b5c0c355356706ccc03d77fdbf2d",
+        "enterpises_cms/contracts/rich-text-profile-fixtures.json": "20c1e6e30e1ccc57baf7b759d97000de5f0c2a3b616dac93a673ea9729230922",
+        "enterpises_cms/contracts/screens.json": "e226b4d2a31d3ac4c641f732123a107ca5ea46db9f1b04b907e58faa39324818",
+        "enterpises_cms/contracts/sdlc-artifact-contract.json": "494d6d256dbacb50737d686be4c71d97a00655d1c98bfb6446726c407e022b83",
+        "enterpises_cms/contracts/sdlc-document-map.json": "53cca6749d5c0f5de4b66067f4212cb93e9db412b24e3ac5d5a83e36a786a86c",
+        "enterpises_cms/contracts/sdlc-document-metadata.schema.json": "7cc97e93ef565f7dc6ba29500067709ea29e1addbc922768a9d87348484e2d43",
+        "enterpises_cms/contracts/security-scenarios.json": "57a10afa03907927dfaf66a4fc59cf11e72aae0e611c5a342591489efb4b4d24",
+        "enterpises_cms/contracts/ui-state-fixtures.json": "ccfd89c981f89acb03a0ed902991151074e3d7360bd690802f716e4c0a68f0ec",
+        "enterpises_cms/contracts/validation-fixtures.json": "4c605d1204dba75075d1f1b311b5c9aaac904187fcfdbbce6e5fda5b6a84baca",
+        "enterpises_cms/docs/analysis/13-sdlc-flow-audit.md": "449a07907287e652d28082f7d5f8f85a2b0e79996aa9564071f5ee8eb8b90edc",
+        "enterpises_cms/docs/templates/README.md": "2c49a412de0afda0c0d8bb6d04b37a46ba59ceb716b291b7926491002bf696c9",
+        "enterpises_cms/docs/04-test/contract-review-history.md": "e4da47f96fbb71cd8bc5a7008444e4ab0a33b32024398309ce239b207d184acb",
+        "enterpises_cms/docs/architecture/21-pagebuilder-standards-and-conformance.md": "427503ca696c8de3d575e5092a3dcd253ff865bf56698a4178229ea932a647e3",
+        "enterpises_cms/docs/analysis/15-pagebuilder-standards-research.md": "d7d36c32dced6b38df02985abbfee46ac2ba077b60f37c75519ae115dfbaa43b",
+        "enterpises_cms/contracts/pagebuilder-standards-profile.json": "9cbdb38ea428cb52b2fcc771c2b7fe0b4ed5549b54b289be3f3e642f82b5e282",
+        "enterpises_cms/docs/architecture/22-pagebuilder-accessibility-completion.md": "599e246ec1b133aaa3ccf93f1e3f68bbb9e8664d8ba7a35935e7612f418ccb02",
+        "enterpises_cms/docs/03-build/pagebuilder-standards-plan.md": "f1d8ef2fbfac9bb29e2fb7bcdca32b0174d0963ceaac454bf464542de9080994",
+        "enterpises_cms/docs/04-test/pagebuilder-conformance-test-plan.md": "bd72401805ef60fde2dcbe7b7feea754352df86ebca2c47954ef0e1f804d4d9e",
+        "enterpises_cms/contracts/pagebuilder-conformance-matrix.json": "e90dc23b88df7ea43defeb4ae318cff4f29af83d653e9b3e13e00966aca74cd4",
+        "enterpises_cms/contracts/pagebuilder-accessibility-support.schema.json": "23e493b887e113b288f5da68ee245408299e954bd7451cf0a75a13ba9b797619",
+        "enterpises_cms/contracts/pagebuilder-accessibility-support-fixtures.json": "6574b163c2039367d8eee9ee5537cb6ca2b19ba67b667069612d771247e119ad",
+        "enterpises_cms/contracts/cms-session-continuity.json": "bb074501c21e95fe183484df505bc205ee5c205ca8851575cd7c8ea29876956b",
+        "enterpises_cms/docs/architecture/23-nested-editor-coordination.md": "70e1f7635485c4035549208e45a737c771d330ae8660c1eeafaad48e2bd3c8ac",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/intent.md": "afcf1ad2fd4ff1d84c7d3763d7e4b96a0012803277c54add34777361c5c80c99",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/spec.md": "5d5582af3b8db6becf111f6822e7e9dd2735e868f7a0242ecc02be8f5119e937",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/plan.md": "78a2352e27896041a27ad82cad90964ebc1ce4b3f26be9d457dd4da8f7eb9a58",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/test-plan.md": "19cdb7f5a00cd44a0c52870ae8737115943bdc334dcebffd3d6b194ebaf6a5af",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/evidence.md": "6014d1c9bc9f162695f6cdb7ec58e12bc7851519c1a18bf47ba68c1df0d890a0",
+        "enterpises_cms/contracts/nested-editor-coordination.json": "dcf2b75f9888cb37010b86a71886be58d02407e31e7421a9495dd73a5aae11c4",
+        "enterpises_cms/docs/architecture/25-inkforge-html-profile-and-parity.md": "311dfa0508b5e1a2451b02d50abb431f06e059b5e9050e77001fed564a8cfaf0",
+        "enterpises_cms/contracts/inkforge-html-contract.json": "37453ccd399181e6fdfb6cb8f01ef5e4f8bd1ccd8d71afb71d98184566b7aa70",
+        "enterpises_cms/contracts/inkforge-html-fixtures.json": "b49a8b0b16097ebdeba2449c7e080739f26b3b313645d70d9322d690dfc009d8",
+        "enterpises_cms/docs/analysis/16-common-ui-knowledge-base-review.md": "5e4162ada2e47ed601440584e8c53f380c2075b3f1debfdbd0a0410fe8d5fbe3",
+        "enterpises_cms/docs/repository-documentation.md": "5875a574f5344f5d6a02db417e898c4f1d7e1ff1639ebf56f260b74ebe4f34a9",
+        "enterpises_cms/contracts/document-ownership.json": "41a9311566ab731de4e55df61aa6565d0378519a3d6d2724ef849a662eece4f1",
+        "enterpises_cms/docs/architecture/26-authoring-ui-adapter-integration.md": "86b4b36fad5ba2804063f9b65bd139913ef662708f703046c77be7b8ac094295",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/decision.md": "6af4b57ef817b78bd7c0da43707a5c6032f18020745cb8de5194f80ed120c5c2",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/evidence.md": "64015bb82f013eb3c7902c790a497bab46027fcf7391623f69616f98dd75feed",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/intent.md": "62dc5d6aa3170c630ff3f24a0d56494c48512913d194d2df4a9786558a8ac15c",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/plan.md": "2e82706c9ab0c1044514e346e825c76cfb66ed95f62c4f1ac2f8813d6267df05",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/spec.md": "418dfcee230e6a7b7a8485f637b9d638e402e1ec314af9b046842ac606fe4309",
+        "enterpises_cms/docs/work-items/LIB-02-ui-integration/test-plan.md": "2ae8235d9804cf4f47cfde9f9c321444cb9bd054bd0151feafce1c259c62500b",
+        "enterpises_cms/contracts/authoring-ui-adapter-contract.json": "c93ac2e70b464dbbaa7d3a85d8d30cac5a1b1363eb48ca646e4eb9bc13267177",
+        "enterpises_cms/contracts/authoring-ui-adapter-fixtures.json": "1cc879e9a5dc271a192af06dd16cd524b27eaa288fa61a59e3398927fdc9e786",
+        "enterpises_cms/contracts/authoring-ui-handshake.schema.json": "8e736ec0f0fb773eaf229f3daf2425209c0141fdc1682c622bfa3b187b7cdd58",
+        "enterpises_cms/docs/analysis/17-requirements-readiness-review.md": "7b96ca435a8a99fd31b4654db5c9efe2f24b354f5c41efc81db06de8a06aa40c",
+        "enterpises_cms/contracts/requirements-readiness.json": "7b637be31c26ee6aa9ebdd85671e22e347835e9db0271f5de5b6486bc3d0aec9",
+        "enterpises_cms/contracts/authoring-acceptance-profile.json": "7cbd978c72dd7f31b83840977d85e97556c212e59bcd037f212a1eab82915a98",
+        "enterpises_cms/contracts/requirement-contract-closure.json": "3fc43eb3473a97e33be3dbc91b32a874d406e8fda47969385c74a410976ec298",
+        "enterpises_cms/contracts/requirement-closure-fixtures.json": "b4e4735b5753a74e640aaa91d63075551333e663456f72304cb8afdcc38a83b5",
+        "enterpises_cms/docs/architecture/27-requirement-contract-closure.md": "e3b59a5655520cfff07046b677c340931a14620b9f6ded7a956ff3f35e6b295f",
+        "enterpises_cms/tools/design-checks/check.py": "80e673570ff12f65a1d25d621e513b20d408be3830aded679bd40645b4e21b36",
+        "enterpises_cms/tools/design-checks/requirements.lock": "936fb968b163fd3132700c0aed8da0e9981d9dcd0197819f3bf4823ad2546a61",
+        "enterpises_cms/tools/design-checks/README.md": "1a4cb0f32062e3307214b4b3396479bac8d9154f00daf8b6f1568fd6dc5b2fc0",
+        "enterpises_cms/tools/design-checks/types/proposed-modules.d.ts": "f6ac48db8b4e567f561c14e942decdd2eec1f72a6885d790924b8ea037313ae1",
+        "enterpises_cms/tools/design-checks/types/consumer.ts": "dce4408e2020f8993a90a821435ff190605c8e6f5e66be9ce7aa838b37fa5768",
+        "enterpises_cms/tools/design-checks/types/tsconfig.json": "176da5e3d955aee1124caeb553853868560ecf5ff48d0d36bd46fd268158a07c",
+        "enterpises_cms/docs/analysis/18-requirements-closure-reassessment.md": "a099ddb543d8c25550c7433e0870eddedbe54af040fc02de50945a9b14230a80",
+        "enterpises_cms/contracts/requirement-closure-evidence.json": "cd9fce0654dace900b695c4945afe6e765748a5b8b2bcb0cbfd525d4532a4c34",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07f-capture-barrier.md": "c7a96b451386109ab8cef18df2fc04a71481c841215dff93efff158a2b21e4f4",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07f-evidence.md": "721d7bdeb3fff70cd549e8fb773e57a30c2a5410c2f857f0be5886e73fca17c8",
+        "enterpises_cms/contracts/u07f-authoring-capture-evidence.json": "4fc79798a4cb8ae3eef320ef6bc75a308f65f4a5cd0d9aabe74b3294708a491c",
+        "enterpises_cms/tools/authoring-checks/README.md": "903c461e001b137a5ba396748548ac22565d8ed091f374071e31969ae0bfce81",
+        "enterpises_cms/packages/authoring-coordinator/README.md": "654f15edb83c77fb9aa8daca17b5a7b14aa76969deb839097f271b0961600fb2",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07g-save-reconciliation.md": "bea8545e48eeb29e75839280eb2f0669bcb3af483e8a76449d5eaf5395069f3e",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07g-evidence.md": "d5cc3fcfdaf99b19b6a64fe363e8d0d71042e1ee1a88b76e3109886503b1e37f",
+        "enterpises_cms/contracts/u07g-authoring-save-evidence.json": "dd146a0e7952bcf845e80335ef931439bc02e67f766e0194954b1e03c6d8a03e",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07h-delivery-and-guards.md": "09370e4c6f88cf90ac28a9cbcdaae79a60c2164e45d8c0d9add8b2da06fb63ec",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07h-evidence.md": "2e1b82bea3a859e694ce9b7234cb30188cf75a55cdee28ce673ac2b4767af3d1",
+        "enterpises_cms/contracts/u07h-authoring-delivery-evidence.json": "a6b31b0b4e7cfbc89d2db6cfb8f7c89a1ba623b8fdc3e760114931a3ec64c623",
+        "enterpises_cms/contracts/authoring-publication-history.json": "081716baa2694dafa18005b5304862e8f921566a8b67396fd2cdc6b82e0d132d",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07i-exit-flow.md": "5880190ee78cb779c20e245fd2066ddf7270b7d36db8016d8355f33513fad7a0",
+        "enterpises_cms/docs/work-items/LIB-05-nested-editor/u07i-evidence.md": "24483e2c56a59a9f9b66806a3db51d280338da13fb4aaf3cb7c7374694e1f536",
+        "enterpises_cms/contracts/u07i-authoring-exit-evidence.json": "4eb219e78e4ae4a19a881c29b684d2062faf7ef9460c581a23de7cadcd806286",
+        "ui-component/contracts/common-ui-reference-map.json": "de762def999178c8e3b42c5e0dc5edd4248f7aec4dbfd777f29710299c182b74",
+        "ui-component/contracts/design-tokens.json": "7e857ced1c4a7ce755a761f6829e8fb94cb4f3eaa6bfe11429318b2ec10397fb",
+        "ui-component/contracts/document-map.json": "06030d999f78bf8fc7f2e6a1b050dbde3ca1ad56265e2d4d5784881a87f6dfe9",
+        "ui-component/docs/README.md": "6d0488b3a7c988ea85e681ff081942d7e70626c252ca0a78ccc9afc7f5d9d053",
+        "ui-component/docs/architecture/common-design-system.md": "1cb73c1dd9fede2f8d3850d1e516c43ffa24a38101c765d9a4643150e685fa07",
+        "ui-component/docs/knowledge-base/README.md": "0b454df9d73f2e7c3015e8cdbda48d12737bf21125e48348a873de188df6e554",
+        "ui-component/docs/knowledge-base/architecture.md": "79cccd109134a28edfc6dc077bdbea9bf42e668d8b93925ceeaf76be93b4902a",
+        "ui-component/docs/knowledge-base/cms-patterns.md": "535fdc61119f7123081c37b4229cab422f3ba88c64a6026876d2f3df578ecd2f",
+        "ui-component/docs/knowledge-base/component-catalog.md": "9f18c30868880019ef2ccbc96dd530ecfeeb4dd5ee2528031abadf49131daf25",
+        "ui-component/docs/knowledge-base/enterprise-readiness.md": "2f2b09d80719b83c58d432880be45a46f0b0f81d25cfe7ca2a2d007908be1ce6",
+        "ui-component/docs/knowledge-base/integration.md": "439df30add435fa6d006b98b1dc525985eb96d93ae1cb5557ae764d8999a90fb",
+        "ui-component/docs/knowledge-base/maintenance.md": "c14beafcea2c1808eed633588632b2ae97be3681b2aeb466d8a368d9b4733dae",
+        "ui-component/docs/knowledge-base/reference-repo-analysis.md": "86698a2cc18892f23155ddf6d4cbf190b5bd2316ccea7dc5e7ab41d9ccdbd576",
+        "ui-component/docs/architecture/lib-02-public-contracts.md": "caac33f2ae35cf3c8f27c5f058474e2261b96e221dc6a1b2ab9cfb18c1de2ffd",
+        "ui-component/contracts/common-ui-contract.json": "a09850aa994134398e0d5e42dcacc58ae13bceb9776c9ab653f11e4d9fdf0289",
+        "ui-component/contracts/common-ui-configuration.schema.json": "e541d287e80d30e63378554e89abf0795632116ef2c13c8b3d9fdf1d8ef21cd9",
+        "ui-component/contracts/common-ui-fixtures.json": "3662b295d78f69bf7ac50988adb8c975fe63b1ab175a1a47de280c3a0fe050c9",
+        "ui-component/docs/work-items/LIB-02-common-ui/intent.md": "5f5826c2e8350ee6e4f1e2c7f7f1d8e1503185a33c536371d928e340e8f95a3a",
+        "ui-component/docs/work-items/LIB-02-common-ui/spec.md": "a8a556c861622735a73ac85e389f6749dba4dd12fee1980754ff2748630ac65b",
+        "ui-component/docs/work-items/LIB-02-common-ui/plan.md": "5cb832853d7a7d900c925d401fb3cb6adc275ac29e1678543d0e5316ecd2dd93",
+        "ui-component/docs/work-items/LIB-02-common-ui/test-plan.md": "59a1ec29a0dd8caeee3633bcd8c3e05a5fae38c091ade873f2eb5532afe69437",
+        "ui-component/docs/work-items/LIB-02-common-ui/decision.md": "c0dc121f45c8da8d92dabdce2bcb1641e3a17184b704f4fa95d981727bd05964",
+        "ui-component/docs/work-items/LIB-02-common-ui/evidence.md": "b03018990d497a1f16b841aa29673078f5773a70ec481f9a3d2dd7171bf5bf01",
+        "ui-component/docs/architecture/component-api.md": "1f8eac3e9d2f1e2ea145184b289a188b172a8f68853a3316e18b515240527956",
+        "ui-component/docs/architecture/component-system.md": "d7c1d54ed0baf4a17a0a80915e64b7da745f4af795063b42c5af5d8ee9b92d6b",
+        "ui-component/docs/architecture/design-tokens.md": "04c5b15c2b6b451a4e20441559a614ff73bc6dfedb3c2c26e626e16413cc32e0",
+        "ui-component/docs/components/authoring-compositions.md": "897b412c4ac273ce8c18eb874019632331a8105a26fa2340e4e2a414ea3380ac",
+        "ui-component/docs/components/controls.md": "a6154babe2d28b26de531b80d142ee60030e68348c4ba0ab3e455ee7d6cebd9d",
+        "ui-component/docs/components/feedback-data.md": "982dda77a6da9344326e46b5f8a9f265945c279874c9f5b0369b73b23a9521c0",
+        "ui-component/docs/components/foundations.md": "455a6f62834446e33a64a67a1044761a5cba0754d0300aa8a624e6bc4a4bafc2",
+        "ui-component/docs/components/navigation-overlays.md": "9237e1a0ada84fc8b584b9b7c5fd3b7ceeb1542e5dc6b32e8cbd180d209fe388",
+        "ui-component/contracts/component-catalogue-fixtures.json": "4f6ec72da0e0022b2daafc5948ecd23218bf4fb84b2f22b9ff5101508971501a",
+        "ui-component/contracts/component-catalogue.json": "fb42723a5e1a1fe21f7c92cecd0f83aab160864c32793c5d8e1620a7ecfac70f",
+        "ui-component/contracts/design-token-contract.json": "6ae852713b5e263b490c3be18b567be5ecc6f0f7e29a367ecfc9181e3b49836e",
+        "ui-component/contracts/design-token-fixtures.json": "102a260f94547e1993c7abb64b1684d896f33851cf3576b8e370490d9954fa53",
+        "ui-component/contracts/design-token-source.json": "614bc3252ea47c798e2578d22f86a97424a97b577ea820ef273cfcbf3e43567a",
+        "ui-component/contracts/design-token-source.schema.json": "305b8a88e86409235b100824f746ea07e32d9188b484b885324ad6bc70910c32",
+        "ui-component/docs/architecture/authoring-adapter-ports.md": "5e6a94760436205b0d7851782c72aa67f62ab899fc76e09a7bcdb2e563522de0",
+        "ui-component/docs/work-items/LIB-02-common-ui/adapter-backlog.md": "495666223cc9509c3d267170a61c0a9024640b90de9ceacc3ba2ea57f8b3b6e8",
+        "ui-component/contracts/authoring-adapter-ports.json": "83577e180aadf28429ec3846d36358e14ce6d4ef0ca84e74895663774ec701ce",
+        "ui-component/contracts/adapter-metadata.schema.json": "3b624a01a4ee3a6862123e50d9c1d3f291f327e32cdc1d770c12ccdefd9d21b6",
+        "ui-component/contracts/adapter-descriptor-fixtures.json": "9e71e6182c7a18be169a89ed7b6fbf5dbca350590cfea9444cce0625a342542f",
+        "ui-component/contracts/authoring-adapter-v1.d.ts": "bcaa960642068e25a3c26841bae9c9c47ecb214f7f545019d8b5ffec4d16937f",
+        "ui-component/README.md": "1f76c97858bc55166c2871515e2159631c0876af2493635578bbeeab0d2a3f91",
+        "ui-component/package.json": "ba3d9189ffbf5cfd65cdc9827932b7f9a7b405e764403a7dd44be7b34c10a944",
+        "ui-component/contracts/implementation-manifest.json": "f2fe6f8a75a45f6d7dee37bdea605f3e1e451fa3b413606fa3a915f8e0039146",
+        "ui-component/contracts/u01-foundation-evidence.json": "cb29848508d9ffd71dbe84491f7bc412925f5c2dbc739e9db1c0169f9ab49ab0",
+        "ui-component/docs/work-items/LIB-02-common-ui/u01-foundation.md": "480de5fbaa743e8f1261c26c8ad0c4cc424320033cd2a7d90396e8e970c81780",
+        "ui-component/docs/work-items/LIB-02-common-ui/u01-evidence.md": "6570a622cd2068cd687f62c5b67731dc04c3f2420bbd2179ab7618eab1af09f4",
+        "ui-component/docs/work-items/LIB-02-common-ui/u02-tokens-provider.md": "a190973de038274f7fe7e5ab01b3225edd5a043f5c9252d5dda0ec815f84f96f",
+        "ui-component/docs/work-items/LIB-02-common-ui/u02-evidence.md": "e4463859844015804ff1aa29268f5ab88ed4c1fe5544fd0e5c57ce439bd1806d",
+        "ui-component/contracts/u02-tokens-provider-evidence.json": "0e39365e39817ce7c57ac1975989be0280423b3da1e3fecae0471ebe1a448ee6",
+        "ui-component/docs/work-items/LIB-02-common-ui/u03-controls-feedback.md": "f377a43618b38c5b0efd3d8cdceaa2c6b6ab91e697917ed86b17fd931cf69924",
+        "ui-component/docs/work-items/LIB-02-common-ui/u03-evidence.md": "25b4522975f0dbeba6d9f4052c4921613de6e1ecc6206153155f7c2a47b792c4",
+        "ui-component/contracts/u03-controls-feedback-evidence.json": "d8adccaaa834faf16fba7a9f106f66ecd27985cfdf623dc2e44729ba3b9c1a03",
+        "ui-component/docs/work-items/LIB-02-common-ui/u04-toolbar-menu.md": "f5ed66a67728c0e2f09e69c9c78b11e519e9c6b296fc8d149003dae1ac005798",
+        "ui-component/docs/work-items/LIB-02-common-ui/u04-evidence.md": "42cfa5b0c62484bc94ee82c64bf148a214617976064902e888d6877dc7cf2519",
+        "ui-component/contracts/u04-toolbar-menu-evidence.json": "6376bfdf85519a81e901b9e4d6ab4c63fb27785b902d173a3cbad780d07e5cb8",
+        "ui-component/docs/work-items/LIB-02-common-ui/u05-overlays.md": "2f71eec68751abc72edd6d45cb6d4d646c6a8ef42b47541f25772af61c410f30",
+        "ui-component/docs/work-items/LIB-02-common-ui/u05-evidence.md": "abf3d79b7950efb90ff1857b1cbafc1dce4b70b83244cb21d2c07b9bcd142e8c",
+        "ui-component/contracts/u05-overlays-evidence.json": "0937fce6067f1b203fb5cf731354ee207beedd4c30500369110a688b0ea43339",
+        "ui-component/docs/work-items/LIB-02-common-ui/u06-lifecycle.md": "828d43dd83011d8f304350731e954777ba01930381255e7c9517a9ad6b6afb01",
+        "ui-component/docs/work-items/LIB-02-common-ui/u06-evidence.md": "647a0363a1031e6cec90db5839830f490b039f15250de7683396eb916bc4e149",
+        "ui-component/contracts/u06-lifecycle-evidence.json": "612737fd2bc64f11b93b5ac96531aae9ee09cd5f48397d4e092f69175d15ac08",
+        "ui-component/docs/work-items/LIB-02-common-ui/u07-owner-adapters.md": "f88d04fa49a70ae679af67c4c727c212a9a7a0adef2e1b92529d3d725922a5ea",
+        "ui-component/docs/work-items/LIB-02-common-ui/u07-evidence.md": "02a7ff0e8464ac207d7988e3a66e1a4997f5979191c2793d70425c96011f0c6f",
+        "ui-component/contracts/u07-owner-adapters-evidence.json": "8d42a4e563aa7e195f3202eaab8413eecea7072f97e3a74e6835eb59f5f1e5b9",
+        "ui-component/docs/work-items/LIB-02-common-ui/u07i-consumer-tooling.md": "d721aeb7c301cd076050a3eb73926daea3a4135294a7f6862337d74a04213d00",
+        "ui-component/contracts/u07i-consumer-tooling-evidence.json": "a7e5f8a27813137e6c01ea845a1f17d2c916930f0b1edb31c92ff6721bdb026f",
+        "pagebuilder/contracts/document-map.json": "20742c3ad189fd3a254b25ccc6502306dfa2da8a2030264d12b1cd6d1fd7a673",
+        "pagebuilder/contracts/pagebuilder-feature-matrix.json": "4f6615bbbf76e2615f0eb9f861d495670d38d01688a450b8e6db8f1611a714be",
+        "pagebuilder/docs/README.md": "7c5fb45bbf8b4052f980ef4098fabba5dbcad78b6dfbe7cf2f608961f8d31086",
+        "pagebuilder/docs/analysis/14-pagebuilder-feature-design-review.md": "96e1a3a809a5946a97c4aefdd79edd9ac6685a33144651528e0300268c10f235",
+        "pagebuilder/docs/architecture/20-pagebuilder-feature-specification.md": "d42e826980d0032eda66a42eecb72a659653380195415e2c73e2947b5a372e8f",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/eval-plan.md": "6819f384522def242fc1c24a64ea2a454a6918ae67b027c5eb4eef82fab0db5f",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/evidence.md": "b64fad561b9b189cebe81e54c46c1eafe40cc7379b11eb88172f0c7f8d112c35",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/intent.md": "2c39ca6c47ac84c6ccba428ab99573945c634f590a6036eeed564ae30fe52e74",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/plan.md": "b1f9bbe4c52dddc46a21b777c2975b073efc5fdf576d3b27a4e868531c973732",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/spec.md": "b99c087b20d6db8aa9fa30ad12fd0c6de302517b2e64087cd9386ebe2009220d",
+        "pagebuilder/docs/work-items/LIB-12-common-stack/test-plan.md": "ad63968f9b5ef8e855cd3a99ace1bc7f0b360085408665c9ec9331c3fc9a4ea8",
+        "pagebuilder/docs/architecture/shared-ui-adapter.md": "ef83c2160b3cf6c4b62895290e54c90b03e49c7071e9ec643c9b9c6690feae86",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/decision.md": "506260bb493b22b7c11a69611444b523a56932b5c63b80206d932063d73a018f",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/evidence.md": "79743ffa096bc4dd1119094bc15b39eccd860556511d08342ff41e2389b01fa2",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/intent.md": "355873caa64130d569848080f521574060c6f7ae72666601ba7c76a05b0c8aaa",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/plan.md": "32d8d57a36b16184f3d410c85c94b4c159561468f46784ae969fd9a270214803",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/spec.md": "2d4ab5dadaf53edf0acf37a04df98b50a65824fb4153da2f70eaf28a00c5691d",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/test-plan.md": "fe3d40e858e8dc70136a844c15e259015e633c4d7eb01133022b15289e705909",
+        "pagebuilder/contracts/shared-ui-adapter.json": "0339bb85fd031182b95999a3418a915e4b22ae0e23aafcbdc8e81b4bf18f8eda",
+        "pagebuilder/contracts/shared-ui-adapter-v1.d.ts": "8194277ed8c80260ee809686cb0d71d41ad939dfa5c21ce48ef53135773d0363",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/u07-presentation.md": "694f934d540372e7ea2ee709e9b2a8a726cdba7ee91915198236762ce3fb0232",
+        "pagebuilder/docs/work-items/LIB-02-shared-ui/u07-evidence.md": "af7eb21ffe36498951bfd87e7d8d07cb608909f4679338de52e0fb2d5bcd60f6",
+        "pagebuilder/contracts/u07-presentation-evidence.json": "b28ead145f3def40828a59b8add98bb235aba0d79b737d2226375834be3901fa",
+        "pagebuilder/docs/work-items/LIB-05-field-binding/u07d-bound-field.md": "095ee539eeb2c6ab3c7864fb190a2baebc644c08b5259750ea37aec97b4230db",
+        "pagebuilder/contracts/u07d-field-binding-evidence.json": "0a7bf95847fd4b9d1158452ea559a68897182b876cbb155703386a71807dd613",
+        "pagebuilder/docs/work-items/LIB-05-field-binding/u07e-inspector-registry.md": "e7b11fea23745a2f430bb99761239903046ab39edea40e1321bb7fe8f2a11833",
+        "pagebuilder/docs/work-items/LIB-05-field-binding/u07e-evidence.md": "3065a8a295c2fe385fdfbb95474fcef2beb7488551616ea722434c29b1fecc98",
+        "pagebuilder/contracts/u07e-inspector-registry-evidence.json": "15787d81aa931c50b589d149656ffc91be3005a32145450231bd1bb3878ba226",
+        "pagebuilder/docs/work-items/LIB-05-field-binding/u07f-batch-checkpoint.md": "183fa880153acb6cf17a5dd4000819e6389cb8b6c0dc3f8a7d581c2fb4a189b0",
+        "pagebuilder/contracts/u07f-batch-evidence.json": "ebaf07c4272c1d9fc9d0932f8fe871e005247f596216aa35c8fe8e8edd2ced80",
+        "pagebuilder/docs/work-items/LIB-05-field-binding/u07h-grouped-delivery-guard.md": "f8179a411b9408f20105572b933f00d247005dfba0566ac235416672c0b5f768",
+        "pagebuilder/contracts/u07h-grouped-delivery-evidence.json": "66242e97f8b5e10d3a826291c85ed4da4452fb091f856259c9d619968d1811b4",
+        "inkforge/contracts/document-map.json": "bf63c93db9e300b688fc794ee4e0fb76996b74ce619b9df67a93527ff36f0ab4",
+        "inkforge/contracts/inkforge-engine-contract.json": "30abaa56a08fc02818ee2c56eef519f2be6ee495969a4da5f764393ace13979d",
+        "inkforge/docs/README.md": "aad409c9c8acda92ccb671d7bad35a7feabb4777d23099b68f0db9b629e89a9a",
+        "inkforge/docs/architecture/24-inkforge-editing-engine.md": "10c5792ab931455d2aa64b39ba523ccff87565ca1231476e8bc0afbafd77ddd6",
+        "inkforge/docs/architecture/html-library-boundary.md": "4c81e452d9cb95512054a981897f9a5654ab89459d4bfb74756466838469517e",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/decision.md": "0dd168cadc9a9cc0645f89b8b8c1103e790c3857a6de42a8567438e3b28f0bc3",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/evidence.md": "b95f6d073d9b900a084b41fa6c3d52f58be897ccdc8e73f8ebf89202bee37e3f",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/intent.md": "de8076db2f5601f7fd275e3c92af78d874f81bd59aac8c6944a77b50a57878ad",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/plan.md": "a7dc1d3dce6186a672d3364e5b726bd95ad99e2ebbcbd242847f82f90eea3cd1",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/spec.md": "365a9d4bfdd48811e9dda04996aaaf481f6c18722ca048c23c645e75826b1eda",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/test-plan.md": "6c0a5bbcc042da9f309a78f9afffd73175bdbd248b503dfd47d5127100274b44",
+        "inkforge/docs/work-items/LIB-04-html-profile/decision.md": "d6beb8239a46399e08b88a8c47c829a955072cdb16afd4f7819989896023b67e",
+        "inkforge/docs/work-items/LIB-04-html-profile/evidence.md": "d44461620261ef78d8a876ff027208f619c721464fc4724d7e7f980bffd074c5",
+        "inkforge/docs/work-items/LIB-04-html-profile/intent.md": "ed0843d965cb8ce0196eb4bff0f13afb5d1bd14431f5a38dcd0b6e5bd6b98732",
+        "inkforge/docs/work-items/LIB-04-html-profile/plan.md": "15348ba173e77b2f97e4b18acf042b0a4d3631af85450ac5b510ecd9ad21433c",
+        "inkforge/docs/work-items/LIB-04-html-profile/spec.md": "3d622041cde736ed8af45557bbd16891ada087e7d0e00804edcb3fb4ac16ce4d",
+        "inkforge/docs/work-items/LIB-04-html-profile/test-plan.md": "e18e6c57f2f58486beb28dbbf543ecb1fdcb09a0df174f18cb1ccac8f6df26b8",
+        "inkforge/docs/architecture/shared-ui-adapter.md": "3b604c915c23ee27ae35f7f1eb3990490e66602bace5d641e6985d28d0ed19aa",
+        "inkforge/docs/work-items/LIB-02-shared-ui/decision.md": "8b7b985300b292777beb49b21d5571c68835a88f96f3634b86afe40827514dba",
+        "inkforge/docs/work-items/LIB-02-shared-ui/evidence.md": "9033e6d45abfd8e9112953f2d01582298d51272312d56b22777e2894a9399cc1",
+        "inkforge/docs/work-items/LIB-02-shared-ui/intent.md": "7f7bd77767607acfc28d23185dd2982f5814bf481fa7e122003d6a3a7dd50f7f",
+        "inkforge/docs/work-items/LIB-02-shared-ui/plan.md": "da9a3482076a341331c8664e5c089571d877e9f32bd25f7b37625186ab1c37a6",
+        "inkforge/docs/work-items/LIB-02-shared-ui/spec.md": "dbc44deff54d58024a10cda97c9999da8f9f7ffa652968d7a95b3c49df41d858",
+        "inkforge/docs/work-items/LIB-02-shared-ui/test-plan.md": "e539a35118b5f60f4bf0c0a9267b60f746bf314a135602cde2813c2fbe301fcb",
+        "inkforge/contracts/shared-ui-adapter.json": "0baf813b8302537f16929debbea34145a0f3704a8f714afc42271e2af5e9459b",
+        "inkforge/contracts/shared-ui-adapter-v1.d.ts": "1af83848de3ee7ef0826ec6a17ba8159346bad2d546a922f9055c2add8255e18",
+        "inkforge/docs/work-items/LIB-02-shared-ui/u07-presentation.md": "c6bd7d1463fd2bcd6e3b4febc31a9e7a87d798fc7ed3f3dcac53cfa8958e928f",
+        "inkforge/docs/work-items/LIB-02-shared-ui/u07-evidence.md": "87d36ba87f92d15876d54e3b939385dd6e6ef1ca13468bd6260fd26c476224d5",
+        "inkforge/contracts/u07-presentation-evidence.json": "129b87a1de1a86a503ed3d4d51059519f02582bc434740b7901a49e8e3dff533",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07b-controller.md": "05d6e509ff852070248a5573e0aab701a1f96fc38936ab9a6cdd58145fa91247",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07b-evidence.md": "9c78deb2feb004b630947ebd1f68f22f4fbd1f09d79545c38ce37d328e7d463f",
+        "inkforge/contracts/u07b-controller-evidence.json": "e6449bdbdb2c43848f3189278d25ec571c241e9c86c1bbfa7b3795e01fe7a9fc",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07c-native-surface.md": "34261c056b0c1d0239e50674db1686d1160cbc3fcfb3fc6eb28c06101dfaa67d",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07c-evidence.md": "3aec02553d82dcf2828ccb16d65d2695cff57cc1e8cc1e64459db2c6109d07f4",
+        "inkforge/contracts/u07c-native-surface-evidence.json": "da37870fabd0946e19888a52e1bfbb630819611ba533e7be96792913d2e0b784",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07d-host-boundary.md": "dc9eab8e74bab22439a18682ec07d3580ae99bdc1a78003809be91364569f7e1",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07d-evidence.md": "ad97df542946e9540341640b649d77714203b6cd0e9bef98ac1c1d94e9897683",
+        "inkforge/contracts/u07d-host-boundary-evidence.json": "a3098af0575558f9c11136baf1ba4eab1f3339d88c8b5a219b2092263e0a79d1",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07e-parent-observation.md": "c05a7be1f7d404f02cefed2d401d6799bab36219fc0579d3265bdd8376060819",
+        "inkforge/contracts/u07e-retained-host-evidence.json": "9cc58a9ff66dd9ce0a795ca111316a15354d0d2ca1230cc098743d7529acede2",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07f-staged-capture.md": "ce40525c2cb6e207e6dac5a47c6cec73007c230bb9ee4fa94b5d8aaae144da5f",
+        "inkforge/contracts/u07f-staged-capture-evidence.json": "51f6b424361b6c06fb72d7e645178674754e46327eb92da92d23d5b19ef6ea6d",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07g-save-checkpoint.md": "ab2ff80f3dc0a447e7b125906777bf0beb9fd9851b0e8f322045fa700ab9f0c4",
+        "inkforge/contracts/u07g-save-checkpoint-evidence.json": "b71d484d1b404d66b35d46da1340041e5055ea9f42bf9ead843b7c9dd55986fc",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07h-history-and-retention.md": "a6f6e133c569a2336a29d50c539e6c919f7163e37b1ffa32d2e009f3aff214cc",
+        "inkforge/contracts/u07h-history-retention-evidence.json": "249ee1c80d6552b89bbfddad0ec6a568d520ee7472d1af5780a13695d91cff7c",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u07i-explicit-termination.md": "ae7550e187a3465b3a3b147a2dfdca6933e19ee4a919a087c6f0116c2009ceb4",
+        "inkforge/contracts/u07i-explicit-termination-evidence.json": "2d14e2644a42e1f026897511279b8586a9e1c4008ed5d641db97ff5cb22cd6e6",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md": "05b4b54bde80912486fa009cf6d97275656d3bcd6d95535c9869570077229a8a",
+        "inkforge/docs/work-items/LIB-03-inkforge-engine/u08a-evidence.md": "7f43046d0e1baddcfada96d93bc530d0dc92b9091147de7b432c519dbd7f4fd0",
+        "inkforge/contracts/private-build-inputs.json": "9092558f19953f4df5812f875de1c1257510c3a245d22eb6bbcdb526cc1d6861",
+        "inkforge/contracts/u08a-reproducible-install-evidence.json": "be1111d7085087833de9c75f9e0ab11ddeb16b26a291f910d844e87b5050b667"
+      }
+    },
+    "sessionReportSha256": "f756cb0608d3b6df45d476fcd81c9ca8810a3ef08e70b91690c4597a34e67622"
+  },
+  "additionalOwnerChecks": {
+    "fullOwnerLint": "passed",
+    "fullOwnerTypecheck": "passed",
+    "changedToolingAndWorkflowFormatting": "passed",
+    "githubWorkflowExecution": "notRun"
+  }
+}

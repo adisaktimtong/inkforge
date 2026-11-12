@@ -63,3 +63,7 @@ The user authorized commit/push of this design. This containing commit versions 
 ## U07-I explicit terminal discard prerequisite
 
 [Nonmutating termination readiness](work-items/LIB-03-inkforge-engine/u07i-explicit-termination.md) and [scoped evidence](../contracts/u07i-explicit-termination-evidence.json) support the CMS whole-owner Save / Discard / Cancel flow. Composition remains blocked for Save/capture and may only be discarded by the explicit owner command. Complete engine/live backend/browser/AT acceptance stays open.
+
+## U08-A clean owner setup and frozen install
+
+[Owner decision](work-items/LIB-03-inkforge-engine/u08a-reproducible-install.md) and [evidence](work-items/LIB-03-inkforge-engine/u08a-evidence.md) resolve the private-peer install blocker with a pinned ignored development input and unchanged public peers. Clean frozen/offline installation, actual owner build/tests and fresh CMS packed A–I regression passed; no product runtime source or persisted format changed.
