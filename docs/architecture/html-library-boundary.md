@@ -35,10 +35,10 @@ Read [Editing Engine](24-inkforge-editing-engine.md) and the existing [Architect
 
 `createContentProfile({ id: 'cms-body-v2', ... })` selects a superset of `cms-body-v1`. A host that omits `id` keeps `cms-body-v1` unchanged, including its fingerprint.
 
-| Addition | Stored form | Rule |
-| --- | --- | --- |
-| Subscript, superscript | `<sub>`, `<sup>` | Text is one or the other; nesting them is rejected with `INVALID_NESTING` |
-| Text alignment | A registered class `<prefix>align-left`, `-center`, `-right` or `-justify` | Only on `p`, `h2`, `h3`, `h4` and `li` (`INVALID_CLASS_PLACEMENT`); one per block (`CONFLICTING_CLASS`) |
+| Addition               | Stored form                                                                | Rule                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Subscript, superscript | `<sub>`, `<sup>`                                                           | Text is one or the other; nesting them is rejected with `INVALID_NESTING`                               |
+| Text alignment         | A registered class `<prefix>align-left`, `-center`, `-right` or `-justify` | Only on `p`, `h2`, `h3`, `h4` and `li` (`INVALID_CLASS_PLACEMENT`); one per block (`CONFLICTING_CLASS`) |
 
 A content style class (any registered class that is not an alignment) is allowed on a `span` and on the text blocks `p`, `h2`, `h3`, `h4`, `li` and `blockquote`, and nowhere else (`INVALID_CLASS_PLACEMENT`). An element takes one class per style group, where the group is the first word after the prefix, such as `typo` or `text` (`CONFLICTING_CLASS`). In the toolbar, the content style menu styles the selected words on a span; from a bare caret it styles the whole block.
 
