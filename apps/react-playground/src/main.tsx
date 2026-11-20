@@ -1,7 +1,10 @@
 import { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { InkForgeEditor } from '@inkforge/editor-react';
-import { createContentProfile } from '@inkforge/editor-html';
+import { createContentProfile, serializeHtml } from '@inkforge/editor-html';
+import { InkforgeEngineEditor } from '@inkforge/editor-react/engine';
+import { createDocument, createEngine, createParagraph, createText } from '@inkforge/editor-core';
+import { useSyncExternalStore } from 'react';
 import '@inkforge/editor-content/content.css';
 import '@inkforge/editor-react/editor.css';
 import './playground.css';
@@ -154,8 +157,43 @@ function ProfilePlayground() {
   );
 }
 
+// Controller-based editing surface: the toolbar issues model commands instead of editing the DOM.
+const engine = createEngine({
+  document: createDocument([
+    createParagraph([createText('First paragraph')]),
+    createParagraph([createText('Second paragraph')]),
+  ]),
+  instanceId: 'playground-engine',
+  clock: () => Date.now(),
+  // Backspace and Delete need grapheme and word boundaries from the host.
+  segmentation: {
+    locale: 'en',
+    fingerprint: 'intl-segmenter-en',
+    boundaries(text, unit) {
+      const points = [0];
+      for (const part of new Intl.Segmenter('en', { granularity: unit }).segment(text))
+        points.push(part.index + part.segment.length);
+      return points;
+    },
+  },
+  origin: 'persisted',
+});
+function EnginePlayground() {
+  const snapshot = useSyncExternalStore(engine.subscribe, engine.getSnapshot);
+  return (
+    <main>
+      <h1>Engine surface</h1>
+      <InkforgeEngineEditor controller={engine} aria-label="Engine body" />
+      <pre data-testid="engine-html">{serializeHtml(snapshot.document)}</pre>
+    </main>
+  );
+}
+
+const query = new URLSearchParams(location.search);
 createRoot(document.getElementById('root')!).render(
-  new URLSearchParams(location.search).get('profile') === 'cms-body-v2' ? (
+  query.get('engine') ? (
+    <EnginePlayground />
+  ) : query.get('profile') === 'cms-body-v2' ? (
     <ProfilePlayground />
   ) : (
     <Playground />

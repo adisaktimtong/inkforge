@@ -939,3 +939,71 @@ test('CB48 randomized formatting maps match a per-character mark oracle and rest
     }
   }
 });
+
+const types = (e) => e.getSnapshot().document.children.map((n) => n.type);
+const blockIds = (e) => e.getSnapshot().nodeIndex[e.getSnapshot().rootId].childIds;
+test('block quote and code block are text block types set through setBlockType', () => {
+  const e = make('abcdef');
+  ok(run(e, { kind: 'setBlockType', blocks: blockIds(e), type: 'blockquote' }));
+  assert.deepEqual(types(e), ['blockquote']);
+  ok(run(e, { kind: 'setBlockType', blocks: blockIds(e), type: 'code-block' }));
+  assert.deepEqual(types(e), ['code-block']);
+  at(e, 3);
+  type(e, 'X');
+  assert.equal(text(e), 'abcXdef');
+  rejected(
+    run(e, { kind: 'setBlockType', blocks: blockIds(e), type: 'blockquote', level: 2 }),
+    'INVALID_BLOCK_COMMAND',
+  );
+  ok(run(e, { kind: 'undo' }));
+});
+test('insertHorizontalRule adds a rule after the block and leaves a block to type in', () => {
+  const e = make('abcdef');
+  at(e, 3);
+  ok(run(e, { kind: 'insertHorizontalRule', at: e.getSnapshot().selection.anchor }));
+  assert.deepEqual(types(e), ['paragraph', 'horizontal-rule', 'paragraph']);
+  type(e, 'next');
+  assert.equal(e.getSnapshot().document.children[2].children[0].text, 'next');
+  ok(run(e, { kind: 'undo' }));
+  ok(run(e, { kind: 'undo' }));
+  assert.deepEqual(types(e), ['paragraph']);
+  // A text block already below the rule is reused instead of adding an empty one.
+  at(e, 3);
+  ok(run(e, { kind: 'splitBlock', at: e.getSnapshot().selection.anchor }));
+  at(e, 1);
+  ok(run(e, { kind: 'insertHorizontalRule', at: e.getSnapshot().selection.anchor }));
+  assert.deepEqual(types(e), ['paragraph', 'horizontal-rule', 'paragraph']);
+  assert.equal(text(e), 'abcdef');
+});
+test('deleting at a block edge next to a rule removes the rule, and a range may span rules', () => {
+  const e = make('abcdef');
+  at(e, 6);
+  ok(run(e, { kind: 'insertHorizontalRule', at: e.getSnapshot().selection.anchor }));
+  type(e, 'xyz');
+  const last = nodes(e, 'text')[1].id;
+  ok(
+    run(e, {
+      kind: 'deleteBackward',
+      range: { anchor: pos(last, 0), head: pos(last, 0) },
+      unit: 'grapheme',
+    }),
+  );
+  assert.deepEqual(types(e), ['paragraph', 'paragraph']);
+  assert.equal(text(e), 'abcdefxyz');
+  ok(run(e, { kind: 'undo' }));
+  assert.deepEqual(types(e), ['paragraph', 'horizontal-rule', 'paragraph']);
+  const first = nodes(e, 'text')[0].id;
+  ok(
+    run(e, {
+      kind: 'deleteForward',
+      range: { anchor: pos(first, 6), head: pos(first, 6) },
+      unit: 'grapheme',
+    }),
+  );
+  assert.deepEqual(types(e), ['paragraph', 'paragraph']);
+  ok(run(e, { kind: 'undo' }));
+  const [a, b] = nodes(e, 'text');
+  ok(run(e, { kind: 'deleteRange', range: { anchor: pos(a.id, 4), head: pos(b.id, 1) } }));
+  assert.deepEqual(types(e), ['paragraph']);
+  assert.equal(text(e), 'abcdyz');
+});

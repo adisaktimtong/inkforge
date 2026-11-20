@@ -149,6 +149,8 @@ export type ControllerCommand =
       level?: 1 | 2 | 3 | 4 | 5 | 6;
     }>
   | Readonly<{ kind: 'insertHardBreak'; range: ModelSelection }>
+  /** Adds a rule after the block holding the position; the caret moves to the block below it. */
+  | Readonly<{ kind: 'insertHorizontalRule'; at: ModelPosition }>
   | Readonly<{ kind: 'splitBlock'; at: ModelPosition; range?: never }>
   | Readonly<{ kind: 'splitBlock'; range: ModelSelection; at?: never }>
   | Readonly<{ kind: 'joinBlocks'; leftBlockId: NodeId; rightBlockId: NodeId }>

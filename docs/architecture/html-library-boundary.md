@@ -48,4 +48,4 @@ Alignment is still a token class: the host must list each alignment it permits i
 | Code block | `<pre>` with inline content | Line breaks are `<br>`; source newlines are converted. Takes no class |
 | Horizontal rule | `<hr>` | At block level or inside a list item. Takes no class |
 
-Not in this revision: tables, images, highlight and font size. The controller-based engine surface validates and renders the three new blocks, but its toolbar has no buttons for them and a caret cannot be placed on a rule there; the DOM-owned editor toolbar covers all of them.
+Not in this revision: tables, images, highlight and font size. The controller-based engine surface has toolbar actions for quote, code block and horizontal rule as well. A rule is inserted with the `insertHorizontalRule` command, which leaves a text block below it; Backspace or Delete at a block edge next to a rule removes the rule, and a deleted range may span rules.

@@ -34,6 +34,9 @@ export type EngineActionId =
   | 'superscript'
   | 'paragraph'
   | 'heading2'
+  | 'blockquote'
+  | 'codeBlock'
+  | 'horizontalRule'
   | 'undo'
   | 'redo';
 type Native = Omit<
@@ -91,6 +94,9 @@ const defaults: Record<EngineActionId, string> = {
   superscript: 'Superscript',
   paragraph: 'Paragraph',
   heading2: 'Heading 2',
+  blockquote: 'Quote',
+  codeBlock: 'Code block',
+  horizontalRule: 'Horizontal rule',
   undo: 'Undo',
   redo: 'Redo',
 };
@@ -232,6 +238,14 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       const bookmark = original.bookmark;
       let command: ControllerCommand;
       if (action === 'undo' || action === 'redo') command = { kind: action };
+      else if (action === 'blockquote' || action === 'codeBlock')
+        command = {
+          kind: 'setBlockType',
+          blocks: blocks(bookmark.selection),
+          type: action === 'blockquote' ? 'blockquote' : 'code-block',
+        };
+      else if (action === 'horizontalRule')
+        command = { kind: 'insertHorizontalRule', at: bookmark.selection.head };
       else if (action === 'paragraph' || action === 'heading2')
         command =
           action === 'paragraph'

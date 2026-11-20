@@ -84,7 +84,7 @@ function deleteRange(d: Draft, range: ModelSelection): ModelPosition {
       a.index >= b.index ||
       children(a.node)
         .slice(a.index, b.index + 1)
-        .some((n) => !textBlock(n)) ||
+        .some((n) => !textBlock(n) && n.type !== 'horizontal-rule') ||
       !same(
         { className: startBlock.node.className, style: startBlock.node.style },
         { className: endBlock.node.className, style: endBlock.node.style },
@@ -326,6 +326,17 @@ function deleteUnit(
     const parent = parentOf(d.tree, block.id)!;
     const sibling = children(parent.node)[parent.index + (backward ? -1 : 1)];
     if (!sibling) return;
+    // A rule has no text to join: deleting towards it removes the rule.
+    if (sibling.type === 'horizontal-rule') {
+      d.apply({
+        kind: 'remove',
+        parentId: parent.id,
+        index: parent.index + (backward ? -1 : 1),
+        fallback: p,
+      });
+      d.selection = caret(p);
+      return;
+    }
     joinBlocks(d, backward ? d.id(sibling) : block.id, backward ? block.id : d.id(sibling));
     return;
   }
@@ -432,6 +443,20 @@ export function compile(
       value = d.value({ type: 'hard-break' });
     d.apply({ kind: 'insert', parentId: target.parentId, index: target.index, value });
     d.selection = caret({ nodeId: target.parentId, offset: target.index + 1, affinity: 'forward' });
+  } else if (command.kind === 'insertHorizontalRule') {
+    const block = blockFor(d.tree, inlinePosition(d, command.at)),
+      parent = parentOf(d.tree, block.id);
+    if (!parent) fail('INVALID_BLOCK_COMMAND');
+    const rule = d.value({ type: 'horizontal-rule' });
+    d.apply({ kind: 'insert', parentId: parent.id, index: parent.index + 1, value: rule });
+    const below = children(d.node(parent.id))[parent.index + 2];
+    let target = below && textBlock(below) ? d.id(below) : null;
+    if (!target) {
+      const paragraph = d.value({ type: 'paragraph', children: [] });
+      d.apply({ kind: 'insert', parentId: parent.id, index: parent.index + 2, value: paragraph });
+      target = paragraph.identities[0]!;
+    }
+    d.selection = caret({ nodeId: target, offset: 0, affinity: 'forward' });
   } else if (command.kind === 'splitBlock')
     splitBlock(d, command.range === undefined ? command.at : deleteRange(d, command.range));
   else if (command.kind === 'joinBlocks') joinBlocks(d, command.leftBlockId, command.rightBlockId);
