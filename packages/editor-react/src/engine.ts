@@ -209,7 +209,8 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
           const node: import('@inkforge/editor-core').NodeView | undefined =
             snapshot.nodeIndex[current];
           if (!node) return null;
-          if (['paragraph', 'heading'].includes(node.node.type)) return current;
+          if (['paragraph', 'heading', 'blockquote', 'code-block'].includes(node.node.type))
+            return current;
           current = node.parentId;
         }
         return snapshot.nodeIndex[snapshot.rootId]?.childIds[0] ?? null;
@@ -217,7 +218,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       const a = ancestor(selection.anchor.nodeId),
         b = ancestor(selection.head.nodeId);
       const all = Object.values(snapshot.nodeIndex)
-          .filter((v) => ['paragraph', 'heading'].includes(v.node.type))
+          .filter((v) => ['paragraph', 'heading', 'blockquote', 'code-block'].includes(v.node.type))
           .map((v) => v.id),
         start = all.indexOf(a ?? ''),
         end = all.indexOf(b ?? '');

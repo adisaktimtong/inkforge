@@ -118,7 +118,7 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
 export function alignBlocks(root: HTMLElement, range: Range, alignment: string) {
   preserve(range, () => {
     for (const item of Array.from(root.querySelectorAll('li'))) {
-      if (!item.querySelector('p,h1,h2,h3,h4,h5,h6,ul,ol')) continue;
+      if (!item.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,ul,ol')) continue;
       let run: Node[] = [];
       const flush = () => {
         if (run.some((node) => node.nodeType !== 8 && selected(range, node))) {
@@ -130,15 +130,15 @@ export function alignBlocks(root: HTMLElement, range: Range, alignment: string) 
         run = [];
       };
       for (const child of Array.from(item.childNodes)) {
-        if (/^(?:P|H[1-6]|UL|OL|DIV)$/.test(child.nodeName)) flush();
+        if (/^(?:P|H[1-6]|BLOCKQUOTE|PRE|UL|OL|DIV)$/.test(child.nodeName)) flush();
         else run.push(child);
       }
       flush();
     }
     for (const block of Array.from(
-      root.querySelectorAll<HTMLElement>('p,h1,h2,h3,h4,h5,h6,li,div'),
+      root.querySelectorAll<HTMLElement>('p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div'),
     )) {
-      if (block.querySelector('p,h1,h2,h3,h4,h5,h6,li,div,ul,ol')) continue;
+      if (block.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div,ul,ol')) continue;
       if (selected(range, block)) block.style.textAlign = alignment;
     }
   });
@@ -160,15 +160,20 @@ export function markActive(root: HTMLElement, range: Range, selector: string) {
 export function alignmentState(root: HTMLElement, range: Range, classPrefix?: string) {
   const blocks = new Set<HTMLElement>();
   if (range.collapsed) {
-    const block = ancestor(range.startContainer, root, 'p,h1,h2,h3,h4,h5,h6,li,div');
+    const block = ancestor(range.startContainer, root, 'p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div');
     if (block) blocks.add(block);
   } else
     for (const leaf of selectedLeaves(root, range)) {
-      const block = ancestor(leaf, root, 'p,h1,h2,h3,h4,h5,h6,li,div');
+      const block = ancestor(leaf, root, 'p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div');
       if (block) blocks.add(block);
     }
-  for (const block of Array.from(root.querySelectorAll<HTMLElement>('p,h1,h2,h3,h4,h5,h6,li,div')))
-    if (!block.querySelector('p,h1,h2,h3,h4,h5,h6,li,div,ul,ol') && selected(range, block))
+  for (const block of Array.from(
+    root.querySelectorAll<HTMLElement>('p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div'),
+  ))
+    if (
+      !block.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,div,ul,ol') &&
+      selected(range, block)
+    )
       blocks.add(block);
   const values = [...blocks].map((block) => {
     // A strict profile stores alignment as a class; read it without depending on loaded CSS.
@@ -217,4 +222,21 @@ export function alignBlocksByClass(
       if (!block.classList.length) block.removeAttribute('class');
     }
   });
+}
+/** Insert a rule after the block holding the caret and continue typing in the block below it. */
+export function insertRule(root: HTMLElement, range: Range) {
+  const doc = root.ownerDocument;
+  let block: Node | null = range.endContainer;
+  while (block && block.parentNode !== root) block = block.parentNode;
+  const rule = doc.createElement('hr');
+  if (block) (block as ChildNode).after(rule);
+  else root.append(rule);
+  let next = rule.nextElementSibling;
+  if (!next || next.tagName === 'HR') {
+    next = doc.createElement('p');
+    next.append(doc.createElement('br'));
+    rule.after(next);
+  }
+  range.selectNodeContents(next);
+  range.collapse(true);
 }

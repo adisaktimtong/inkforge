@@ -70,6 +70,9 @@ export function createEngineContentCodec(
           'hard-break': ['type', 'className', 'style'],
           link: ['type', 'href', 'target', 'children', 'className', 'style'],
           paragraph: ['type', 'children', 'className', 'style'],
+          blockquote: ['type', 'children', 'className', 'style'],
+          'code-block': ['type', 'children', 'className', 'style'],
+          'horizontal-rule': ['type', 'className', 'style'],
           heading: ['type', 'level', 'children', 'className', 'style'],
           list: ['type', 'ordered', 'items', 'className', 'style'],
           'list-item': ['type', 'children', 'className', 'style'],
@@ -105,13 +108,17 @@ export function createEngineContentCodec(
             : out;
         }
         const children =
-          node.type === 'list' ? node.items : node.type === 'hard-break' ? [] : node.children;
+          node.type === 'list'
+            ? node.items
+            : node.type === 'hard-break' || node.type === 'horizontal-rule'
+              ? []
+              : node.children;
         if (!Array.isArray(children)) throw Error('INVALID_MODEL_CHILDREN');
         const permitted =
           node.type === 'list'
             ? ['list-item']
             : node.type === 'list-item'
-              ? ['paragraph', 'heading', 'list']
+              ? ['paragraph', 'heading', 'list', 'blockquote', 'code-block', 'horizontal-rule']
               : ['text', 'hard-break', 'link'];
         if (children.some((n: any) => !n || !permitted.includes(n.type)))
           throw Error('INVALID_MODEL_NESTING');
@@ -119,6 +126,15 @@ export function createEngineContentCodec(
         switch (node.type) {
           case 'paragraph':
             tag = 'p';
+            break;
+          case 'blockquote':
+            tag = 'blockquote';
+            break;
+          case 'code-block':
+            tag = 'pre';
+            break;
+          case 'horizontal-rule':
+            tag = 'hr';
             break;
           case 'heading':
             if (![2, 3, 4].includes(node.level)) throw Error('UNSUPPORTED_MODEL_HEADING');
@@ -166,7 +182,20 @@ export function createEngineContentCodec(
         Object.keys(document).some((k) => !['type', 'children'].includes(k))
       )
         return rejected('INVALID_MODEL_DOCUMENT');
-      if (document.children.some((n) => !n || !['paragraph', 'heading', 'list'].includes(n.type)))
+      if (
+        document.children.some(
+          (n) =>
+            !n ||
+            ![
+              'paragraph',
+              'heading',
+              'list',
+              'blockquote',
+              'code-block',
+              'horizontal-rule',
+            ].includes(n.type),
+        )
+      )
         return rejected('INVALID_MODEL_NESTING');
       const ast = document.children.map((node) => visit(node, 0));
       const diagnostics = evaluateContentPolicy(ast, profile);

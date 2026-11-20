@@ -24,7 +24,9 @@ export function documentSelectionSize(document: DeepReadonly<DocumentNode>): num
         sum +
         (node.type === 'list'
           ? node.items.reduce((n, item) => n + blocks(item.children), 0)
-          : inline(node.children) + 1),
+          : node.type === 'horizontal-rule'
+            ? 1
+            : inline(node.children) + 1),
       0,
     );
   return blocks(document.children);
@@ -144,6 +146,9 @@ export function validateEditorDocument(document: unknown): EngineDiagnostic[] {
     const fields: Record<string, string[]> = {
       document: ['children'],
       paragraph: ['children'],
+      blockquote: ['children'],
+      'code-block': ['children'],
+      'horizontal-rule': [],
       heading: ['level', 'children'],
       text: ['text', 'marks'],
       link: ['href', 'target', 'children'],
@@ -197,14 +202,31 @@ export function validateEditorDocument(document: unknown): EngineDiagnostic[] {
     const children =
       node.type === 'list'
         ? node.items
-        : ['document', 'paragraph', 'heading', 'list-item', 'link'].includes(node.type)
+        : [
+              'document',
+              'paragraph',
+              'heading',
+              'blockquote',
+              'code-block',
+              'list-item',
+              'link',
+            ].includes(node.type)
           ? node.children
           : undefined;
     if (node.type === 'list' && typeof node.ordered !== 'boolean')
       diagnostics.push({ code: 'INVALID_LIST', path });
     if (
       children !== undefined ||
-      ['document', 'paragraph', 'heading', 'list', 'list-item', 'link'].includes(node.type)
+      [
+        'document',
+        'paragraph',
+        'heading',
+        'blockquote',
+        'code-block',
+        'list',
+        'list-item',
+        'link',
+      ].includes(node.type)
     ) {
       if (!Array.isArray(children)) diagnostics.push({ code: 'INVALID_CHILDREN', path });
       else
@@ -215,11 +237,13 @@ export function validateEditorDocument(document: unknown): EngineDiagnostic[] {
             depth + 1,
             node.type === 'list'
               ? ['list-item']
-              : ['paragraph', 'heading', 'link'].includes(String(node.type))
+              : ['paragraph', 'heading', 'blockquote', 'code-block', 'link'].includes(
+                    String(node.type),
+                  )
                 ? node.type === 'link'
                   ? ['text', 'hard-break']
                   : ['text', 'link', 'hard-break']
-                : ['paragraph', 'heading', 'list'],
+                : ['paragraph', 'heading', 'list', 'blockquote', 'code-block', 'horizontal-rule'],
           ),
         );
     }

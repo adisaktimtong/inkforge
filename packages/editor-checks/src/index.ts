@@ -195,7 +195,18 @@ export async function runContentChecks(
         );
       if (typeof node.href !== 'string' || !node.href.trim()) invalid = true;
     }
-    if (['document', 'paragraph', 'heading', 'link', 'list-item', 'list'].includes(node.type)) {
+    if (
+      [
+        'document',
+        'paragraph',
+        'heading',
+        'blockquote',
+        'code-block',
+        'link',
+        'list-item',
+        'list',
+      ].includes(node.type)
+    ) {
       const children = node.type === 'list' ? node.items : node.children;
       if (!Array.isArray(children)) {
         invalid = true;
@@ -208,9 +219,11 @@ export async function runContentChecks(
           depth + 1,
           node.type === 'list'
             ? ['list-item']
-            : ['paragraph', 'heading', 'link'].includes(node.type as string)
+            : ['paragraph', 'heading', 'blockquote', 'code-block', 'link'].includes(
+                  node.type as string,
+                )
               ? ['text', 'link', 'hard-break']
-              : ['paragraph', 'heading', 'list'],
+              : ['paragraph', 'heading', 'list', 'blockquote', 'code-block', 'horizontal-rule'],
         ),
       );
     }

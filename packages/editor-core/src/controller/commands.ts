@@ -26,7 +26,8 @@ const caret = (position: ModelPosition): ModelSelection => ({
 });
 function inlinePosition(d: Draft, p: ModelPosition): ModelPosition {
   const n = d.node(p.nodeId);
-  if (['text', 'paragraph', 'heading', 'link'].includes(n.type)) return p;
+  if (['text', 'paragraph', 'heading', 'blockquote', 'code-block', 'link'].includes(n.type))
+    return p;
   const list = children(n);
   if (!list.length && ['document', 'list-item'].includes(n.type)) {
     const value = d.value({ type: 'paragraph', children: [] });
@@ -406,10 +407,10 @@ export function compile(
       !Array.isArray(command.blocks) ||
       !command.blocks.length ||
       new Set(command.blocks).size !== command.blocks.length ||
-      !['paragraph', 'heading'].includes(command.type) ||
+      !['paragraph', 'heading', 'blockquote', 'code-block'].includes(command.type) ||
       (command.type === 'heading' &&
         (!Number.isInteger(command.level) || command.level! < 1 || command.level! > 6)) ||
-      (command.type === 'paragraph' && command.level !== undefined)
+      (command.type !== 'heading' && command.level !== undefined)
     )
       fail('INVALID_BLOCK_COMMAND');
     for (const id of command.blocks) {

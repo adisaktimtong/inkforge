@@ -80,7 +80,7 @@ const markTags: Record<Mark, string> = {
   superscript: 'sup',
 };
 const textBlock = (s: ControllerSnapshot, id: string) =>
-  ['paragraph', 'heading'].includes(s.nodeIndex[id]?.node.type ?? '');
+  ['paragraph', 'heading', 'blockquote', 'code-block'].includes(s.nodeIndex[id]?.node.type ?? '');
 function blockOf(s: ControllerSnapshot, position: ModelPosition): string | null {
   let id: string | null = position.nodeId;
   while (id) {
@@ -316,19 +316,25 @@ export function mountEngineDom(
         const tag =
           model.type === 'paragraph'
             ? 'p'
-            : model.type === 'heading'
-              ? 'h' + model.level
-              : model.type === 'list'
-                ? model.ordered
-                  ? 'ol'
-                  : 'ul'
-                : model.type === 'list-item'
-                  ? 'li'
-                  : model.type === 'hard-break'
-                    ? 'br'
-                    : model.type === 'link'
-                      ? 'a'
-                      : 'span';
+            : model.type === 'blockquote'
+              ? 'blockquote'
+              : model.type === 'code-block'
+                ? 'pre'
+                : model.type === 'horizontal-rule'
+                  ? 'hr'
+                  : model.type === 'heading'
+                    ? 'h' + model.level
+                    : model.type === 'list'
+                      ? model.ordered
+                        ? 'ol'
+                        : 'ul'
+                      : model.type === 'list-item'
+                        ? 'li'
+                        : model.type === 'hard-break'
+                          ? 'br'
+                          : model.type === 'link'
+                            ? 'a'
+                            : 'span';
         let record = records.get(id);
         if (!record || record.dom.localName !== tag) {
           const replacement = doc.createElement(tag);
@@ -1063,25 +1069,31 @@ export function renderEngineSeed(snapshot: ControllerSnapshot): string {
     const tag =
       n.type === 'paragraph'
         ? 'p'
-        : n.type === 'heading'
-          ? 'h' + n.level
-          : n.type === 'list'
-            ? n.ordered
-              ? 'ol'
-              : 'ul'
-            : n.type === 'list-item'
-              ? 'li'
-              : n.type === 'hard-break'
-                ? 'br'
-                : n.type === 'link'
-                  ? 'a'
-                  : 'span';
+        : n.type === 'blockquote'
+          ? 'blockquote'
+          : n.type === 'code-block'
+            ? 'pre'
+            : n.type === 'horizontal-rule'
+              ? 'hr'
+              : n.type === 'heading'
+                ? 'h' + n.level
+                : n.type === 'list'
+                  ? n.ordered
+                    ? 'ol'
+                    : 'ul'
+                  : n.type === 'list-item'
+                    ? 'li'
+                    : n.type === 'hard-break'
+                      ? 'br'
+                      : n.type === 'link'
+                        ? 'a'
+                        : 'span';
     let inside = n.type === 'text' ? escape(n.text) : v.childIds.map(node).join('');
     if (n.type === 'text')
       for (const mark of [...(n.marks ?? [])].reverse())
         inside = `<${markTags[mark]}>${inside}</${markTags[mark]}>`;
     if (!inside && textBlock(snapshot, id)) inside = '<br data-inkforge-placeholder="">';
-    return `<${tag} data-inkforge-node="${escape(id)}" data-inkforge-type="${n.type}">${tag === 'br' ? '' : inside + `</${tag}>`}`;
+    return `<${tag} data-inkforge-node="${escape(id)}" data-inkforge-type="${n.type}">${tag === 'br' || tag === 'hr' ? '' : inside + `</${tag}>`}`;
   }
   return (
     snapshot.nodeIndex[snapshot.rootId]?.childIds.map(node).join('') ||

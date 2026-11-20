@@ -145,7 +145,7 @@ export type ControllerCommand =
   | Readonly<{
       kind: 'setBlockType';
       blocks: readonly NodeId[];
-      type: 'paragraph' | 'heading';
+      type: 'paragraph' | 'heading' | 'blockquote' | 'code-block';
       level?: 1 | 2 | 3 | 4 | 5 | 6;
     }>
   | Readonly<{ kind: 'insertHardBreak'; range: ModelSelection }>

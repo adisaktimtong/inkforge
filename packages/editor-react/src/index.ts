@@ -121,8 +121,8 @@ function sanitize(html: string, profile?: ContentProfile) {
 // Semantic offsets survive text-node coalescing and wrapper normalization.
 // A hard break and each text block boundary occupy one position.
 const textBlock = (node: Node) =>
-  /^(?:P|H[1-6]|DIV|LI)$/.test(node.nodeName) &&
-  !Array.from(node.childNodes).some((child) => /^(?:P|H[1-6]|DIV|UL|OL)$/.test(child.nodeName));
+  /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|LI)$/.test(node.nodeName) &&
+  !Array.from(node.childNodes).some((child) => /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|UL|OL)$/.test(child.nodeName));
 const size = (node: Node): number =>
   node.nodeType === 3
     ? (node.textContent?.length ?? 0)
@@ -183,7 +183,7 @@ function replaceHtml(element: HTMLDivElement, html: string, selection?: EditorSe
 function editingHtml(element: HTMLDivElement): string {
   const copy = element.cloneNode(true) as HTMLDivElement;
   for (const div of copy.querySelectorAll('div')) {
-    if (div.querySelector('p,div,h1,h2,h3,h4,h5,h6,ul,ol')) continue;
+    if (div.querySelector('p,div,h1,h2,h3,h4,h5,h6,blockquote,pre,ul,ol')) continue;
     const paragraph = element.ownerDocument.createElement('p');
     for (const attribute of Array.from(div.attributes))
       paragraph.setAttribute(attribute.name, attribute.value);
@@ -206,11 +206,11 @@ const hasContent = (node: Element | DocumentFragment) =>
 
 function insertFragment(root: HTMLDivElement, range: Range, fragment: DocumentFragment) {
   const doc = root.ownerDocument;
-  const start = boundary(range.startContainer, root, /^(?:P|H[1-6]|LI)$/);
-  const end = boundary(range.endContainer, root, /^(?:P|H[1-6]|LI)$/);
+  const start = boundary(range.startContainer, root, /^(?:P|H[1-6]|BLOCKQUOTE|PRE|LI)$/);
+  const end = boundary(range.endContainer, root, /^(?:P|H[1-6]|BLOCKQUOTE|PRE|LI)$/);
   const startItem = boundary(range.startContainer, root, /^LI$/);
   const endItem = boundary(range.endContainer, root, /^LI$/);
-  const endRoot = boundary(range.endContainer, root, /^(?:P|H[1-6]|UL|OL|DIV)$/);
+  const endRoot = boundary(range.endContainer, root, /^(?:P|H[1-6]|BLOCKQUOTE|PRE|UL|OL|DIV)$/);
   const inline =
     start &&
     fragment.childNodes.length === 1 &&
@@ -279,7 +279,7 @@ function insertFragment(root: HTMLDivElement, range: Range, fragment: DocumentFr
     marker.remove();
     if (endRoot?.isConnected && endRoot !== block && !hasContent(endRoot)) endRoot.remove();
     // Keep the next typed character inside the last pasted text block.
-    const leaves = last.querySelectorAll('p,h1,h2,h3,h4,h5,h6,li');
+    const leaves = last.querySelectorAll('p,h1,h2,h3,h4,h5,h6,blockquote,pre,li');
     const target = leaves[leaves.length - 1] ?? last;
     range.selectNodeContents(target);
     range.collapse(false);
@@ -765,7 +765,7 @@ const InkForgeEditorContent = forwardRef<HTMLDivElement, InkForgeEditorProps>(
               .replace(/\r?\n/g, '<br>') +
             '</p>';
         const next = sanitize(
-          /<(?:p|div|h[1-6]|ul|ol|section|article|li)\b/i.test(source)
+          /<(?:p|div|h[1-6]|ul|ol|section|article|li|blockquote|pre|hr)\b/i.test(source)
             ? source
             : `<p>${source}</p>`,
           profile,

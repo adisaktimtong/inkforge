@@ -34,3 +34,20 @@
   font-size: 0.75em;
   line-height: 0;
 }
+/* Blocks added by cms-body-v2. Colours come from the host theme through custom properties. */
+.inkforge-content blockquote {
+  margin-inline: 0;
+  padding-inline-start: 1em;
+  border-inline-start: 0.25em solid var(--content-quote-border, currentColor);
+}
+.inkforge-content pre {
+  overflow-x: auto;
+  padding: 0.75em 1em;
+  font-family: var(--content-font-mono, ui-monospace, monospace);
+  white-space: pre-wrap;
+  background: var(--content-code-surface, transparent);
+}
+.inkforge-content hr {
+  border: 0;
+  border-block-start: 1px solid var(--content-rule, currentColor);
+}

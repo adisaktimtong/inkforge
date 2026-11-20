@@ -56,7 +56,7 @@ const baseTags = [
 /** Tags each profile revision accepts. A revision only ever adds to the previous one. */
 const profileTags: Record<string, ReadonlySet<string>> = {
   'cms-body-v1': new Set(baseTags),
-  'cms-body-v2': new Set([...baseTags, 'sub', 'sup']),
+  'cms-body-v2': new Set([...baseTags, 'sub', 'sup', 'blockquote', 'pre', 'hr']),
 };
 export type ContentProfileId = 'cms-body-v1' | 'cms-body-v2';
 /** Canonical tags of a profile, for adapters that compile a second allowlist. */
@@ -65,7 +65,9 @@ export const contentProfileTags = (profile: ContentProfile): string[] => [
 ];
 const tagsOf = (profile: ContentProfile) => profileTags[profile.id] ?? profileTags['cms-body-v1']!;
 /** cms-body-v2 gives alignment classes a fixed placement; v1 keeps its original rule. */
-const alignmentBlocks = ['p', 'h2', 'h3', 'h4', 'li'];
+const alignmentBlocks = ['p', 'h2', 'h3', 'h4', 'li', 'blockquote'];
+const blockTags = ['p', 'h2', 'h3', 'h4', 'ul', 'ol', 'blockquote', 'pre', 'hr'];
+const voidTags = ['br', 'hr'];
 export const alignmentClassPrefix = (profile: ContentProfile) => profile.classPrefix + 'align-';
 const aliases: Record<string, string> = { b: 'strong', i: 'em', strike: 's' };
 const forbidden = new Set(['__proto__', 'constructor', 'prototype']);
@@ -184,8 +186,7 @@ export function evaluateContentPolicy(
       error('UNSUPPORTED_NAMESPACE', path, 'Foreign content is not allowed');
     if (!tagsOf(profile).has(tag))
       error('UNSUPPORTED_TAG', path, `Unsupported element: ${node.tag}`);
-    const block = ['p', 'h2', 'h3', 'h4', 'ul', 'ol'];
-    if (block.includes(tag) && parent && !['li'].includes(parent))
+    if (blockTags.includes(tag) && parent && !['li'].includes(parent))
       error('INVALID_NESTING', path, 'Block is not allowed in this parent');
     if (tag === 'li' && !['ul', 'ol'].includes(parent ?? ''))
       error('INVALID_NESTING', path, 'List items need a list parent');
@@ -206,6 +207,8 @@ export function evaluateContentPolicy(
           const alignment = classes.filter((c) => c.startsWith(alignmentClassPrefix(profile)));
           if (alignment.length && !alignmentBlocks.includes(tag))
             error('INVALID_CLASS_PLACEMENT', path, 'Alignment belongs on a text block');
+          else if (['pre', 'hr'].includes(tag))
+            error('INVALID_CLASS_PLACEMENT', path, 'This block takes no content style');
           else if (new Set(alignment).size > 1)
             error('CONFLICTING_CLASS', path, 'A block takes one alignment');
         }
@@ -251,7 +254,7 @@ export function serializeContentAst(nodes: readonly HtmlAstNode[]): string {
     }
     if (attributes.has('class'))
       output += ` class="${escape([...new Set(attributes.get('class')!.split(/\s+/).filter(Boolean))].sort().join(' '))}"`;
-    return `<${tag}${output}>${tag === 'br' ? '' : node.children.map(render).join('') + `</${tag}>`}`;
+    return `<${tag}${output}>${voidTags.includes(tag) ? '' : node.children.map(render).join('') + `</${tag}>`}`;
   };
   return nodes.map(render).join('');
 }
@@ -358,11 +361,11 @@ export function validateContentSyntax(input: string, profile: ContentProfile): C
     if (++count > profile.maxNodes * 2 || stack.length > profile.maxDepth)
       return reject('HTML syntax exceeds profile limits');
     if (closing) {
-      if (tail.trim() || name === 'br' || stack.pop() !== name)
+      if (tail.trim() || voidTags.includes(name) || stack.pop() !== name)
         return reject('Unbalanced HTML closing tag');
     } else {
       const parent = stack.at(-1);
-      if (['p', 'h2', 'h3', 'h4', 'ul', 'ol'].includes(name) && parent && parent !== 'li')
+      if (blockTags.includes(name) && parent && parent !== 'li')
         return reject('Block content needs a block parent');
       if (name === 'li' && !['ul', 'ol'].includes(parent ?? ''))
         return reject('List items need a list parent');
@@ -387,8 +390,8 @@ export function validateContentSyntax(input: string, profile: ContentProfile): C
         names.add(attribute);
         offset += attr[0].length;
       }
-      if (name !== 'br') {
-        if (/\/\s*$/.test(tail)) return reject('Only br may be self closing');
+      if (!voidTags.includes(name)) {
+        if (/\/\s*$/.test(tail)) return reject('Only void elements may be self closing');
         stack.push(name);
       }
     }

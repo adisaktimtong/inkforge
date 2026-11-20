@@ -108,3 +108,47 @@ test('the general HTML codec round-trips subscript and superscript marks', () =>
   assert.deepEqual(texts[3].marks, ['superscript']);
   assert.equal(serializeHtml(parsed.document), '<p>H<sub>2</sub>O and x<sup>2</sup></p>');
 });
+
+test('cms-body-v2 accepts block quote, code block and horizontal rule', () => {
+  assert.deepEqual(codes('<blockquote>x</blockquote>', v1), ['UNSUPPORTED_TAG']);
+  assert.deepEqual(codes('<pre>x</pre>', v1), ['UNSUPPORTED_TAG']);
+  assert.deepEqual(codes('<hr>', v1), ['UNSUPPORTED_TAG']);
+  assert.equal(
+    canonical('<blockquote>Quoted <em>text</em></blockquote><hr><p>after</p>'),
+    '<blockquote>Quoted <em>text</em></blockquote><hr><p>after</p>',
+  );
+  assert.equal(canonical('<pre>a &lt; b<br>  c</pre>'), '<pre>a &lt; b<br>  c</pre>');
+  assert.equal(canonical('<pre>a\n  b</pre>'), '<pre>a<br>  b</pre>');
+  assert.equal(
+    canonical('<blockquote class="rte-align-center">x</blockquote>'),
+    '<blockquote class="rte-align-center">x</blockquote>',
+  );
+  assert.equal(
+    canonical('<ul><li><blockquote>q</blockquote><hr></li></ul>'),
+    '<ul><li><blockquote>q</blockquote><hr></li></ul>',
+  );
+});
+
+test('cms-body-v2 rejects misplaced block quote, code block and horizontal rule', () => {
+  assert.deepEqual(codes('<p><hr></p>'), ['INVALID_HTML']);
+  assert.deepEqual(codes('<blockquote><p>x</p></blockquote>'), ['INVALID_HTML']);
+  assert.deepEqual(codes('<p>a<pre>x</pre></p>'), ['INVALID_HTML']);
+  assert.deepEqual(codes('<hr>x</hr>'), ['INVALID_HTML']);
+  assert.deepEqual(codes('<pre class="rte-align-center">x</pre>'), ['INVALID_CLASS_PLACEMENT']);
+  assert.deepEqual(codes('<hr class="rte-text-brand">'), ['INVALID_CLASS_PLACEMENT']);
+});
+
+test('the general HTML codec round-trips the new blocks', () => {
+  const parsed = parseHtml(
+    '<blockquote><p>one</p><p>two</p></blockquote><pre><code>a\nb</code></pre><hr><p>x</p>',
+  );
+  assert.deepEqual(parsed.diagnostics, []);
+  assert.deepEqual(
+    parsed.document.children.map((n) => n.type),
+    ['blockquote', 'blockquote', 'code-block', 'horizontal-rule', 'paragraph'],
+  );
+  assert.equal(
+    serializeHtml(parsed.document),
+    '<blockquote>one</blockquote><blockquote>two</blockquote><pre>a<br>b</pre><hr><p>x</p>',
+  );
+});

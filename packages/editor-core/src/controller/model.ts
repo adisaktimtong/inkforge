@@ -104,8 +104,18 @@ export function canonical(value: unknown): string {
 export const byteSize = (value: unknown): number =>
   new TextEncoder().encode(canonical(value)).length;
 export const children = (n: RNode): RNode[] => n.items ?? n.children ?? [];
-const containers = ['document', 'paragraph', 'heading', 'list', 'list-item', 'link'];
-export const textBlock = (n: RNode) => n.type === 'paragraph' || n.type === 'heading';
+const containers = [
+  'document',
+  'paragraph',
+  'heading',
+  'blockquote',
+  'code-block',
+  'list',
+  'list-item',
+  'link',
+];
+export const textBlock = (n: RNode) =>
+  ['paragraph', 'heading', 'blockquote', 'code-block'].includes(n.type);
 export const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
 export function validateModel(input: unknown, limits: ControllerLimits): RNode {
   const seen = new Set<unknown>();
@@ -139,6 +149,9 @@ export function validateModel(input: unknown, limits: ControllerLimits): RNode {
     const fields: Record<string, readonly string[]> = {
       document: ['children'],
       paragraph: ['children'],
+      blockquote: ['children'],
+      'code-block': ['children'],
+      'horizontal-rule': [],
       heading: ['level', 'children'],
       list: ['ordered', 'items'],
       'list-item': ['children'],
@@ -200,11 +213,11 @@ export function validateModel(input: unknown, limits: ControllerLimits): RNode {
       const allowedChildren =
         n.type === 'list'
           ? ['list-item']
-          : ['paragraph', 'heading', 'link'].includes(n.type)
+          : ['paragraph', 'heading', 'blockquote', 'code-block', 'link'].includes(n.type)
             ? n.type === 'link'
               ? ['text', 'hard-break']
               : ['text', 'link', 'hard-break']
-            : ['paragraph', 'heading', 'list'];
+            : ['paragraph', 'heading', 'list', 'blockquote', 'code-block', 'horizontal-rule'];
       const copied = rawChildren.map((c) => visit(c, allowedChildren, depth + 1));
       if (n.type === 'list') out.items = copied;
       else out.children = copied;

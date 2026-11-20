@@ -10,6 +10,7 @@ import {
   editInline,
   alignBlocks,
   alignBlocksByClass,
+  insertRule,
   markActive,
   markSelector,
   alignmentState,
@@ -40,6 +41,8 @@ const actions = [
   ['Heading 1', 'H1', 'formatBlock', 'h1'],
   ['Heading 2', 'H2', 'formatBlock', 'h2'],
   ['Heading 3', 'H3', 'formatBlock', 'h3'],
+  ['Quote', '”', 'formatBlock', 'blockquote'],
+  ['Code block', '{ }', 'formatBlock', 'pre'],
   ['Bulleted list', '• List', 'insertUnorderedList'],
   ['Numbered list', '1. List', 'insertOrderedList'],
   ['Subscript', 'x₂', 'sub'],
@@ -52,6 +55,11 @@ const ownMarks: Record<string, NonNullable<InlineEdit['mark']>> = {
   sub: 'sub',
   sup: 'sup',
 };
+// Positions in `actions`: text styles open from one menu; lists and scripts follow them.
+const STYLES = [5, 11] as const;
+const SCRIPTS = 13;
+// Text styles a strict profile cannot store.
+const extended = (profile?: ContentProfile) => !profile || profile.id !== 'cms-body-v1';
 const alignments = ['left', 'center', 'right', 'justify'];
 
 export function useToolbar(
@@ -684,19 +692,20 @@ export function useToolbar(
           );
         const controls: ReactNode[] = [];
         actions.forEach((action, index) => {
-          if (index >= 5 && index <= 8) return;
-          if (index === 9)
+          if (index >= STYLES[0] && index < STYLES[1]) return;
+          if (index === STYLES[1])
             controls.push(
               button(
                 'Text style',
                 controls.length,
                 (target) => open('Text style', target),
                 false,
-                actions.slice(5, 9).find((_a, i) => pressed[i + 5])?.[0] ?? 'Paragraph',
+                actions.slice(...STYLES).find((_a, i) => pressed[i + STYLES[0]])?.[0] ??
+                  'Paragraph',
               ),
             );
           // Subscript and superscript need a profile that stores them.
-          if (index >= 11 && profile && profile.id === 'cms-body-v1') return;
+          if (index >= SCRIPTS && !extended(profile)) return;
           controls.push(button(action[0], controls.length, () => run(index), pressed[index]));
         });
         // A strict profile offers only the alignments its registry stores as classes.
@@ -724,6 +733,12 @@ export function useToolbar(
           ? ['Link', ...(styleTokens.length ? ['Content style'] : [])]
           : ['Text color', 'Highlight', 'Link'])
           controls.push(button(name, controls.length, (target) => open(name, target)));
+        if (extended(profile))
+          controls.push(
+            button('Horizontal rule', controls.length, () =>
+              apply((root, range) => insertRule(root, range)),
+            ),
+          );
         controls.push(button('Clear formatting', controls.length, () => inline({ clear: true })));
         if (popup)
           controls.push(
@@ -746,8 +761,12 @@ export function useToolbar(
               createElement('div', { className: 'inkforge-panel-heading' }, popup),
               popup === 'Text style'
                 ? actions
-                    .slice(5, 9)
-                    .filter((action) => !profile || action[0] !== 'Heading 1')
+                    .slice(...STYLES)
+                    .filter(
+                      (action) =>
+                        (!profile || action[0] !== 'Heading 1') &&
+                        (extended(profile) || !['Quote', 'Code block'].includes(action[0])),
+                    )
                     .map((action) =>
                       createElement(
                         EditorButton,
@@ -944,6 +963,7 @@ function icon(label: string) {
     Underline: 'M6 4v7a6 6 0 0 0 12 0V4M4 21h16',
     Strikethrough: 'M17 6c-3-4-12-2-10 3M4 12h16M7 18c4 4 12 1 10-3',
     'Inline code': 'm8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16',
+    'Horizontal rule': 'M3 12h18M7 6h10M7 18h10',
     Subscript: 'm4 5 8 10m0-10L4 15m12 2c0-2 4-2 4 0s-4 2-4 4h4',
     Superscript: 'm4 9 8 10m0-10L4 19M16 5c0-2 4-2 4 0s-4 2-4 4h4',
     'Bulleted list': 'M8 5h13M8 12h13M8 19h13M3 5h1M3 12h1M3 19h1',

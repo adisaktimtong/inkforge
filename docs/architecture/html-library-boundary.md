@@ -42,4 +42,8 @@ Read [Editing Engine](24-inkforge-editing-engine.md) and the existing [Architect
 
 Alignment is still a token class: the host must list each alignment it permits in `tokenClasses`, and the toolbar shows a button only for those. `content.css` maps left and right to the logical `start` and `end` values. Colour stays a registered token class such as `rte-text-brand`; the profile stores no inline style.
 
-Not in this revision: block quote, horizontal rule, code block, tables and images. Each needs a new block type in the document model.
+| Block quote | `<blockquote>` with inline content | No nested blocks; quoted paragraphs become one quote each. Takes alignment and content style classes |
+| Code block | `<pre>` with inline content | Line breaks are `<br>`; source newlines are converted. Takes no class |
+| Horizontal rule | `<hr>` | At block level or inside a list item. Takes no class |
+
+Not in this revision: tables, images, highlight and font size. The controller-based engine surface validates and renders the three new blocks, but its toolbar has no buttons for them and a caret cannot be placed on a rule there; the DOM-owned editor toolbar covers all of them.

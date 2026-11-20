@@ -51,7 +51,26 @@ export interface ListNode extends PresentationAttributes {
   ordered: boolean;
   items: ListItemNode[];
 }
-export type BlockNode = ParagraphNode | HeadingNode | ListNode;
+/** A quotation. Like a paragraph it holds inline content only. */
+export interface BlockquoteNode extends PresentationAttributes {
+  type: 'blockquote';
+  children: InlineNode[];
+}
+/** Preformatted text. Line breaks are hard-break nodes. */
+export interface CodeBlockNode extends PresentationAttributes {
+  type: 'code-block';
+  children: InlineNode[];
+}
+export interface HorizontalRuleNode extends PresentationAttributes {
+  type: 'horizontal-rule';
+}
+export type BlockNode =
+  | ParagraphNode
+  | HeadingNode
+  | ListNode
+  | BlockquoteNode
+  | CodeBlockNode
+  | HorizontalRuleNode;
 export interface DocumentNode {
   type: 'document';
   children: BlockNode[];
@@ -98,6 +117,17 @@ export const createHeading = (
   children: InlineNode[] = [],
   presentation: PresentationAttributes = {},
 ): HeadingNode => ({ type: 'heading', level, children, ...presentation });
+export const createBlockquote = (
+  children: InlineNode[] = [],
+  presentation: PresentationAttributes = {},
+): BlockquoteNode => ({ type: 'blockquote', children, ...presentation });
+export const createCodeBlock = (
+  children: InlineNode[] = [],
+  presentation: PresentationAttributes = {},
+): CodeBlockNode => ({ type: 'code-block', children, ...presentation });
+export const createHorizontalRule = (
+  presentation: PresentationAttributes = {},
+): HorizontalRuleNode => ({ type: 'horizontal-rule', ...presentation });
 export const createListItem = (
   children: BlockNode[] = [],
   presentation: PresentationAttributes = {},
@@ -118,7 +148,12 @@ export const createList = (
 });
 
 export const isBlockNode = (node: DocumentNode | BlockNode | InlineNode): node is BlockNode =>
-  node.type === 'paragraph' || node.type === 'heading' || node.type === 'list';
+  node.type === 'paragraph' ||
+  node.type === 'heading' ||
+  node.type === 'list' ||
+  node.type === 'blockquote' ||
+  node.type === 'code-block' ||
+  node.type === 'horizontal-rule';
 export const isInlineNode = (node: DocumentNode | BlockNode | InlineNode): node is InlineNode =>
   node.type === 'text' || node.type === 'link' || node.type === 'hard-break';
 
@@ -130,7 +165,12 @@ export function* walkDocument(
   ): Generator<DocumentNode | BlockNode | ListItemNode | InlineNode> {
     yield node;
     if (node.type === 'document') for (const child of node.children) yield* visit(child);
-    else if (node.type === 'paragraph' || node.type === 'heading')
+    else if (
+      node.type === 'paragraph' ||
+      node.type === 'heading' ||
+      node.type === 'blockquote' ||
+      node.type === 'code-block'
+    )
       for (const child of node.children) yield* visit(child);
     else if (node.type === 'list') for (const item of node.items) yield* visit(item);
     else if (node.type === 'list-item') for (const child of node.children) yield* visit(child);

@@ -49,7 +49,7 @@ export function preserve(range: Range, change: () => void) {
   end.remove();
 }
 
-const blockName = /^(?:P|H[1-6]|DIV|UL|OL)$/;
+const blockName = /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|UL|OL)$/;
 
 function inheritPresentation(item: Element, block: Element) {
   const classes = [...new Set([...item.classList, ...block.classList])];
@@ -68,10 +68,11 @@ function inheritPresentation(item: Element, block: Element) {
 
 export function blockStyle(root: HTMLElement, range: Range) {
   const tags = new Set(
-    Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,div'))
+    Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div'))
       .filter(
         (element) =>
-          !element.querySelector('p,h1,h2,h3,h4,h5,h6,div,ul,ol') && selected(range, element),
+          !element.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div,ul,ol') &&
+          selected(range, element),
       )
       .map((element) => (element.tagName === 'DIV' ? 'p' : element.tagName.toLowerCase())),
   );
@@ -87,9 +88,10 @@ export function blockStyle(root: HTMLElement, range: Range) {
 }
 
 export function formatBlocks(root: HTMLElement, range: Range, tag: string) {
-  const blocks = Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,div')).filter(
+  const blocks = Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div')).filter(
     (element) =>
-      !element.querySelector('p,h1,h2,h3,h4,h5,h6,div,ul,ol') && selected(range, element),
+      !element.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div,ul,ol') &&
+      selected(range, element),
   );
   const inline = new Map<HTMLLIElement, Set<Node>>();
   for (const item of Array.from(root.querySelectorAll('li'))) {
@@ -188,10 +190,10 @@ export function removeList(root: HTMLElement, range: Range, ordered: boolean) {
 export function formatList(root: HTMLElement, range: Range, ordered: boolean) {
   const tag = ordered ? 'ol' : 'ul';
   const outer = selectedItems(root, range);
-  const blocks = Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,div')).filter(
+  const blocks = Array.from(root.querySelectorAll('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div')).filter(
     (block) =>
       !block.closest('li') &&
-      !block.querySelector('p,h1,h2,h3,h4,h5,h6,div,ul,ol') &&
+      !block.querySelector('p,h1,h2,h3,h4,h5,h6,blockquote,pre,div,ul,ol') &&
       selected(range, block),
   );
   if (

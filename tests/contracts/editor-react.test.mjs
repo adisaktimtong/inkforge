@@ -75,8 +75,8 @@ test('optional toolbar is SSR-safe, accessible and keeps attributes on the edita
   assert.equal(render({ toolbar: false }), render());
   const html = render({ toolbar: true, id: 'editable', className: 'custom', readOnly: true });
   assert.match(html, /role="toolbar" aria-label="Text formatting"/);
-  assert.equal((html.match(/type="button"/g) ?? []).length, 18);
-  assert.equal((html.match(/disabled=""/g) ?? []).length, 18);
+  assert.equal((html.match(/type="button"/g) ?? []).length, 19);
+  assert.equal((html.match(/disabled=""/g) ?? []).length, 19);
   assert.match(html, /id="editable"[^>]*role="textbox"[^>]*class="inkforge-editor custom"/);
   assert.doesNotMatch(html, /toolbar="/);
 });

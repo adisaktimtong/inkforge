@@ -85,3 +85,42 @@ test('subscript and superscript are exclusive marks', async ({ page }) => {
   await button(page, 'Superscript').click();
   await expect(html(page)).toHaveText('<p>First paragraph</p><p>H2O and x<sup>2</sup></p>');
 });
+
+test('quote, code block and horizontal rule are stored by the profile', async ({ page }) => {
+  await select(body(page), 2);
+  await button(page, 'Text style').click();
+  await page
+    .getByRole('dialog', { name: 'Text style' })
+    .getByRole('button', { name: 'Quote' })
+    .click();
+  await expect(html(page)).toHaveText('<blockquote>First paragraph</blockquote><p>H2O and x2</p>');
+  await expect(button(page, 'Text style')).toHaveText(/Quote/);
+  await select(body(page), 2);
+  await button(page, 'Horizontal rule').click();
+  await expect(html(page)).toHaveText(
+    '<blockquote>First paragraph</blockquote><hr><p>H2O and x2</p>',
+  );
+  await select(body(page), 18);
+  await button(page, 'Text style').click();
+  await page
+    .getByRole('dialog', { name: 'Text style' })
+    .getByRole('button', { name: 'Code block' })
+    .click();
+  await expect(html(page)).toHaveText(
+    '<blockquote>First paragraph</blockquote><hr><pre>H2O and x2</pre>',
+  );
+  await select(body(page), 2);
+  await button(page, 'Text style').click();
+  await page
+    .getByRole('dialog', { name: 'Text style' })
+    .getByRole('button', { name: 'Paragraph' })
+    .click();
+  await expect(html(page)).toHaveText('<p>First paragraph</p><hr><pre>H2O and x2</pre>');
+});
+
+test('a rule at the end leaves a paragraph to continue typing in', async ({ page }) => {
+  await select(body(page), 20);
+  await button(page, 'Horizontal rule').click();
+  await page.keyboard.type('next');
+  await expect(html(page)).toHaveText('<p>First paragraph</p><p>H2O and x2</p><hr><p>next</p>');
+});

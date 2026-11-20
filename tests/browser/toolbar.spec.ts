@@ -213,7 +213,7 @@ for (const locked of ['Disabled', 'Read only', 'composition']) {
     await select(editor, 1, 4);
     if (locked === 'composition') await editor.dispatchEvent('compositionstart');
     else await page.getByLabel(locked, { exact: true }).check();
-    await expect(toolbar(page).locator('button:disabled')).toHaveCount(18);
+    await expect(toolbar(page).locator('button:disabled')).toHaveCount(19);
     await button(page, 'Bold').evaluate((el: HTMLButtonElement) => el.click());
     await expect(page.getByTestId('controlled-html')).toHaveText(
       '<p>Hello <strong>InkForge</strong></p>',

@@ -8,6 +8,9 @@ import type {
 import {
   createDocument,
   createHardBreak,
+  createBlockquote,
+  createCodeBlock,
+  createHorizontalRule,
   createHeading,
   createLink,
   createList,
@@ -320,7 +323,23 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
     }
     return out;
   };
-  const blockTag = /^(?:p|div|section|article|h[1-6]|ul|ol)$/;
+  const blockTag = /^(?:p|div|section|article|h[1-6]|ul|ol|blockquote|pre|hr)$/;
+  // Preformatted text keeps its line breaks as hard breaks; a wrapping <code> adds nothing.
+  const preformatted = (nodes: any[]): InlineNode[] =>
+    inline(nodes.flatMap((n) => (n.tag === 'code' ? n.children : [n]))).flatMap(
+      (node, index, all) => {
+        if (node.type !== 'text') return [node];
+        let text = node.text.replace(/\r\n?/g, '\n');
+        if (index === 0) text = text.replace(/^\n/, '');
+        if (index === all.length - 1) text = text.replace(/\n$/, '');
+        return text
+          .split('\n')
+          .flatMap((line, i): InlineNode[] => [
+            ...(i ? [createHardBreak()] : []),
+            ...(line ? [{ ...node, text: line }] : []),
+          ]);
+      },
+    );
   const hasBlocks = (nodes: any[]): boolean =>
     nodes.some((node) => blockTag.test(node.tag ?? '') || hasBlocks(node.children ?? []));
   const blocks = (nodes: any[]): BlockNode[] => {
@@ -349,6 +368,20 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
           ...createHeading(Number(n.tag[1]) as any, inline(n.children)),
           ...presentation(n),
         });
+      else if (n.tag === 'hr') result.push({ ...createHorizontalRule(), ...presentation(n) });
+      else if (n.tag === 'pre')
+        result.push({ ...createCodeBlock(preformatted(n.children)), ...presentation(n) });
+      else if (n.tag === 'blockquote')
+        // A quote holds inline content; quoted paragraphs become one quote each.
+        result.push(
+          ...(hasBlocks(n.children)
+            ? blocks(n.children).map((child) =>
+                child.type === 'paragraph'
+                  ? { ...createBlockquote(child.children), ...presentation(n) }
+                  : child,
+              )
+            : [{ ...createBlockquote(inline(n.children)), ...presentation(n) }]),
+        );
       else if (n.tag === 'ul' || n.tag === 'ol')
         result.push({
           ...createList(
@@ -414,11 +447,18 @@ export function serializeHtml(
   const render = (nodes: DeepReadonly<BlockNode[]>): string =>
     nodes
       .map((n) =>
-        n.type === 'paragraph'
-          ? `<p${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</p>`
-          : n.type === 'heading'
-            ? `<h${Math.min(6, Math.max(1, n.level))}${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</h${Math.min(6, Math.max(1, n.level))}>`
-            : `<${n.ordered ? 'ol' : 'ul'}${attrs(options.className, n.style, n.className)}>${n.items.map((i) => `<li${attrs(i.className, i.style)}>${i.children.length === 1 && i.children[0]?.type === 'paragraph' && !i.children[0].className && !i.children[0].style ? inlines(i.children[0].children) : render(i.children)}</li>`).join('')}</${n.ordered ? 'ol' : 'ul'}>`,
+        n.type === 'horizontal-rule'
+          ? `<hr${attrs(options.className, n.style, n.className)}>`
+          : n.type === 'blockquote' || n.type === 'code-block'
+            ? ((tag) =>
+                `<${tag}${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</${tag}>`)(
+                n.type === 'blockquote' ? 'blockquote' : 'pre',
+              )
+            : n.type === 'paragraph'
+              ? `<p${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</p>`
+              : n.type === 'heading'
+                ? `<h${Math.min(6, Math.max(1, n.level))}${attrs(options.className, n.style, n.className)}>${inlines(n.children)}</h${Math.min(6, Math.max(1, n.level))}>`
+                : `<${n.ordered ? 'ol' : 'ul'}${attrs(options.className, n.style, n.className)}>${n.items.map((i) => `<li${attrs(i.className, i.style)}>${i.children.length === 1 && i.children[0]?.type === 'paragraph' && !i.children[0].className && !i.children[0].style ? inlines(i.children[0].children) : render(i.children)}</li>`).join('')}</${n.ordered ? 'ol' : 'ul'}>`,
       )
       .join(options.pretty ? '\n' : '');
   return render(document.children);
