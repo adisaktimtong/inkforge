@@ -49,3 +49,9 @@ Alignment is still a token class: the host must list each alignment it permits i
 | Horizontal rule | `<hr>` | At block level or inside a list item. Takes no class |
 
 Not in this revision: tables, images, highlight and font size. The controller-based engine surface has toolbar actions for quote, code block and horizontal rule as well. A rule is inserted with the `insertHorizontalRule` command, which leaves a text block below it; Backspace or Delete at a block edge next to a rule removes the rule, and a deleted range may span rules.
+
+## Controller-based surface and the content profile
+
+`InkforgeEngineEditor` takes an optional `contentProfile`. Without it the surface keeps its earlier behaviour: content that carries a class, an inline style or a link is shown read only with `CONTENT_POLICY_REQUIRED`. With it, the surface renders classes the profile registers and links the profile allows, and such content is editable. Inline styles are never rendered.
+
+The profile also adds toolbar actions: one alignment action per registered alignment class, one action per registered content style, and a reset. Alignment and a style chosen from a bare caret use the `setBlockClasses` command; a style chosen over selected text uses `setTextClasses`. Reset clears the selected text when there is a selection and the block otherwise. A host on `cms-body-v1` is not offered subscript, superscript, quote, code block or rule.

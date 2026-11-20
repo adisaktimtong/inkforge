@@ -1,5 +1,6 @@
 'use client';
 import * as React from 'react';
+import { isProfileHref, type ContentProfile } from '@inkforge/editor-html';
 import type {
   ControllerCommand,
   EngineBookmark,
@@ -65,6 +66,13 @@ export interface InkforgeEngineEditorProps extends Native {
   readonly toolbar?: boolean;
   readonly toolbarLabel?: string;
   readonly actionLabels?: Partial<Readonly<Record<EngineActionId, string>>>;
+  /**
+   * Strict profile of the content. It lets the surface render registered classes and
+   * allowed links, and adds alignment and content style actions for the registered classes.
+   */
+  readonly contentProfile?: ContentProfile;
+  /** Display names for content style classes; a readable name is derived otherwise. */
+  readonly tokenLabels?: Readonly<Record<string, string>>;
   readonly disabled?: boolean;
   readonly readOnly?: boolean;
   readonly maxNativeTextUtf16?: number;
@@ -108,6 +116,8 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       toolbar = true,
       toolbarLabel = 'Text formatting',
       actionLabels,
+      contentProfile,
+      tokenLabels,
       disabled = false,
       readOnly = false,
       maxNativeTextUtf16 = 500000,
@@ -148,11 +158,19 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       diagnostic: null,
     });
     const armed = React.useRef<{
-      action: EngineActionId;
+      action: string;
       bookmark: EngineBookmark | null;
       context: string;
     } | null>(null);
     const contextKey = ui?.interactionContextKey ?? 'standalone';
+    const contentPolicy = React.useMemo(
+      () =>
+        contentProfile && {
+          classes: contentProfile.tokenClasses,
+          href: (href: string) => isProfileHref(href, contentProfile),
+        },
+      [contentProfile],
+    );
     const callbacks = React.useRef({ onDiagnostic, onSurfaceStatusChange });
     callbacks.current = { onDiagnostic, onSurfaceStatusChange };
     const options = {
@@ -160,6 +178,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       interactionContextKey: contextKey,
       maxNativeTextUtf16,
       captureHostFence,
+      contentPolicy,
       onDiagnostic: (d: EngineDomDiagnostic) => callbacks.current.onDiagnostic?.(d),
       onStatus: (s: EngineSurfaceStatus) => {
         setSurface(s);
@@ -200,7 +219,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       }),
       [surface],
     );
-    function arm(action: EngineActionId, event?: { preventDefault(): void }): undefined {
+    function arm(action: string, event?: { preventDefault(): void }): undefined {
       const previous = armed.current;
       if (previous?.bookmark) controller.releaseBookmark(previous.bookmark);
       const bookmark = binding.current?.captureBookmark() ?? null;
@@ -230,14 +249,63 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
         end = all.indexOf(b ?? '');
       return all.slice(Math.min(start, end), Math.max(start, end) + 1);
     }
-    function activate(action: EngineActionId) {
+    // Classes the profile registers, split into alignment and content styles.
+    const alignPrefix = contentProfile ? contentProfile.classPrefix + 'align-' : '',
+      alignTokens = contentProfile?.tokenClasses.filter((c) => c.startsWith(alignPrefix)) ?? [],
+      styleTokens = contentProfile?.tokenClasses.filter((c) => !c.startsWith(alignPrefix)) ?? [],
+      styleGroup = (token: string) =>
+        styleTokens.filter(
+          (c) =>
+            c.slice(contentProfile!.classPrefix.length).split('-')[0] ===
+            token.slice(contentProfile!.classPrefix.length).split('-')[0],
+        );
+    const classesOf = (id: string): string =>
+      (snapshot.nodeIndex[id]?.node as { className?: string } | undefined)?.className ?? '';
+    const classable = (selection: ModelSelection) =>
+      blocks(selection).filter((id) => snapshot.nodeIndex[id]?.node.type !== 'code-block');
+    const collapsed = (selection: ModelSelection) =>
+      selection.anchor.nodeId === selection.head.nodeId &&
+      selection.anchor.offset === selection.head.offset;
+    function classCommand(action: string, selection: ModelSelection): ControllerCommand | null {
+      const [kind, token] = [
+        action.slice(0, action.indexOf(':')),
+        action.slice(action.indexOf(':') + 1),
+      ];
+      if (kind === 'align') {
+        const targets = classable(selection),
+          active = targets.every((id) => classesOf(id).split(/\s+/).includes(token));
+        return targets.length
+          ? {
+              kind: 'setBlockClasses',
+              blocks: targets,
+              remove: alignTokens,
+              ...(active ? {} : { add: token }),
+            }
+          : null;
+      }
+      const remove = token ? styleGroup(token) : styleTokens;
+      // Selected words take the style; a bare caret styles its block.
+      if (!collapsed(selection))
+        return {
+          kind: 'setTextClasses',
+          range: selection,
+          remove,
+          ...(token ? { add: token } : {}),
+        };
+      const targets = classable(selection);
+      return targets.length
+        ? { kind: 'setBlockClasses', blocks: targets, remove, ...(token ? { add: token } : {}) }
+        : null;
+    }
+    function activate(action: EngineActionId | string) {
       if (!armed.current || armed.current.action !== action) arm(action);
       const original = armed.current;
       armed.current = null;
       if (!original?.bookmark || original.context !== contextKey) return;
       const bookmark = original.bookmark;
-      let command: ControllerCommand;
-      if (action === 'undo' || action === 'redo') command = { kind: action };
+      let command: ControllerCommand | null;
+      if (action.includes(':')) command = classCommand(action, bookmark.selection);
+      else if (action === 'undo' || action === 'redo') command = { kind: action };
       else if (action === 'blockquote' || action === 'codeBlock')
         command = {
           kind: 'setBlockType',
@@ -264,7 +332,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
           range: bookmark.selection,
           mark: action as Mark,
         };
-      binding.current?.applyBookmark(bookmark, command);
+      if (command) binding.current?.applyBookmark(bookmark, command);
       controller.releaseBookmark(bookmark);
     }
     const toolbarKey: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
@@ -291,29 +359,74 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       arm(action, event);
       activate(action);
     };
-    const actions: EngineToolbarAction[] = (Object.keys(defaults) as EngineActionId[]).map(
-      (id) => ({
-        id,
-        label: actionLabels?.[id] ?? defaults[id],
-        disabled:
-          options.disabled ||
-          snapshot.readOnly ||
-          snapshot.disposed ||
-          snapshot.composing ||
-          surface.pending ||
-          surface.phase === 'readOnly' ||
-          !snapshot.selection ||
-          (id === 'undo' && !snapshot.canUndo) ||
-          (id === 'redo' && !snapshot.canRedo),
-        ...(['bold', 'italic', 'underline', 'strike', 'code', 'subscript', 'superscript'].includes(
-          id,
-        )
-          ? { pressed: binding.current?.selectionMarks().includes(id as Mark) ?? false }
-          : {}),
-        onIntent: (event) => arm(id, event),
-        onActivate: () => activate(id),
-      }),
-    );
+    const unavailable =
+      options.disabled ||
+      snapshot.readOnly ||
+      snapshot.disposed ||
+      snapshot.composing ||
+      surface.pending ||
+      surface.phase === 'readOnly' ||
+      !snapshot.selection;
+    // cms-body-v1 cannot store these, so a host on that profile does not offer them.
+    const extended: EngineActionId[] = [
+      'subscript',
+      'superscript',
+      'blockquote',
+      'codeBlock',
+      'horizontalRule',
+    ];
+    const selectedBlocks = snapshot.selection ? classable(snapshot.selection) : [];
+    const hasClass = (token: string) =>
+      selectedBlocks.length > 0 &&
+      selectedBlocks.every((id) => classesOf(id).split(/\s+/).includes(token));
+    const classAction = (id: string, label: string, pressed?: boolean): EngineToolbarAction => ({
+      id,
+      label,
+      disabled: unavailable,
+      ...(pressed === undefined ? {} : { pressed }),
+      onIntent: (event) => arm(id, event),
+      onActivate: () => activate(id),
+    });
+    const styleName = (token: string) =>
+      tokenLabels?.[token] ??
+      token
+        .slice(contentProfile!.classPrefix.length)
+        .replace(/^(?:typo|text|bg|font)-/, '')
+        .replace(/-/g, ' ');
+    const actions: EngineToolbarAction[] = [
+      ...(Object.keys(defaults) as EngineActionId[])
+        .filter((id) => contentProfile?.id !== 'cms-body-v1' || !extended.includes(id))
+        .map(
+          (id): EngineToolbarAction => ({
+            id,
+            label: actionLabels?.[id] ?? defaults[id],
+            disabled:
+              unavailable ||
+              (id === 'undo' && !snapshot.canUndo) ||
+              (id === 'redo' && !snapshot.canRedo),
+            ...((
+              [
+                'bold',
+                'italic',
+                'underline',
+                'strike',
+                'code',
+                'subscript',
+                'superscript',
+              ] as string[]
+            ).includes(id)
+              ? { pressed: binding.current?.selectionMarks().includes(id as Mark) ?? false }
+              : {}),
+            onIntent: (event) => arm(id, event),
+            onActivate: () => activate(id),
+          }),
+        ),
+      ...alignTokens.map((token) =>
+        classAction('align:' + token, 'Align ' + token.slice(alignPrefix.length), hasClass(token)),
+      ),
+      ...styleTokens.map((token) => classAction('style:' + token, 'Style: ' + styleName(token))),
+      ...(styleTokens.length ? [classAction('style:', 'Reset content style')] : []),
+    ];
     return React.createElement(
       React.Fragment,
       null,

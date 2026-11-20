@@ -156,6 +156,42 @@ function insertText(
     d.selection = caret({ nodeId: value.identities[0]!, offset: text.length, affinity: 'forward' });
   }
 }
+/** Splits text nodes at the range edges and returns the ids of the text wholly inside it. */
+function textInRange(d: Draft, from: number, to: number): string[] {
+  const coords = coordinates(d.tree),
+    targets = [...d.tree.nodes]
+      .filter(([, n]) => n.type === 'text')
+      .map(([id, n]) => ({
+        id,
+        node: n,
+        start: Math.max(0, from - coords.get(id)!.start),
+        end: Math.min(n.text!.length, to - coords.get(id)!.start),
+      }))
+      .filter((t) => t.start < t.end);
+  return targets.map((t) => {
+    let id = t.id;
+    if (t.end < t.node.text!.length)
+      d.apply({ kind: 'splitText', id, offset: t.end, rightId: d.allocate() });
+    if (t.start > 0) {
+      const rightId = d.allocate();
+      d.apply({ kind: 'splitText', id, offset: t.start, rightId });
+      id = rightId;
+    }
+    return id;
+  });
+}
+function changeClasses(d: Draft, ids: readonly string[], remove: unknown, add: unknown) {
+  const name = (value: unknown): value is string =>
+    typeof value === 'string' && /^[A-Za-z0-9_-]+$/.test(value);
+  if (!Array.isArray(remove) || !remove.every(name) || (add !== undefined && !name(add)))
+    fail('INVALID_CLASS_COMMAND');
+  for (const id of ids) {
+    const old = d.node(id).className,
+      kept = (old ?? '').split(/\s+/).filter((c) => c && !remove.includes(c) && c !== add),
+      next = [...kept, ...(add ? [add] : [])].sort().join(' ') || undefined;
+    if (next !== old) d.apply({ kind: 'patch', id, values: { className: next } });
+  }
+}
 function changeMark(
   d: Draft,
   range: ModelSelection,
@@ -167,31 +203,23 @@ function changeMark(
   const r = ordered(d.tree, range);
   if (r.from === r.to) {
     const existing = current ?? marksAt(d, r.start);
+    const other =
+      mark === 'subscript' ? 'superscript' : mark === 'superscript' ? 'subscript' : null;
     return checkedMarks(
-      set ? [...new Set([...existing, mark])] : existing.filter((m) => m !== mark),
+      set
+        ? [...new Set([...existing.filter((m) => m !== other), mark])]
+        : existing.filter((m) => m !== mark),
     );
   }
-  const coords = coordinates(d.tree),
-    targets = [...d.tree.nodes]
-      .filter(([, n]) => n.type === 'text')
-      .map(([id, n]) => ({
-        id,
-        node: n,
-        start: Math.max(0, r.from - coords.get(id)!.start),
-        end: Math.min(n.text!.length, r.to - coords.get(id)!.start),
-      }))
-      .filter((t) => t.start < t.end);
-  for (const t of targets) {
-    let id = t.id;
-    if (t.end < t.node.text!.length)
-      d.apply({ kind: 'splitText', id, offset: t.end, rightId: d.allocate() });
-    if (t.start > 0) {
-      const rightId = d.allocate();
-      d.apply({ kind: 'splitText', id, offset: t.start, rightId });
-      id = rightId;
-    }
+  // Text is either subscript or superscript.
+  const rival = mark === 'subscript' ? 'superscript' : mark === 'superscript' ? 'subscript' : null;
+  for (const id of textInRange(d, r.from, r.to)) {
     const old = d.node(id).marks ?? [],
-      next = checkedMarks(set ? [...new Set([...old, mark])] : old.filter((m) => m !== mark));
+      next = checkedMarks(
+        set
+          ? [...new Set([...old.filter((m) => m !== rival), mark])]
+          : old.filter((m) => m !== mark),
+      );
     if (!same(old, next))
       d.apply({ kind: 'patch', id, values: { marks: next.length ? next : undefined } });
   }
@@ -437,6 +465,23 @@ export function compile(
           },
         });
     }
+  } else if (command.kind === 'setBlockClasses') {
+    if (
+      !Array.isArray(command.blocks) ||
+      !command.blocks.length ||
+      new Set(command.blocks).size !== command.blocks.length
+    )
+      fail('INVALID_BLOCK_COMMAND');
+    for (const id of command.blocks) if (!textBlock(d.node(id))) fail('INVALID_TEXTBLOCK');
+    changeClasses(d, command.blocks, command.remove, command.add);
+  } else if (command.kind === 'setTextClasses') {
+    const r = ordered(d.tree, command.range);
+    changeClasses(
+      d,
+      r.from === r.to ? [] : textInRange(d, r.from, r.to),
+      command.remove,
+      command.add,
+    );
   } else if (command.kind === 'insertHardBreak') {
     const p = deleteRange(d, command.range),
       target = boundary(d, p),

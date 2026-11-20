@@ -1007,3 +1007,74 @@ test('deleting at a block edge next to a rule removes the rule, and a range may 
   assert.deepEqual(types(e), ['paragraph']);
   assert.equal(text(e), 'abcdyz');
 });
+
+test('subscript and superscript replace each other on the same text', () => {
+  const e = make('abcdef');
+  mark(e, 1, 3, 'subscript');
+  const bc = nodes(e, 'text').find((n) => n.node.text === 'bc').id;
+  ok(
+    run(e, {
+      kind: 'setMark',
+      range: { anchor: pos(bc, 0), head: pos(bc, 2) },
+      mark: 'superscript',
+    }),
+  );
+  const marked = nodes(e, 'text').find((n) => n.node.text === 'bc');
+  assert.deepEqual(marked.node.marks, ['superscript']);
+});
+test('setBlockClasses replaces one class group on text blocks and undoes as one step', () => {
+  const e = make('abcdef');
+  const align = ['rte-align-left', 'rte-align-center', 'rte-align-right'];
+  ok(
+    run(e, {
+      kind: 'setBlockClasses',
+      blocks: blockIds(e),
+      remove: align,
+      add: 'rte-align-center',
+    }),
+  );
+  ok(run(e, { kind: 'setBlockClasses', blocks: blockIds(e), remove: [], add: 'rte-text-brand' }));
+  assert.equal(e.getSnapshot().document.children[0].className, 'rte-align-center rte-text-brand');
+  ok(
+    run(e, { kind: 'setBlockClasses', blocks: blockIds(e), remove: align, add: 'rte-align-right' }),
+  );
+  assert.equal(e.getSnapshot().document.children[0].className, 'rte-align-right rte-text-brand');
+  ok(
+    run(e, { kind: 'setBlockClasses', blocks: blockIds(e), remove: [...align, 'rte-text-brand'] }),
+  );
+  assert.equal(e.getSnapshot().document.children[0].className, undefined);
+  ok(run(e, { kind: 'undo' }));
+  assert.equal(e.getSnapshot().document.children[0].className, 'rte-align-right rte-text-brand');
+  rejected(
+    run(e, { kind: 'setBlockClasses', blocks: blockIds(e), remove: [], add: 'bad class' }),
+    'INVALID_CLASS_COMMAND',
+  );
+  rejected(
+    run(e, { kind: 'setBlockClasses', blocks: [tid(e)], remove: [], add: 'rte-x' }),
+    'INVALID_TEXTBLOCK',
+  );
+});
+test('setTextClasses styles only the selected text and can clear it again', () => {
+  const e = make('abcdef');
+  ok(run(e, { kind: 'setTextClasses', range: range(e, 2, 4), remove: [], add: 'rte-text-brand' }));
+  const parts = () =>
+    e.getSnapshot().document.children[0].children.map((n) => [n.text, n.className ?? null]);
+  assert.deepEqual(parts(), [
+    ['ab', null],
+    ['cd', 'rte-text-brand'],
+    ['ef', null],
+  ]);
+  const styled = nodes(e, 'text').find((n) => n.node.text === 'cd').id;
+  ok(
+    run(e, {
+      kind: 'setTextClasses',
+      range: { anchor: pos(styled, 0), head: pos(styled, 1) },
+      remove: ['rte-text-brand'],
+    }),
+  );
+  assert.deepEqual(
+    parts().filter(([, c]) => c),
+    [['d', 'rte-text-brand']],
+  );
+  assert.equal(text(e), 'abcdef');
+});

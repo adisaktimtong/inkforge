@@ -148,6 +148,20 @@ export type ControllerCommand =
       type: 'paragraph' | 'heading' | 'blockquote' | 'code-block';
       level?: 1 | 2 | 3 | 4 | 5 | 6;
     }>
+  /** Removes the listed classes from each text block, then adds one. The host decides which classes exist. */
+  | Readonly<{
+      kind: 'setBlockClasses';
+      blocks: readonly NodeId[];
+      remove: readonly string[];
+      add?: string;
+    }>
+  /** The same change for the text inside a range; a collapsed range changes nothing. */
+  | Readonly<{
+      kind: 'setTextClasses';
+      range: ModelSelection;
+      remove: readonly string[];
+      add?: string;
+    }>
   | Readonly<{ kind: 'insertHardBreak'; range: ModelSelection }>
   /** Adds a rule after the block holding the position; the caret moves to the block below it. */
   | Readonly<{ kind: 'insertHorizontalRule'; at: ModelPosition }>

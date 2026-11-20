@@ -3,7 +3,13 @@ import { createRoot } from 'react-dom/client';
 import { InkForgeEditor } from '@inkforge/editor-react';
 import { createContentProfile, serializeHtml } from '@inkforge/editor-html';
 import { InkforgeEngineEditor } from '@inkforge/editor-react/engine';
-import { createDocument, createEngine, createParagraph, createText } from '@inkforge/editor-core';
+import {
+  createDocument,
+  createEngine,
+  createLink,
+  createParagraph,
+  createText,
+} from '@inkforge/editor-core';
 import { useSyncExternalStore } from 'react';
 import '@inkforge/editor-content/content.css';
 import '@inkforge/editor-react/editor.css';
@@ -157,12 +163,27 @@ function ProfilePlayground() {
   );
 }
 
+const engineMode = new URLSearchParams(location.search).get('engine');
 // Controller-based editing surface: the toolbar issues model commands instead of editing the DOM.
 const engine = createEngine({
-  document: createDocument([
-    createParagraph([createText('First paragraph')]),
-    createParagraph([createText('Second paragraph')]),
-  ]),
+  document: createDocument(
+    // ?engine=styled starts from content that carries a class and a link.
+    engineMode === 'styled' || engineMode === 'nopolicy'
+      ? [
+          createParagraph(
+            [
+              createText('Read '),
+              createLink('https://example.com/a', [createText('the guide')]),
+              createText(' first'),
+            ],
+            { className: 'rte-align-center' },
+          ),
+        ]
+      : [
+          createParagraph([createText('First paragraph')]),
+          createParagraph([createText('Second paragraph')]),
+        ],
+  ),
   instanceId: 'playground-engine',
   clock: () => Date.now(),
   // Backspace and Delete need grapheme and word boundaries from the host.
@@ -183,7 +204,12 @@ function EnginePlayground() {
   return (
     <main>
       <h1>Engine surface</h1>
-      <InkforgeEngineEditor controller={engine} aria-label="Engine body" />
+      <InkforgeEngineEditor
+        controller={engine}
+        aria-label="Engine body"
+        className="inkforge-content"
+        {...(engineMode === 'nopolicy' ? {} : { contentProfile: cmsProfile })}
+      />
       <pre data-testid="engine-html">{serializeHtml(snapshot.document)}</pre>
     </main>
   );

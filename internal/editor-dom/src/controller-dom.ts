@@ -31,6 +31,15 @@ export interface EngineDomOptions {
   readonly captureHostFence?: (() => HostFence) | undefined;
   readonly onDiagnostic?: ((diagnostic: EngineDomDiagnostic) => void) | undefined;
   readonly onStatus?: ((status: EngineSurfaceStatus) => void) | undefined;
+  /**
+   * What presentation the surface may render. Without it, content that carries a class,
+   * an inline style or a link stays read only. Inline styles are never rendered.
+   */
+  readonly contentPolicy?: EngineContentPolicy | undefined;
+}
+export interface EngineContentPolicy {
+  readonly classes: readonly string[];
+  href(href: string): boolean;
 }
 interface Pending {
   id: string;
@@ -345,12 +354,27 @@ export function mountEngineDom(
         const el = record.dom;
         el.dataset.inkforgeNode = id;
         el.dataset.inkforgeType = model.type;
-        if (
-          ('className' in model && model.className) ||
-          ('style' in model && model.style) ||
-          model.type === 'link'
-        )
-          policyBlocked = true;
+        const policy = options.contentPolicy,
+          classes = ('className' in model && model.className) || '',
+          classesAllowed =
+            !classes ||
+            (!!policy &&
+              classes
+                .split(/\s+/)
+                .filter(Boolean)
+                .every((name) => policy.classes.includes(name)));
+        if (classes && classesAllowed) {
+          if (el.className !== classes) el.className = classes;
+        } else if (el.hasAttribute('class')) el.removeAttribute('class');
+        if (model.type === 'link') {
+          if (policy?.href(model.href)) {
+            if (el.getAttribute('href') !== model.href) el.setAttribute('href', model.href);
+          } else {
+            el.removeAttribute('href');
+            policyBlocked = true;
+          }
+        }
+        if (!classesAllowed || ('style' in model && model.style)) policyBlocked = true;
         if (model.type === 'text') {
           const key = JSON.stringify(model.marks ?? []);
           if (!record.text) record.text = doc.createTextNode(model.text);
