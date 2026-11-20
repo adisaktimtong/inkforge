@@ -152,3 +152,32 @@ test('the general HTML codec round-trips the new blocks', () => {
     '<blockquote>one</blockquote><blockquote>two</blockquote><pre>a<br>b</pre><hr><p>x</p>',
   );
 });
+
+test('cms-body-v2 places content style classes on a span or a text block', () => {
+  const styled = createContentProfile({
+    id: 'cms-body-v2',
+    tokenClasses: [...tokenClasses, 'rte-typo-body', 'rte-typo-lead'],
+  });
+  const ok = (html) => assert.deepEqual(codes(html, styled), [], html);
+  ok('<p>a <span class="rte-text-brand">b</span></p>');
+  ok('<p class="rte-text-brand">a <span class="rte-typo-lead">b</span></p>');
+  ok('<h2 class="rte-text-brand rte-typo-lead">a</h2>');
+  ok('<ul><li class="rte-text-brand">a</li></ul>');
+  ok('<blockquote class="rte-typo-lead">a</blockquote>');
+  for (const html of [
+    '<p><strong class="rte-text-brand">a</strong></p>',
+    '<p><a class="rte-text-brand" href="https://example.com">a</a></p>',
+    '<ul class="rte-text-brand"><li>a</li></ul>',
+    '<p>a<br class="rte-text-brand">b</p>',
+  ])
+    assert.deepEqual(codes(html, styled), ['INVALID_CLASS_PLACEMENT'], html);
+  assert.deepEqual(codes('<p><span class="rte-typo-body rte-typo-lead">a</span></p>', styled), [
+    'CONFLICTING_CLASS',
+  ]);
+  // cms-body-v1 keeps its original, looser rule.
+  const loose = createContentProfile({ tokenClasses: ['rte-typo-body', 'rte-typo-lead'] });
+  assert.deepEqual(
+    codes('<p><strong class="rte-typo-body rte-typo-lead">a</strong></p>', loose),
+    [],
+  );
+});

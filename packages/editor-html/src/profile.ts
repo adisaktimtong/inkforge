@@ -205,12 +205,18 @@ export function evaluateContentPolicy(
           error('UNREGISTERED_CLASS', path, 'Every class must be registered explicitly');
         else if (profile.id !== 'cms-body-v1') {
           const alignment = classes.filter((c) => c.startsWith(alignmentClassPrefix(profile)));
+          // One class per semantic group: the group is the first word after the prefix.
+          const groups = classes.map((c) => c.slice(profile.classPrefix.length).split('-')[0]);
           if (alignment.length && !alignmentBlocks.includes(tag))
             error('INVALID_CLASS_PLACEMENT', path, 'Alignment belongs on a text block');
-          else if (['pre', 'hr'].includes(tag))
-            error('INVALID_CLASS_PLACEMENT', path, 'This block takes no content style');
-          else if (new Set(alignment).size > 1)
-            error('CONFLICTING_CLASS', path, 'A block takes one alignment');
+          else if (tag !== 'span' && !alignmentBlocks.includes(tag))
+            error(
+              'INVALID_CLASS_PLACEMENT',
+              path,
+              'A content style belongs on a span or text block',
+            );
+          else if (new Set(groups).size !== groups.length)
+            error('CONFLICTING_CLASS', path, 'An element takes one class per style group');
         }
       }
     }

@@ -33,6 +33,10 @@ export type InlineEdit = {
   value?: string;
   clear?: boolean;
   href?: string | null;
+  /** Registered class to put on the selected text; an empty string only removes. */
+  token?: string;
+  /** Classes the new one replaces: its own style group, or every content style. */
+  replaces?: (name: string) => boolean;
 };
 export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
   const doc = root.ownerDocument;
@@ -79,6 +83,11 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
           presentation.append(...element.childNodes);
           element.replaceWith(presentation);
         } else element.replaceWith(...element.childNodes);
+      } else if (edit.token !== undefined && element.tagName === 'SPAN') {
+        for (const name of Array.from(element.classList))
+          if (edit.replaces?.(name)) element.classList.remove(name);
+        if (!element.classList.length) element.removeAttribute('class');
+        if (!element.attributes.length) element.replaceWith(...element.childNodes);
       } else if (edit.property) {
         element.style.removeProperty(edit.property);
         if (!element.getAttribute('style')) element.removeAttribute('style');
@@ -95,6 +104,10 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
       wrapper = doc.createElement('span');
       wrapper.style.setProperty(edit.property, edit.value);
     }
+    if (edit.token) {
+      wrapper = doc.createElement('span');
+      wrapper.className = edit.token;
+    }
     if (edit.href && !ancestor(text, root, 'a')) {
       wrapper = doc.createElement('a');
       wrapper.setAttribute('href', edit.href);
@@ -109,6 +122,23 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
   ).reverse()) {
     if (!element.textContent && !element.querySelector('br')) element.remove();
   }
+  // Styling part of an already styled run leaves equal neighbours; join them again.
+  if (edit.token !== undefined)
+    for (const span of Array.from(root.querySelectorAll<HTMLElement>('span[class]'))) {
+      let next = span.nextSibling;
+      while (
+        span.isConnected &&
+        next instanceof HTMLElement &&
+        next.tagName === 'SPAN' &&
+        next.attributes.length === span.attributes.length &&
+        next.className === span.className &&
+        next.getAttribute('style') === span.getAttribute('style')
+      ) {
+        span.append(...next.childNodes);
+        next.remove();
+        next = span.nextSibling;
+      }
+    }
   if (selected.length) {
     range.setStart(selected[0]!, 0);
     const last = selected[selected.length - 1]!;

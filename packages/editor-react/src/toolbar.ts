@@ -792,20 +792,30 @@ export function useToolbar(
                           type: 'button',
                           onClick: () =>
                             apply((root, range) => {
-                              const blocks = Array.from(root.querySelectorAll('p,h2,h3,h4')).filter(
-                                (block) => range.intersectsNode(block),
+                              const category = ['typo-', 'text-', 'bg-', 'font-'].find((kind) =>
+                                token.startsWith(profile.classPrefix + kind),
+                              );
+                              // What the chosen style replaces: its own group, or every style on reset.
+                              const replaces = (c: string) =>
+                                !token
+                                  ? styleTokens.includes(c)
+                                  : category
+                                    ? c.startsWith(profile.classPrefix + category)
+                                    : c === token;
+                              // Selected text takes the style on a span; a bare caret styles its block.
+                              if (!range.collapsed) editInline(root, range, { token, replaces });
+                              if (!range.collapsed && token) return;
+                              const blocks = Array.from(
+                                root.querySelectorAll('p,h2,h3,h4,li,blockquote'),
+                              ).filter(
+                                (block) =>
+                                  !block.querySelector('p,h2,h3,h4,li,blockquote,ul,ol') &&
+                                  range.intersectsNode(block),
                               );
                               preserve(range, () => {
                                 for (const block of blocks) {
-                                  const category = ['typo-', 'text-', 'bg-', 'font-'].find((kind) =>
-                                    token.startsWith(profile.classPrefix + kind),
-                                  );
-                                  const classes = Array.from(block.classList).filter((c) =>
-                                    !token
-                                      ? !styleTokens.includes(c)
-                                      : category
-                                        ? !c.startsWith(profile.classPrefix + category)
-                                        : c !== token,
+                                  const classes = Array.from(block.classList).filter(
+                                    (c) => !replaces(c),
                                   );
                                   if (token) classes.push(token);
                                   if (classes.length)

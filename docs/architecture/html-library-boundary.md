@@ -40,6 +40,8 @@ Read [Editing Engine](24-inkforge-editing-engine.md) and the existing [Architect
 | Subscript, superscript | `<sub>`, `<sup>` | Text is one or the other; nesting them is rejected with `INVALID_NESTING` |
 | Text alignment | A registered class `<prefix>align-left`, `-center`, `-right` or `-justify` | Only on `p`, `h2`, `h3`, `h4` and `li` (`INVALID_CLASS_PLACEMENT`); one per block (`CONFLICTING_CLASS`) |
 
+A content style class (any registered class that is not an alignment) is allowed on a `span` and on the text blocks `p`, `h2`, `h3`, `h4`, `li` and `blockquote`, and nowhere else (`INVALID_CLASS_PLACEMENT`). An element takes one class per style group, where the group is the first word after the prefix, such as `typo` or `text` (`CONFLICTING_CLASS`). In the toolbar, the content style menu styles the selected words on a span; from a bare caret it styles the whole block.
+
 Alignment is still a token class: the host must list each alignment it permits in `tokenClasses`, and the toolbar shows a button only for those. `content.css` maps left and right to the logical `start` and `end` values. Colour stays a registered token class such as `rte-text-brand`; the profile stores no inline style.
 
 | Block quote | `<blockquote>` with inline content | No nested blocks; quoted paragraphs become one quote each. Takes alignment and content style classes |

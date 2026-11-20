@@ -50,21 +50,57 @@ test('alignment is stored as one registered class and can be cleared', async ({ 
   await expect(html(page)).toHaveText('<p>First paragraph</p><p>H2O and x2</p>');
 });
 
-test('alignment applies to every selected paragraph and keeps the brand colour', async ({
+const style = async (page: Page, name: RegExp) => {
+  await button(page, 'Content style').click();
+  await page.getByRole('dialog', { name: 'Content style' }).getByRole('button', { name }).click();
+};
+
+test('alignment applies to every selected paragraph; alignment is not a content style', async ({
   page,
 }) => {
   await select(body(page), 2, 20);
   await button(page, 'Align justify').click();
-  await button(page, 'Content style').click();
-  await page.getByRole('dialog', { name: 'Content style' }).getByRole('button').first().click();
   await expect(html(page)).toHaveText(
-    '<p class="rte-align-justify rte-text-brand">First paragraph</p><p class="rte-align-justify rte-text-brand">H2O and x2</p>',
+    '<p class="rte-align-justify">First paragraph</p><p class="rte-align-justify">H2O and x2</p>',
   );
-  // Alignment classes are offered as buttons, not as content styles.
   await button(page, 'Content style').click();
   await expect(
     page.getByRole('dialog', { name: 'Content style' }).getByRole('button', { name: /align/i }),
   ).toHaveCount(0);
+});
+
+test('brand colour styles the selected words, or the whole block from a bare caret', async ({
+  page,
+}) => {
+  await select(body(page), 6, 15);
+  await style(page, /brand/i);
+  await expect(html(page)).toHaveText(
+    '<p>First <span class="rte-text-brand">paragraph</span></p><p>H2O and x2</p>',
+  );
+  await select(body(page), 18);
+  await style(page, /brand/i);
+  await expect(html(page)).toHaveText(
+    '<p>First <span class="rte-text-brand">paragraph</span></p><p class="rte-text-brand">H2O and x2</p>',
+  );
+  // Reset over a selection clears the words and their blocks.
+  await select(body(page), 2, 20);
+  await style(page, /reset/i);
+  await expect(html(page)).toHaveText('<p>First paragraph</p><p>H2O and x2</p>');
+});
+
+test('styling part of already styled words does not nest or duplicate spans', async ({ page }) => {
+  await select(body(page), 0, 15);
+  await style(page, /brand/i);
+  await select(body(page), 6, 15);
+  await style(page, /brand/i);
+  await expect(html(page)).toHaveText(
+    '<p><span class="rte-text-brand">First paragraph</span></p><p>H2O and x2</p>',
+  );
+  await select(body(page), 0, 5);
+  await style(page, /reset/i);
+  await expect(html(page)).toHaveText(
+    '<p>First<span class="rte-text-brand"> paragraph</span></p><p>H2O and x2</p>',
+  );
 });
 
 test('subscript and superscript are exclusive marks', async ({ page }) => {
