@@ -562,6 +562,9 @@ export function useToolbar(
         });
       }
     },
+    /** True while a toolbar control holds keyboard focus on behalf of the editor. */
+    hasFocus: () =>
+      !!container.current?.contains(container.current.ownerDocument.activeElement),
     invalidate() {
       const selection = editor.current?.ownerDocument.getSelection();
       const range = selection?.rangeCount ? selection.getRangeAt(0) : null;

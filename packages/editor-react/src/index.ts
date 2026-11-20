@@ -152,6 +152,7 @@ function readSelection(element: HTMLDivElement): EditorSelection | null {
   const focus = selection && offset(selection.focusNode, selection.focusOffset);
   return anchor == null || focus == null ? null : { anchor, focus };
 }
+const inlineWrapper = /^(?:A|SPAN|STRONG|B|EM|I|U|S|STRIKE|CODE|SUB|SUP|FONT)$/;
 function restoreSelection(element: HTMLDivElement, value: EditorSelection | null) {
   const selection = element.ownerDocument.getSelection();
   if (!value || !selection) return;
@@ -162,7 +163,13 @@ function restoreSelection(element: HTMLDivElement, value: EditorSelection | null
         const child = node.childNodes[i]!;
         const length = size(child);
         if (child.nodeName === 'BR' && remaining <= 1) return [node, i + remaining];
-        if (remaining < length || (child.nodeType === 3 && remaining === length))
+        // A caret at the end of text or of an inline wrapper stays inside it, so typing
+        // continues with the formatting the author just used.
+        if (
+          remaining < length ||
+          (remaining === length &&
+            (child.nodeType === 3 || (length > 0 && inlineWrapper.test(child.nodeName))))
+        )
           return descend(child, remaining);
         remaining -= length;
       }
@@ -411,7 +418,15 @@ const InkForgeEditorContent = forwardRef<HTMLDivElement, InkForgeEditorProps>(
       if (controlled.html !== committed.current) {
         immediateEcho.current = null;
         browserEmpty.current = false;
-        replaceHtml(element.current, controlled.html);
+        // A value replaced from outside must not pull focus back into the editor: restoring
+        // a selection inside an editing host focuses it. Keep the caret only when the
+        // author is already working here.
+        const active = element.current.ownerDocument.activeElement;
+        replaceHtml(
+          element.current,
+          controlled.html,
+          element.current.contains(active) || formatting.hasFocus() ? undefined : null,
+        );
         formatting.invalidate();
         committed.current = controlled.html;
         engine.load(controlled.document, {
