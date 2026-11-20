@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { InkForgeEditor } from '@inkforge/editor-react';
+import { createContentProfile } from '@inkforge/editor-html';
 import '@inkforge/editor-content/content.css';
 import '@inkforge/editor-react/editor.css';
 import './playground.css';
@@ -124,4 +125,39 @@ function Playground() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<Playground />);
+// Strict CMS body profile with alignment classes, a brand colour and sub/superscript.
+const cmsProfile = createContentProfile({
+  id: 'cms-body-v2',
+  tokenClasses: [
+    'rte-align-left',
+    'rte-align-center',
+    'rte-align-right',
+    'rte-align-justify',
+    'rte-text-brand',
+  ],
+});
+function ProfilePlayground() {
+  const [value, setValue] = useState('<p>First paragraph</p><p>H2O and x2</p>');
+  return (
+    <main>
+      <h1>CMS body profile</h1>
+      <InkForgeEditor
+        toolbar
+        className="inkforge-content"
+        aria-label="CMS body"
+        profile={cmsProfile}
+        value={value}
+        onChange={setValue}
+      />
+      <pre data-testid="cms-html">{value}</pre>
+    </main>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(
+  new URLSearchParams(location.search).get('profile') === 'cms-body-v2' ? (
+    <ProfilePlayground />
+  ) : (
+    <Playground />
+  ),
+);

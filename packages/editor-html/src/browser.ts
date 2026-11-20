@@ -15,6 +15,7 @@ import {
   type ContentProfile,
   type ContentResult,
   type HtmlAstNode,
+  contentProfileTags,
 } from './profile.js';
 
 export function parseContentHtml(
@@ -85,23 +86,7 @@ export function sanitizeContentHtml(
     };
   const purifier = createDOMPurify(view);
   const clean = purifier.sanitize(first.canonicalHtml, {
-    ALLOWED_TAGS: [
-      'p',
-      'h2',
-      'h3',
-      'h4',
-      'ul',
-      'ol',
-      'li',
-      'strong',
-      'em',
-      'u',
-      's',
-      'code',
-      'br',
-      'a',
-      'span',
-    ],
+    ALLOWED_TAGS: contentProfileTags(profile),
     ALLOWED_ATTR: ['class', 'href', 'target', 'rel'],
     ALLOW_DATA_ATTR: false,
     ALLOWED_URI_REGEXP: /^(?:https?:\/\/|mailto:|tel:|cms-ref:|cms-route:)/,

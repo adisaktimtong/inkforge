@@ -16,3 +16,21 @@
 .inkforge-content.rte-text-brand {
   color: var(--content-brand);
 }
+/* Alignment classes: one per text block (cms-body-v2). Logical values follow the reading direction. */
+.inkforge-content .rte-align-left {
+  text-align: start;
+}
+.inkforge-content .rte-align-center {
+  text-align: center;
+}
+.inkforge-content .rte-align-right {
+  text-align: end;
+}
+.inkforge-content .rte-align-justify {
+  text-align: justify;
+}
+.inkforge-content sub,
+.inkforge-content sup {
+  font-size: 0.75em;
+  line-height: 0;
+}

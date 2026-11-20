@@ -30,6 +30,8 @@ export type EngineActionId =
   | 'underline'
   | 'strike'
   | 'code'
+  | 'subscript'
+  | 'superscript'
   | 'paragraph'
   | 'heading2'
   | 'undo'
@@ -85,6 +87,8 @@ const defaults: Record<EngineActionId, string> = {
   underline: 'Underline',
   strike: 'Strikethrough',
   code: 'Inline code',
+  subscript: 'Subscript',
+  superscript: 'Superscript',
   paragraph: 'Paragraph',
   heading2: 'Heading 2',
   undo: 'Undo',
@@ -286,7 +290,9 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
           !snapshot.selection ||
           (id === 'undo' && !snapshot.canUndo) ||
           (id === 'redo' && !snapshot.canRedo),
-        ...(['bold', 'italic', 'underline', 'strike', 'code'].includes(id)
+        ...(['bold', 'italic', 'underline', 'strike', 'code', 'subscript', 'superscript'].includes(
+          id,
+        )
           ? { pressed: binding.current?.selectionMarks().includes(id as Mark) ?? false }
           : {}),
         onIntent: (event) => arm(id, event),

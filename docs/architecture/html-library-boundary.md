@@ -30,3 +30,16 @@ Library work is tracked in [LIB-04](../work-items/LIB-04-html-profile/intent.md)
 ## Existing architecture and current engine
 
 Read [Editing Engine](24-inkforge-editing-engine.md) and the existing [Architecture Spine](../../_bmad-output/specs/spec-editor-engine/architecture-spine/ARCHITECTURE-SPINE.md). Preserve source versus prototype versus proposed design versus actual evidence. No runtime/profile/cohort result is promoted by this documentation move.
+
+## Profile revision `cms-body-v2`
+
+`createContentProfile({ id: 'cms-body-v2', ... })` selects a superset of `cms-body-v1`. A host that omits `id` keeps `cms-body-v1` unchanged, including its fingerprint.
+
+| Addition | Stored form | Rule |
+| --- | --- | --- |
+| Subscript, superscript | `<sub>`, `<sup>` | Text is one or the other; nesting them is rejected with `INVALID_NESTING` |
+| Text alignment | A registered class `<prefix>align-left`, `-center`, `-right` or `-justify` | Only on `p`, `h2`, `h3`, `h4` and `li` (`INVALID_CLASS_PLACEMENT`); one per block (`CONFLICTING_CLASS`) |
+
+Alignment is still a token class: the host must list each alignment it permits in `tokenClasses`, and the toolbar shows a button only for those. `content.css` maps left and right to the logical `start` and `end` values. Colour stays a registered token class such as `rte-text-brand`; the profile stores no inline style.
+
+Not in this revision: block quote, horizontal rule, code block, tables and images. Each needs a new block type in the document model.

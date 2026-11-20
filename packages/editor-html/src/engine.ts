@@ -33,6 +33,8 @@ const markTags = {
   underline: 'u',
   strike: 's',
   code: 'code',
+  subscript: 'sub',
+  superscript: 'sup',
 } as const;
 const rejected = (...diagnostics: string[]) => ({ status: 'rejected' as const, diagnostics });
 

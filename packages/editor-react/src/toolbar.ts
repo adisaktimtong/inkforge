@@ -9,7 +9,9 @@ import {
   ancestor,
   editInline,
   alignBlocks,
+  alignBlocksByClass,
   markActive,
+  markSelector,
   alignmentState,
   unlinkAnchor,
   type InlineEdit,
@@ -40,7 +42,17 @@ const actions = [
   ['Heading 3', 'H3', 'formatBlock', 'h3'],
   ['Bulleted list', '• List', 'insertUnorderedList'],
   ['Numbered list', '1. List', 'insertOrderedList'],
+  ['Subscript', 'x₂', 'sub'],
+  ['Superscript', 'x²', 'sup'],
 ] as const;
+// Marks the toolbar applies itself instead of through a native command.
+const ownMarks: Record<string, NonNullable<InlineEdit['mark']>> = {
+  code: 'code',
+  strikeThrough: 's',
+  sub: 'sub',
+  sup: 'sup',
+};
+const alignments = ['left', 'center', 'right', 'justify'];
 
 export function useToolbar(
   editor: RefObject<HTMLDivElement | null>,
@@ -82,8 +94,8 @@ export function useToolbar(
   const trigger = useRef<HTMLElement | null>(null);
   const [pressed, setPressed] = useState<boolean[]>([]);
   const [tabStop, setTabStop] = useState(0);
-  const latest = useRef({ locked, commit, unavailable, onLeave });
-  latest.current = { locked, commit, unavailable, onLeave };
+  const latest = useRef({ locked, commit, unavailable, onLeave, profile });
+  latest.current = { locked, commit, unavailable, onLeave, profile };
 
   const owns = (range: Range) =>
     !!editor.current?.contains(range.startContainer) &&
@@ -177,13 +189,18 @@ export function useToolbar(
     const next = actions.map((action) =>
       action[2] === 'formatBlock'
         ? block === action[3]
-        : action[2] === 'code' || action[2] === 'strikeThrough'
-          ? (pending.current.find((item) => item.mark === (action[2] === 'code' ? 'code' : 's'))
-              ?.enabled ??
-            markActive(editor.current!, range, action[2] === 'code' ? 'code' : 's,strike'))
+        : ownMarks[action[2]]
+          ? (pending.current.find((item) => item.mark === ownMarks[action[2]])?.enabled ??
+            markActive(editor.current!, range, markSelector(ownMarks[action[2]]!)))
           : doc.queryCommandState(action[2]),
     );
-    setAlignment(alignmentState(editor.current!, range));
+    setAlignment(
+      alignmentState(
+        editor.current!,
+        range,
+        latest.current.profile ? latest.current.profile.classPrefix + 'align-' : undefined,
+      ),
+    );
     setPressed((previous) =>
       previous.length === next.length && previous.every((value, index) => value === next[index])
         ? previous
@@ -286,8 +303,7 @@ export function useToolbar(
           edit = {
             ...edit,
             enabled: !(
-              previous?.enabled ??
-              !!ancestor(range.startContainer, root, edit.mark === 's' ? 's,strike' : 'code')
+              previous?.enabled ?? !!ancestor(range.startContainer, root, markSelector(edit.mark))
             ),
           };
         }
@@ -376,9 +392,9 @@ export function useToolbar(
     selection.addRange(range);
     const action = actions[index]!;
     running.current = true;
-    if (action[2] === 'code' || action[2] === 'strikeThrough') {
+    if (ownMarks[action[2]]) {
       running.current = false;
-      inline({ mark: action[2] === 'code' ? 'code' : 's' });
+      inline({ mark: ownMarks[action[2]]! });
       return;
     }
     const handled =
@@ -679,19 +695,33 @@ export function useToolbar(
                 actions.slice(5, 9).find((_a, i) => pressed[i + 5])?.[0] ?? 'Paragraph',
               ),
             );
+          // Subscript and superscript need a profile that stores them.
+          if (index >= 11 && profile && profile.id === 'cms-body-v1') return;
           controls.push(button(action[0], controls.length, () => run(index), pressed[index]));
         });
-        for (const alignment of profile ? [] : ['Left', 'Center', 'Right', 'Justify'])
+        // A strict profile offers only the alignments its registry stores as classes.
+        const alignPrefix = profile ? profile.classPrefix + 'align-' : '';
+        for (const alignment of alignments.filter(
+          (name) => !profile || profile.tokenClasses.includes(alignPrefix + name),
+        ))
           controls.push(
             button(
-              'Align ' + alignment.toLowerCase(),
+              'Align ' + alignment,
               controls.length,
-              () => apply((root, range) => alignBlocks(root, range, alignment.toLowerCase())),
-              alignment.toLowerCase() === currentAlignment,
+              () =>
+                apply((root, range) =>
+                  profile
+                    ? alignBlocksByClass(root, range, alignPrefix, alignment)
+                    : alignBlocks(root, range, alignment),
+                ),
+              alignment === currentAlignment,
             ),
           );
+        const styleTokens = profile
+          ? profile.tokenClasses.filter((token) => !token.startsWith(alignPrefix))
+          : [];
         for (const name of profile
-          ? ['Link', ...(profile.tokenClasses.length ? ['Content style'] : [])]
+          ? ['Link', ...(styleTokens.length ? ['Content style'] : [])]
           : ['Text color', 'Highlight', 'Link'])
           controls.push(button(name, controls.length, (target) => open(name, target)));
         controls.push(button('Clear formatting', controls.length, () => inline({ clear: true })));
@@ -733,7 +763,7 @@ export function useToolbar(
                       ),
                     )
                 : popup === 'Content style' && profile
-                  ? [...profile.tokenClasses, ''].map((token) =>
+                  ? [...styleTokens, ''].map((token) =>
                       createElement(
                         EditorButton,
                         {
@@ -751,7 +781,7 @@ export function useToolbar(
                                   );
                                   const classes = Array.from(block.classList).filter((c) =>
                                     !token
-                                      ? !profile.tokenClasses.includes(c)
+                                      ? !styleTokens.includes(c)
                                       : category
                                         ? !c.startsWith(profile.classPrefix + category)
                                         : c !== token,
@@ -914,6 +944,8 @@ function icon(label: string) {
     Underline: 'M6 4v7a6 6 0 0 0 12 0V4M4 21h16',
     Strikethrough: 'M17 6c-3-4-12-2-10 3M4 12h16M7 18c4 4 12 1 10-3',
     'Inline code': 'm8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16',
+    Subscript: 'm4 5 8 10m0-10L4 15m12 2c0-2 4-2 4 0s-4 2-4 4h4',
+    Superscript: 'm4 9 8 10m0-10L4 19M16 5c0-2 4-2 4 0s-4 2-4 4h4',
     'Bulleted list': 'M8 5h13M8 12h13M8 19h13M3 5h1M3 12h1M3 19h1',
     'Numbered list': 'M8 5h13M8 12h13M8 19h13M2 3h2v5M2 12h3l-3 6h3',
     Link: 'm10 14 4-4M9 16l-2 2a4 4 0 0 1-5-5l5-5a4 4 0 0 1 5 0m0 0 2-2a4 4 0 0 1 5 5l-5 5a4 4 0 0 1-5 0',

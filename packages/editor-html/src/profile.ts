@@ -36,7 +36,7 @@ export type ContentResult =
     }
   | { status: 'rejected'; diagnostics: ContentDiagnostic[] };
 
-const canonicalTags = new Set([
+const baseTags = [
   'p',
   'h2',
   'h3',
@@ -52,7 +52,21 @@ const canonicalTags = new Set([
   'br',
   'a',
   'span',
-]);
+] as const;
+/** Tags each profile revision accepts. A revision only ever adds to the previous one. */
+const profileTags: Record<string, ReadonlySet<string>> = {
+  'cms-body-v1': new Set(baseTags),
+  'cms-body-v2': new Set([...baseTags, 'sub', 'sup']),
+};
+export type ContentProfileId = 'cms-body-v1' | 'cms-body-v2';
+/** Canonical tags of a profile, for adapters that compile a second allowlist. */
+export const contentProfileTags = (profile: ContentProfile): string[] => [
+  ...(profileTags[profile.id] ?? profileTags['cms-body-v1']!),
+];
+const tagsOf = (profile: ContentProfile) => profileTags[profile.id] ?? profileTags['cms-body-v1']!;
+/** cms-body-v2 gives alignment classes a fixed placement; v1 keeps its original rule. */
+const alignmentBlocks = ['p', 'h2', 'h3', 'h4', 'li'];
+export const alignmentClassPrefix = (profile: ContentProfile) => profile.classPrefix + 'align-';
 const aliases: Record<string, string> = { b: 'strong', i: 'em', strike: 's' };
 const forbidden = new Set(['__proto__', 'constructor', 'prototype']);
 const escape = (value: string) =>
@@ -65,10 +79,12 @@ const record = (value: unknown): value is Record<string, unknown> =>
 
 /** A new immutable profile is required for a changed token/route registry. Prefix alone never grants acceptance. */
 export function createContentProfile(
-  configuration: Partial<Omit<ContentProfile, 'id' | 'version'>> = {},
+  configuration: Partial<Omit<ContentProfile, 'version'>> = {},
 ): ContentProfile {
+  const id = configuration.id ?? 'cms-body-v1';
+  if (!Object.hasOwn(profileTags, id)) throw new Error('Unknown content profile');
   const profile: ContentProfile = {
-    id: 'cms-body-v1',
+    id,
     version: 1,
     classPrefix: configuration.classPrefix ?? 'rte-',
     tokenClasses: [...(configuration.tokenClasses ?? [])].sort(),
@@ -146,7 +162,13 @@ export function evaluateContentPolicy(
   let count = 0;
   const error = (code: string, path: string, message: string) =>
     diagnostics.push({ code, path, message, severity: 'error' });
-  function visit(node: HtmlAstNode, path: string, depth: number, parent?: string): void {
+  function visit(
+    node: HtmlAstNode,
+    path: string,
+    depth: number,
+    parent?: string,
+    script?: string,
+  ): void {
     if (++count > profile.maxNodes || depth > profile.maxDepth) {
       if (!diagnostics.some((d) => d.code === 'CONTENT_LIMIT'))
         error('CONTENT_LIMIT', path, 'Content exceeds the profile node/depth limit');
@@ -160,7 +182,8 @@ export function evaluateContentPolicy(
     const tag = aliases[node.tag] ?? node.tag;
     if (node.namespace && node.namespace !== 'http://www.w3.org/1999/xhtml')
       error('UNSUPPORTED_NAMESPACE', path, 'Foreign content is not allowed');
-    if (!canonicalTags.has(tag)) error('UNSUPPORTED_TAG', path, `Unsupported element: ${node.tag}`);
+    if (!tagsOf(profile).has(tag))
+      error('UNSUPPORTED_TAG', path, `Unsupported element: ${node.tag}`);
     const block = ['p', 'h2', 'h3', 'h4', 'ul', 'ol'];
     if (block.includes(tag) && parent && !['li'].includes(parent))
       error('INVALID_NESTING', path, 'Block is not allowed in this parent');
@@ -179,6 +202,13 @@ export function evaluateContentPolicy(
         const classes = attribute.value.trim().split(/\s+/).filter(Boolean);
         if (!classes.length || classes.some((c) => !profile.tokenClasses.includes(c)))
           error('UNREGISTERED_CLASS', path, 'Every class must be registered explicitly');
+        else if (profile.id !== 'cms-body-v1') {
+          const alignment = classes.filter((c) => c.startsWith(alignmentClassPrefix(profile)));
+          if (alignment.length && !alignmentBlocks.includes(tag))
+            error('INVALID_CLASS_PLACEMENT', path, 'Alignment belongs on a text block');
+          else if (new Set(alignment).size > 1)
+            error('CONFLICTING_CLASS', path, 'A block takes one alignment');
+        }
       }
     }
     if (tag === 'a') {
@@ -196,8 +226,11 @@ export function evaluateContentPolicy(
         error('UNSUPPORTED_REL', path, 'Unsupported link relation');
       if (parent === 'a') error('INVALID_NESTING', path, 'Nested anchors are not allowed');
     }
+    const raised = tag === 'sub' || tag === 'sup' ? tag : script;
+    if ((tag === 'sub' || tag === 'sup') && script)
+      error('INVALID_NESTING', path, 'Text is either subscript or superscript');
     node.children.forEach((child, index) =>
-      visit(child, `${path}/children/${index}`, depth + 1, tag),
+      visit(child, `${path}/children/${index}`, depth + 1, tag, raised),
     );
   }
   nodes.forEach((node, index) => visit(node, `/${index}`, 0));
@@ -313,7 +346,7 @@ export function validateContentSyntax(input: string, profile: ContentProfile): C
     const closing = !!match[1],
       name = match[2]!.toLowerCase(),
       tail = match[3]!;
-    if (!canonicalTags.has(aliases[name] ?? name))
+    if (!tagsOf(profile).has(aliases[name] ?? name))
       return [
         {
           code: 'UNSUPPORTED_TAG',

@@ -1,6 +1,9 @@
 import { selected, preserve } from './formatting.js';
 // Private, selection-scoped DOM operations. No placeholder text enters the document.
-const inlineTags = /^(?:A|SPAN|STRONG|B|EM|I|U|S|STRIKE|CODE|FONT)$/;
+const inlineTags = /^(?:A|SPAN|STRONG|B|EM|I|U|S|STRIKE|CODE|SUB|SUP|FONT)$/;
+/** Selector matching the elements that carry a toolbar-managed mark. */
+export const markSelector = (mark: NonNullable<InlineEdit['mark']>) =>
+  mark === 's' ? 's,strike' : mark;
 export function ancestor(node: Node, root: HTMLElement, selector: string): HTMLElement | null {
   const element = node.nodeType === 1 ? (node as HTMLElement) : node.parentElement;
   const found = element?.closest<HTMLElement>(selector);
@@ -24,7 +27,7 @@ function isolate(text: Text, root: HTMLElement) {
   }
 }
 export type InlineEdit = {
-  mark?: 's' | 'code';
+  mark?: 's' | 'code' | 'sub' | 'sup';
   enabled?: boolean;
   property?: 'color' | 'background-color';
   value?: string;
@@ -47,7 +50,7 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
     (edit.enabled !== true &&
       !!edit.mark &&
       selected.length > 0 &&
-      selected.every((text) => ancestor(text, root, edit.mark === 's' ? 's,strike' : 'code')));
+      selected.every((text) => ancestor(text, root, markSelector(edit.mark!))));
   for (const text of selected) {
     isolate(text, root);
     let element = text.parentElement;
@@ -58,7 +61,10 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
         (edit.clear && element.tagName !== 'A') ||
         (edit.mark &&
           (element.tagName.toLowerCase() === edit.mark ||
-            (edit.mark === 's' && element.tagName === 'STRIKE'))) ||
+            (edit.mark === 's' && element.tagName === 'STRIKE') ||
+            // Text is either subscript or superscript, never both.
+            (edit.mark === 'sub' && element.tagName === 'SUP') ||
+            (edit.mark === 'sup' && element.tagName === 'SUB'))) ||
         (edit.href !== undefined && element.tagName === 'A')
       ) {
         if (
@@ -99,7 +105,7 @@ export function editInline(root: HTMLElement, range: Range, edit: InlineEdit) {
     }
   }
   for (const element of Array.from(
-    root.querySelectorAll<HTMLElement>('a,span,strong,b,em,i,u,s,strike,code,font'),
+    root.querySelectorAll<HTMLElement>('a,span,strong,b,em,i,u,s,strike,code,sub,sup,font'),
   ).reverse()) {
     if (!element.textContent && !element.querySelector('br')) element.remove();
   }
@@ -151,7 +157,7 @@ export function markActive(root: HTMLElement, range: Range, selector: string) {
   const leaves = selectedLeaves(root, range);
   return !!leaves.length && leaves.every((leaf) => ancestor(leaf, root, selector));
 }
-export function alignmentState(root: HTMLElement, range: Range) {
+export function alignmentState(root: HTMLElement, range: Range, classPrefix?: string) {
   const blocks = new Set<HTMLElement>();
   if (range.collapsed) {
     const block = ancestor(range.startContainer, root, 'p,h1,h2,h3,h4,h5,h6,li,div');
@@ -165,6 +171,13 @@ export function alignmentState(root: HTMLElement, range: Range) {
     if (!block.querySelector('p,h1,h2,h3,h4,h5,h6,li,div,ul,ol') && selected(range, block))
       blocks.add(block);
   const values = [...blocks].map((block) => {
+    // A strict profile stores alignment as a class; read it without depending on loaded CSS.
+    if (classPrefix)
+      return (
+        Array.from(block.classList)
+          .find((name) => name.startsWith(classPrefix))
+          ?.slice(classPrefix.length) ?? 'left'
+      );
     const value = root.ownerDocument.defaultView?.getComputedStyle(block).textAlign;
     return !value || value === 'start' ? 'left' : value === 'end' ? 'right' : value;
   });
@@ -179,4 +192,29 @@ export function unlinkAnchor(anchor: HTMLElement) {
     span.append(...anchor.childNodes);
     anchor.replaceWith(span);
   } else anchor.replaceWith(...anchor.childNodes);
+}
+/** Profile alignment: one registered class per selected text block; choosing it again clears it. */
+export function alignBlocksByClass(
+  root: HTMLElement,
+  range: Range,
+  classPrefix: string,
+  alignment: string,
+) {
+  const blocks = Array.from(root.querySelectorAll<HTMLElement>('p,h2,h3,h4,li')).filter(
+    (block) => !block.querySelector('p,h2,h3,h4,li,ul,ol') && selected(range, block),
+  );
+  if (!blocks.length) {
+    const block = ancestor(range.startContainer, root, 'p,h2,h3,h4,li');
+    if (block) blocks.push(block);
+  }
+  const target = classPrefix + alignment;
+  const clear = blocks.length > 0 && blocks.every((block) => block.classList.contains(target));
+  preserve(range, () => {
+    for (const block of blocks) {
+      for (const name of Array.from(block.classList))
+        if (name.startsWith(classPrefix)) block.classList.remove(name);
+      if (!clear) block.classList.add(target);
+      if (!block.classList.length) block.removeAttribute('class');
+    }
+  });
 }

@@ -61,13 +61,23 @@ interface RecordNode {
 const owners = new WeakMap<EngineController, HTMLElement>();
 const retained = new WeakMap<EngineController, { pending: Pending; stop: () => void }>();
 const eq = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
-const marks = ['bold', 'italic', 'underline', 'strike', 'code'] as const;
+const marks = [
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'code',
+  'subscript',
+  'superscript',
+] as const;
 const markTags: Record<Mark, string> = {
   bold: 'strong',
   italic: 'em',
   underline: 'u',
   strike: 's',
   code: 'code',
+  subscript: 'sub',
+  superscript: 'sup',
 };
 const textBlock = (s: ControllerSnapshot, id: string) =>
   ['paragraph', 'heading'].includes(s.nodeIndex[id]?.node.type ?? '');

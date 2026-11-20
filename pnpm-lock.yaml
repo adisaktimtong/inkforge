@@ -276,6 +276,9 @@ importers:
       '@inkforge/editor-core':
         specifier: workspace:*
         version: link:../../packages/editor-core
+      '@inkforge/editor-html':
+        specifier: workspace:*
+        version: link:../../packages/editor-html
       '@inkforge/editor-react':
         specifier: workspace:*
         version: link:../../packages/editor-react

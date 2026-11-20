@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const owned = [
   'cms-profile.test.mjs',
+  'cms-profile-v2.test.mjs',
   'content-checks.test.mjs',
   'controller-dom-commands.test.mjs',
   'controller.test.mjs',

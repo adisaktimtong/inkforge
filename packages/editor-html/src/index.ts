@@ -275,6 +275,8 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
     s: 'strike',
     strike: 'strike',
     code: 'code',
+    sub: 'subscript',
+    sup: 'superscript',
   };
   const inline = (nodes: any[], marks: Mark[] = []): InlineNode[] =>
     nodes.flatMap((n) => {
@@ -387,6 +389,8 @@ export function serializeHtml(
     underline: 'u',
     strike: 's',
     code: 'code',
+    subscript: 'sub',
+    superscript: 'sup',
   };
   const inlines = (nodes: DeepReadonly<InlineNode[]>): string =>
     nodes

@@ -168,7 +168,16 @@ export function validateEditorDocument(document: unknown): EngineDiagnostic[] {
         (node.marks !== undefined &&
           (!Array.isArray(node.marks) ||
             node.marks.some(
-              (m) => !['bold', 'italic', 'underline', 'strike', 'code'].includes(String(m)),
+              (m) =>
+                ![
+                  'bold',
+                  'italic',
+                  'underline',
+                  'strike',
+                  'code',
+                  'subscript',
+                  'superscript',
+                ].includes(String(m)),
             )))
       )
         diagnostics.push({ code: 'INVALID_TEXT', path });

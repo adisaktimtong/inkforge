@@ -49,7 +49,15 @@ export class Rejection extends Error {
 export function fail(code: string): never {
   throw new Rejection(code);
 }
-export const marks = ['bold', 'italic', 'underline', 'strike', 'code'] as const;
+export const marks = [
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'code',
+  'subscript',
+  'superscript',
+] as const;
 function denseArray(value: unknown, maximum: number): value is unknown[] {
   if (!Array.isArray(value) || value.length > maximum || Object.getOwnPropertySymbols(value).length)
     return false;

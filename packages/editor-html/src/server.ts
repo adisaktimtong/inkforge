@@ -18,6 +18,7 @@ import {
   type ContentProfile,
   type ContentResult,
   type HtmlAstNode,
+  contentProfileTags,
 } from './profile.js';
 
 function normalizedAst(
@@ -79,23 +80,7 @@ export function sanitizeContentHtml(input: string, profile: ContentProfile): Con
   const first = parseContentHtml(input, profile);
   if (first.status === 'rejected') return first;
   const clean = sanitizeHtml(first.canonicalHtml, {
-    allowedTags: [
-      'p',
-      'h2',
-      'h3',
-      'h4',
-      'ul',
-      'ol',
-      'li',
-      'strong',
-      'em',
-      'u',
-      's',
-      'code',
-      'br',
-      'a',
-      'span',
-    ],
+    allowedTags: contentProfileTags(profile),
     allowedAttributes: { '*': ['class'], a: ['href', 'target', 'rel', 'class'] },
     allowedClasses: { '*': [...profile.tokenClasses] },
     allowedSchemes: ['http', 'https', 'mailto', 'tel', 'cms-ref', 'cms-route'],

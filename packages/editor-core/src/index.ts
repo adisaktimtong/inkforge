@@ -5,7 +5,14 @@ export type DeepReadonly<T> = T extends (...args: never[]) => unknown
     : T extends object
       ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
       : T;
-export type Mark = 'bold' | 'italic' | 'underline' | 'strike' | 'code';
+export type Mark =
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strike'
+  | 'code'
+  | 'subscript'
+  | 'superscript';
 
 export interface TextNode extends PresentationAttributes {
   type: 'text';
