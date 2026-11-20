@@ -46,6 +46,7 @@
   font-family: var(--content-font-mono, ui-monospace, monospace);
   white-space: pre-wrap;
   background: var(--content-code-surface, transparent);
+  border-radius: var(--content-radius, 0);
 }
 .inkforge-content hr {
   border: 0;
