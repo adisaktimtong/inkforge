@@ -199,7 +199,9 @@ const engine = createEngine({
   },
   origin: 'persisted',
 });
+const pickerCalls: string[] = [];
 function EnginePlayground() {
+  const [calls, setCalls] = useState('');
   const snapshot = useSyncExternalStore(engine.subscribe, engine.getSnapshot);
   return (
     <main>
@@ -212,13 +214,18 @@ function EnginePlayground() {
         // ?engine=picker stands in for a host that offers its own pages instead of a typed address.
         {...(engineMode === 'picker'
           ? {
-              requestLink: async () => ({
-                href: 'cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256',
-                target: '_blank' as const,
-              }),
+              requestLink: async (current: string | null, detail: { target: string }) => {
+                pickerCalls.push(`${current} ${detail.target}`);
+                setCalls(pickerCalls.join(' | '));
+                return {
+                  href: 'cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256',
+                  target: '_blank' as const,
+                };
+              },
             }
           : {})}
       />
+      <pre data-testid="picker-calls">{calls}</pre>
       <pre data-testid="engine-html">
         {serializeHtml(snapshot.document, { referenceLinks: true })}
       </pre>

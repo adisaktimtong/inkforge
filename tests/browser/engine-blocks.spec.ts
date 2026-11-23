@@ -178,3 +178,17 @@ test('a host link picker supplies the address instead of the field', async ({ pa
   );
   await expect(page.getByRole('dialog', { name: 'Link' })).toHaveCount(0);
 });
+
+test('a host link picker receives the current address and target when it reopens a link', async ({
+  page,
+}) => {
+  await page.goto('/?engine=picker');
+  await body(page).locator('p').first().click();
+  await select(page, 0, 0, 5);
+  await button(page, 'Link').click();
+  await body(page).locator('a').click();
+  await button(page, 'Link').click();
+  await expect(page.getByTestId('picker-calls')).toHaveText(
+    'null _self | cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256 _blank',
+  );
+});

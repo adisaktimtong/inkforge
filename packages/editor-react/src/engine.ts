@@ -73,12 +73,15 @@ export interface InkforgeEngineEditorProps extends Native {
    */
   readonly contentProfile?: ContentProfile;
   /**
-   * Lets the host choose a link, for example with a picker for its own pages and files.
+   * Lets the host choose a link; `detail.target` tells whether the current link opens in a new tab, for example with a picker for its own pages and files.
    * Resolve with the address to set (alone, or with whether it opens in a new tab), `null`
    * to remove the link, or `undefined` to cancel. Without it the editor shows a field for
    * typing an address.
    */
-  readonly requestLink?: (current: string | null) => Promise<EngineLinkChoice | null | undefined>;
+  readonly requestLink?: (
+    current: string | null,
+    detail: Readonly<{ target: '_self' | '_blank' }>,
+  ) => Promise<EngineLinkChoice | null | undefined>;
   /** Display names for content style classes; a readable name is derived otherwise. */
   readonly tokenLabels?: Readonly<Record<string, string>>;
   readonly disabled?: boolean;
@@ -313,17 +316,19 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
         ? { kind: 'setBlockClasses', blocks: targets, remove, ...(token ? { add: token } : {}) }
         : null;
     }
-    const linkAt = (selection: ModelSelection): string | null => {
+    const linkNodeAt = (selection: ModelSelection) => {
       for (
         let id: string | null = selection.head.nodeId;
         id;
         id = snapshot.nodeIndex[id]?.parentId ?? null
       ) {
         const node = snapshot.nodeIndex[id]?.node;
-        if (node?.type === 'link') return node.href;
+        if (node?.type === 'link') return node;
       }
       return null;
     };
+    const linkAt = (selection: ModelSelection): string | null =>
+      linkNodeAt(selection)?.href ?? null;
     const openLink = React.useRef(linkDraft);
     openLink.current = linkDraft;
     React.useEffect(
@@ -376,7 +381,8 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
           setLinkDraft({ bookmark, value: current ?? '', error: '' });
           return;
         }
-        void requestLink(current).then(
+        const target = linkNodeAt(bookmark.selection)?.target === '_blank' ? '_blank' : '_self';
+        void requestLink(current, { target }).then(
           (choice) => {
             const href = typeof choice === 'string' ? choice : choice?.href;
             // An address the profile refuses is dropped rather than stored.
