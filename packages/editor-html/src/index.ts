@@ -295,8 +295,12 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
             ...(n.attrs.target === '_blank' ? { target: '_blank' as const } : {}),
           },
         ];
-      if (n.tag === 'span' && (attrs.className || attrs.style))
-        return inline(n.children, next).map((child) => {
+      if (n.tag === 'span' && (attrs.className || attrs.style)) {
+        // A span's presentation styles text. It moves onto the text inside a link rather than
+        // onto the link, and a line break carries none, so the result is valid where the input was.
+        const present = (child: InlineNode): InlineNode => {
+          if (child.type === 'hard-break') return child;
+          if (child.type === 'link') return { ...child, children: child.children.map(present) };
           const className = [
             ...new Set([
               ...(attrs.className ?? '').split(/\s+/),
@@ -307,7 +311,9 @@ export function parseHtml(html: string, options: HtmlParseOptions = {}): HtmlPar
             .join(' ');
           const style = mergeInlineStyle(attrs.style, child.style, diagnostics);
           return { ...child, ...(className ? { className } : {}), ...(style ? { style } : {}) };
-        });
+        };
+        return inline(n.children, next).map(present);
+      }
       return inline(n.children, next);
     });
   const presentation = (n: any): { className?: string; style?: string } => {

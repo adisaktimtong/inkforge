@@ -181,3 +181,24 @@ test('cms-body-v2 places content style classes on a span or a text block', () =>
     [],
   );
 });
+
+test('canonical output of cms-body-v2 is accepted again and unchanged', () => {
+  const styled = createContentProfile({
+    id: 'cms-body-v2',
+    tokenClasses: [...tokenClasses, 'rte-typo-body', 'rte-typo-lead'],
+  });
+  const cases = {
+    // A styled span around a link styles the link text, not the link element.
+    '<p><span class="rte-text-brand"><a href="https://example.com">x</a></span></p>':
+      '<p><a href="https://example.com"><span class="rte-text-brand">x</span></a></p>',
+    // A line break carries no style.
+    '<p><span class="rte-text-brand">a<br>b</span></p>':
+      '<p><span class="rte-text-brand">a</span><br><span class="rte-text-brand">b</span></p>',
+    '<p><strong><a href="https://example.com">x</a></strong></p>':
+      '<p><a href="https://example.com"><strong>x</strong></a></p>',
+  };
+  for (const [input, expected] of Object.entries(cases)) {
+    assert.equal(canonical(input, styled), expected, input);
+    assert.equal(canonical(expected, styled), expected, 'idempotent: ' + expected);
+  }
+});
