@@ -1,6 +1,10 @@
 'use client';
 
-import { EditorInteractionContext, EditorUiBoundary, type InkforgeUiAdapterV1 } from './ui-adapter.js';
+import {
+  EditorInteractionContext,
+  EditorUiBoundary,
+  type InkforgeUiAdapterV1,
+} from './ui-adapter.js';
 export type { InkforgeUiAdapterV1 } from './ui-adapter.js';
 import { useToolbar } from './toolbar.js';
 import {
@@ -122,7 +126,9 @@ function sanitize(html: string, profile?: ContentProfile) {
 // A hard break and each text block boundary occupy one position.
 const textBlock = (node: Node) =>
   /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|LI)$/.test(node.nodeName) &&
-  !Array.from(node.childNodes).some((child) => /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|UL|OL)$/.test(child.nodeName));
+  !Array.from(node.childNodes).some((child) =>
+    /^(?:P|H[1-6]|BLOCKQUOTE|PRE|DIV|UL|OL)$/.test(child.nodeName),
+  );
 const size = (node: Node): number =>
   node.nodeType === 3
     ? (node.textContent?.length ?? 0)
@@ -301,8 +307,10 @@ export const InkForgeEditor = forwardRef<HTMLDivElement, InkForgeEditorProps>(
   function InkForgeEditor(props, ref) {
     if ('engineBinding' in props && props.engineBinding !== undefined)
       throw new Error('INKFORGE_ENGINE_BINDING_NOT_IMPLEMENTED');
-    return createElement(EditorUiBoundary, { adapter: props.uiAdapter,
-      children: createElement(InkForgeEditorContent, { ...props, ref }) });
+    return createElement(EditorUiBoundary, {
+      adapter: props.uiAdapter,
+      children: createElement(InkForgeEditorContent, { ...props, ref }),
+    });
   },
 );
 const InkForgeEditorContent = forwardRef<HTMLDivElement, InkForgeEditorProps>(
@@ -339,7 +347,9 @@ const InkForgeEditorContent = forwardRef<HTMLDivElement, InkForgeEditorProps>(
     // Initial hydration readiness is a gate, not a recurring editing-mode change.
     // Presentation updates must never toggle contentEditable during native IME.
     const uiReadyOnce = useRef(ui === null || ui.status === 'ready');
-    useLayoutEffect(() => { if (ui?.status === 'ready') uiReadyOnce.current = true; }, [ui?.status]);
+    useLayoutEffect(() => {
+      if (ui?.status === 'ready') uiReadyOnce.current = true;
+    }, [ui?.status]);
     const disabled = disabledProp || (!uiReadyOnce.current && ui?.status === 'pending');
     const element = useRef<HTMLDivElement>(null);
     const initial = useRef<ReturnType<typeof sanitize> | null>(null);
