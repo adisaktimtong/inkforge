@@ -125,3 +125,56 @@ test('without a profile the same content stays read only', async ({ page }) => {
   await expect(body(page).locator('p')).not.toHaveClass(/rte-/);
   await expect(body(page).locator('a')).not.toHaveAttribute('href');
 });
+
+const linkField = (page: Page) => page.getByRole('dialog', { name: 'Link' }).getByRole('textbox');
+
+test('engine link field adds, retargets and removes a link', async ({ page }) => {
+  await expect(button(page, 'Link')).toBeDisabled();
+  await select(page, 0, 6, 15);
+  await button(page, 'Link').click();
+  await linkField(page).fill('https://example.com/a');
+  await linkField(page).press('Enter');
+  await expect(html(page)).toHaveText(
+    '<p>First <a href="https://example.com/a">paragraph</a></p><p>Second paragraph</p>',
+  );
+  await expect(page.getByRole('dialog', { name: 'Link' })).toHaveCount(0);
+  await body(page).locator('a').click();
+  await expect(button(page, 'Link')).toHaveAttribute('aria-pressed', 'true');
+  await button(page, 'Link').click();
+  await expect(linkField(page)).toHaveValue('https://example.com/a');
+  await linkField(page).fill('mailto:team@example.com');
+  await page.getByRole('dialog', { name: 'Link' }).getByRole('button', { name: 'Apply' }).click();
+  await expect(html(page)).toContainText('<a href="mailto:team@example.com">paragraph</a>');
+  await body(page).locator('a').click();
+  await button(page, 'Remove link').click();
+  await expect(html(page)).toHaveText('<p>First paragraph</p><p>Second paragraph</p>');
+});
+
+test('engine link field refuses an address the profile does not allow and can be cancelled', async ({
+  page,
+}) => {
+  await select(page, 0, 0, 5);
+  await button(page, 'Link').click();
+  await linkField(page).fill('javascript:alert(1)');
+  await linkField(page).press('Enter');
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(html(page)).not.toContainText('<a');
+  await linkField(page).press('Escape');
+  await expect(page.getByRole('dialog', { name: 'Link' })).toHaveCount(0);
+  await expect(html(page)).toHaveText('<p>First paragraph</p><p>Second paragraph</p>');
+  // The surface is usable again after cancelling.
+  await body(page).locator('p').last().click();
+  await page.keyboard.type('!');
+  await expect(html(page)).toContainText('!');
+});
+
+test('a host link picker supplies the address instead of the field', async ({ page }) => {
+  await page.goto('/?engine=picker');
+  await body(page).locator('p').first().click();
+  await select(page, 0, 0, 5);
+  await button(page, 'Link').click();
+  await expect(html(page)).toContainText(
+    '<a href="cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256">First</a>',
+  );
+  await expect(page.getByRole('dialog', { name: 'Link' })).toHaveCount(0);
+});

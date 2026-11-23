@@ -192,6 +192,78 @@ function changeClasses(d: Draft, ids: readonly string[], remove: unknown, add: u
     if (next !== old) d.apply({ kind: 'patch', id, values: { className: next } });
   }
 }
+function linkOf(d: Draft, id: string): string | null {
+  for (let at: string | null = id; at; at = parentOf(d.tree, at)?.id ?? null)
+    if (d.node(at).type === 'link') return at;
+  return null;
+}
+/** Unwraps the links that the offsets touch; a caret counts as touching the link around it. */
+function unwrapLinks(d: Draft, from: number, to: number): void {
+  const coords = coordinates(d.tree);
+  const hit = [...d.tree.nodes]
+    .filter(([id, n]) => {
+      if (n.type !== 'link') return false;
+      const c = coords.get(id)!;
+      return from === to ? c.start <= from && from <= c.end : c.start < to && from < c.end;
+    })
+    .map(([id]) => id);
+  for (const id of hit) {
+    const parent = parentOf(d.tree, id)!,
+      count = children(d.node(id)).length;
+    d.apply({
+      kind: 'moveChildren',
+      from: id,
+      to: parent.id,
+      start: 0,
+      count,
+      index: parent.index,
+    });
+    d.apply({ kind: 'remove', parentId: parent.id, index: parent.index + count });
+  }
+}
+function setLink(d: Draft, range: ModelSelection, href: unknown, target: unknown): void {
+  if (
+    typeof href !== 'string' ||
+    !href ||
+    !href.isWellFormed() ||
+    (target !== undefined && target !== '_self' && target !== '_blank')
+  )
+    fail('INVALID_LINK');
+  const values = { href, target: target === '_blank' ? ('_blank' as const) : undefined };
+  const r = ordered(d.tree, range);
+  if (r.from === r.to) {
+    const link = linkOf(d, r.start.nodeId);
+    if (!link) fail('LINK_NEEDS_SELECTION');
+    d.apply({ kind: 'patch', id: link, values });
+    return;
+  }
+  const block = blockFor(d.tree, inlinePosition(d, r.start));
+  if (blockFor(d.tree, inlinePosition(d, r.end)).id !== block.id) fail('UNSUPPORTED_LINK_RANGE');
+  unwrapLinks(d, r.from, r.to);
+  textInRange(d, r.from, r.to);
+  // Every inline node of the block is now a direct child; the covered ones are contiguous.
+  const coords = coordinates(d.tree),
+    covered = children(d.node(block.id))
+      .map((n, index) => ({ index, c: coords.get(d.id(n))! }))
+      .filter(({ c }) => c.start >= r.from && c.end <= r.to && c.end > c.start);
+  if (!covered.length) fail('LINK_NEEDS_SELECTION');
+  const first = covered[0]!.index,
+    link = d.value({
+      type: 'link',
+      href,
+      ...(values.target ? { target: values.target } : {}),
+      children: [],
+    });
+  d.apply({ kind: 'insert', parentId: block.id, index: first, value: link });
+  d.apply({
+    kind: 'moveChildren',
+    from: block.id,
+    to: link.identities[0]!,
+    start: first + 1,
+    count: covered.length,
+    index: 0,
+  });
+}
 function changeMark(
   d: Draft,
   range: ModelSelection,
@@ -482,6 +554,10 @@ export function compile(
       command.remove,
       command.add,
     );
+  } else if (command.kind === 'setLink') setLink(d, command.range, command.href, command.target);
+  else if (command.kind === 'removeLink') {
+    const r = ordered(d.tree, command.range);
+    unwrapLinks(d, r.from, r.to);
   } else if (command.kind === 'insertHardBreak') {
     const p = deleteRange(d, command.range),
       target = boundary(d, p),

@@ -21,6 +21,7 @@ import {
   EditorUiBoundary,
   EditorInteractionContext,
   EditorEngineToolbar,
+  EditorButton,
   type EngineToolbarAction,
   type InkforgeUiAdapterV1,
 } from './ui-adapter.js';
@@ -71,6 +72,12 @@ export interface InkforgeEngineEditorProps extends Native {
    * allowed links, and adds alignment and content style actions for the registered classes.
    */
   readonly contentProfile?: ContentProfile;
+  /**
+   * Lets the host choose a link, for example with a picker for its own pages and files.
+   * Resolve with the address to set, `null` to remove the link, or `undefined` to cancel.
+   * Without it the editor shows a field for typing an address.
+   */
+  readonly requestLink?: (current: string | null) => Promise<string | null | undefined>;
   /** Display names for content style classes; a readable name is derived otherwise. */
   readonly tokenLabels?: Readonly<Record<string, string>>;
   readonly disabled?: boolean;
@@ -118,6 +125,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       actionLabels,
       contentProfile,
       tokenLabels,
+      requestLink,
       disabled = false,
       readOnly = false,
       maxNativeTextUtf16 = 500000,
@@ -152,6 +160,12 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
     const initialHtml = React.useRef<string | null>(null);
     if (initialHtml.current === null) initialHtml.current = renderEngineSeed(snapshot);
     if (snapshot.disposed) initialHtml.current = ''; // Terminal ownership also clears the cached SSR seed.
+    // The selection a link is being chosen for, kept while focus is in the address field.
+    const [linkDraft, setLinkDraft] = React.useState<{
+      bookmark: EngineBookmark;
+      value: string;
+      error: string;
+    } | null>(null);
     const [surface, setSurface] = React.useState<EngineSurfaceStatus>({
       phase: 'ready',
       pending: false,
@@ -297,12 +311,78 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
         ? { kind: 'setBlockClasses', blocks: targets, remove, ...(token ? { add: token } : {}) }
         : null;
     }
+    const linkAt = (selection: ModelSelection): string | null => {
+      for (
+        let id: string | null = selection.head.nodeId;
+        id;
+        id = snapshot.nodeIndex[id]?.parentId ?? null
+      ) {
+        const node = snapshot.nodeIndex[id]?.node;
+        if (node?.type === 'link') return node.href;
+      }
+      return null;
+    };
+    const openLink = React.useRef(linkDraft);
+    openLink.current = linkDraft;
+    React.useEffect(
+      () => () => {
+        if (openLink.current) controller.releaseBookmark(openLink.current.bookmark);
+      },
+      [controller],
+    );
+    function finishLink(bookmark: EngineBookmark, href: string | null) {
+      binding.current?.applyBookmark(
+        bookmark,
+        href === null
+          ? { kind: 'removeLink', range: bookmark.selection }
+          : { kind: 'setLink', range: bookmark.selection, href },
+      );
+      controller.releaseBookmark(bookmark);
+    }
+    function submitLink() {
+      if (!linkDraft || !contentProfile) return;
+      const href = linkDraft.value.trim();
+      if (!isProfileHref(href, contentProfile)) {
+        setLinkDraft({ ...linkDraft, error: 'Enter an address this content may link to.' });
+        return;
+      }
+      setLinkDraft(null);
+      finishLink(linkDraft.bookmark, href);
+    }
+    function cancelLink() {
+      if (!linkDraft) return;
+      controller.releaseBookmark(linkDraft.bookmark);
+      setLinkDraft(null);
+      root.current?.focus({ preventScroll: true });
+    }
     function activate(action: EngineActionId | string) {
       if (!armed.current || armed.current.action !== action) arm(action);
       const original = armed.current;
       armed.current = null;
       if (!original?.bookmark || original.context !== contextKey) return;
       const bookmark = original.bookmark;
+      if (action === 'link') {
+        const current = linkAt(bookmark.selection);
+        if (!requestLink) {
+          if (linkDraft) controller.releaseBookmark(linkDraft.bookmark);
+          setLinkDraft({ bookmark, value: current ?? '', error: '' });
+          return;
+        }
+        void requestLink(current).then(
+          (href) => {
+            // An address the profile refuses is dropped rather than stored.
+            if (href === undefined || (href !== null && !isProfileHref(href, contentProfile!)))
+              controller.releaseBookmark(bookmark);
+            else finishLink(bookmark, href);
+          },
+          () => controller.releaseBookmark(bookmark),
+        );
+        return;
+      }
+      if (action === 'unlink') {
+        finishLink(bookmark, null);
+        return;
+      }
       let command: ControllerCommand | null;
       if (action.includes(':')) command = classCommand(action, bookmark.selection);
       else if (action === 'undo' || action === 'redo') command = { kind: action };
@@ -376,6 +456,8 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       'horizontalRule',
     ];
     const selectedBlocks = snapshot.selection ? classable(snapshot.selection) : [];
+    const currentLink = snapshot.selection ? linkAt(snapshot.selection) : null,
+      selectionCollapsed = !snapshot.selection || collapsed(snapshot.selection);
     const hasClass = (token: string) =>
       selectedBlocks.length > 0 &&
       selectedBlocks.every((id) => classesOf(id).split(/\s+/).includes(token));
@@ -426,7 +508,58 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       ),
       ...styleTokens.map((token) => classAction('style:' + token, 'Style: ' + styleName(token))),
       ...(styleTokens.length ? [classAction('style:', 'Reset content style')] : []),
+      // Links need a profile: it decides which addresses may be stored and rendered.
+      ...(contentProfile
+        ? [
+            {
+              ...classAction('link', 'Link', currentLink !== null),
+              disabled: unavailable || (currentLink === null && selectionCollapsed),
+            },
+            {
+              ...classAction('unlink', 'Remove link'),
+              disabled: unavailable || currentLink === null,
+            },
+          ]
+        : []),
     ];
+    const linkPanel = linkDraft
+      ? React.createElement(
+          'div',
+          {
+            role: 'dialog',
+            'aria-label': 'Link',
+            className: 'inkforge-toolbar-panel inkforge-link-panel',
+            onKeyDown: (event: React.KeyboardEvent) => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                cancelLink();
+              }
+            },
+          },
+          React.createElement(
+            'label',
+            null,
+            'Address',
+            React.createElement('input', {
+              autoFocus: true,
+              value: linkDraft.value,
+              placeholder: 'https://example.com',
+              'aria-invalid': !!linkDraft.error,
+              onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                setLinkDraft({ ...linkDraft, value: event.currentTarget.value, error: '' }),
+              onKeyDown: (event: React.KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  submitLink();
+                }
+              },
+            }),
+          ),
+          linkDraft.error ? React.createElement('p', { role: 'alert' }, linkDraft.error) : null,
+          React.createElement(EditorButton, { type: 'button', onClick: submitLink }, 'Apply'),
+          React.createElement(EditorButton, { type: 'button', onClick: cancelLink }, 'Cancel'),
+        )
+      : null;
     return React.createElement(
       React.Fragment,
       null,
@@ -437,6 +570,7 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
             onKeyDown: toolbarKey,
           })
         : null,
+      linkPanel,
       React.createElement('div', {
         ...native,
         ref: root,

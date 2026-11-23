@@ -1078,3 +1078,76 @@ test('setTextClasses styles only the selected text and can clear it again', () =
   );
   assert.equal(text(e), 'abcdef');
 });
+
+const inline = (e) =>
+  e
+    .getSnapshot()
+    .document.children[0].children.map((n) =>
+      n.type === 'link' ? [n.href, n.children.map((c) => c.text).join('')] : n.text,
+    );
+test('setLink wraps the selected text and removeLink unwraps it', () => {
+  const e = make('abcdef');
+  ok(run(e, { kind: 'setLink', range: range(e, 2, 4), href: 'https://example.com/a' }));
+  assert.deepEqual(inline(e), ['ab', ['https://example.com/a', 'cd'], 'ef']);
+  assert.equal(text(e), 'abcdef');
+  const cd = nodes(e, 'text').find((n) => n.node.text === 'cd').id;
+  // A caret inside a link retargets it.
+  ok(
+    run(e, {
+      kind: 'setLink',
+      range: { anchor: pos(cd, 1), head: pos(cd, 1) },
+      href: 'https://example.com/b',
+      target: '_blank',
+    }),
+  );
+  assert.deepEqual(inline(e), ['ab', ['https://example.com/b', 'cd'], 'ef']);
+  assert.equal(e.getSnapshot().document.children[0].children[1].target, '_blank');
+  ok(run(e, { kind: 'removeLink', range: { anchor: pos(cd, 1), head: pos(cd, 1) } }));
+  assert.deepEqual(inline(e), ['abcdef']);
+  ok(run(e, { kind: 'undo' }));
+  assert.deepEqual(inline(e), ['ab', ['https://example.com/b', 'cd'], 'ef']);
+});
+test('setLink over an existing link replaces it and keeps marks; a bare caret outside a link is refused', () => {
+  const e = make('abcdef');
+  mark(e, 0, 3);
+  const all = () => nodes(e, 'text');
+  const first = all().find((n) => n.node.text === 'abc').id,
+    last = all().find((n) => n.node.text === 'def').id;
+  ok(
+    run(e, {
+      kind: 'setLink',
+      range: { anchor: pos(first, 1), head: pos(last, 1) },
+      href: 'https://example.com/a',
+    }),
+  );
+  assert.deepEqual(inline(e), ['a', ['https://example.com/a', 'bcd'], 'ef']);
+  const linked = e.getSnapshot().document.children[0].children[1].children;
+  assert.deepEqual(
+    linked.map((n) => [n.text, n.marks ?? []]),
+    [
+      ['bc', ['bold']],
+      ['d', []],
+    ],
+  );
+  const ef = all().find((n) => n.node.text === 'ef').id,
+    d = all().find((n) => n.node.text === 'd').id;
+  ok(
+    run(e, {
+      kind: 'setLink',
+      range: { anchor: pos(d, 0), head: pos(ef, 1) },
+      href: 'https://example.com/c',
+    }),
+  );
+  // Unwrapping the first link lets equal neighbours join again.
+  assert.deepEqual(inline(e), ['abc', ['https://example.com/c', 'de'], 'f']);
+  const a = all().find((n) => n.node.text === 'abc').id;
+  rejected(
+    run(e, {
+      kind: 'setLink',
+      range: { anchor: pos(a, 1), head: pos(a, 1) },
+      href: 'https://example.com/x',
+    }),
+    'LINK_NEEDS_SELECTION',
+  );
+  rejected(run(e, { kind: 'setLink', range: range(e, 0, 1), href: 7 }), 'INVALID_LINK');
+});

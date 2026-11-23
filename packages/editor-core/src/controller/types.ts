@@ -162,6 +162,13 @@ export type ControllerCommand =
       remove: readonly string[];
       add?: string;
     }>
+  /**
+   * Links the selected text of one text block, replacing any link it touches. A caret inside
+   * a link retargets that link. The host validates the address before it sends the command.
+   */
+  | Readonly<{ kind: 'setLink'; range: ModelSelection; href: string; target?: '_self' | '_blank' }>
+  /** Unwraps every link the range touches, or the link holding the caret. */
+  | Readonly<{ kind: 'removeLink'; range: ModelSelection }>
   | Readonly<{ kind: 'insertHardBreak'; range: ModelSelection }>
   /** Adds a rule after the block holding the position; the caret moves to the block below it. */
   | Readonly<{ kind: 'insertHorizontalRule'; at: ModelPosition }>

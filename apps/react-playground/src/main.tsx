@@ -209,8 +209,16 @@ function EnginePlayground() {
         aria-label="Engine body"
         className="inkforge-content"
         {...(engineMode === 'nopolicy' ? {} : { contentProfile: cmsProfile })}
+        // ?engine=picker stands in for a host that offers its own pages instead of a typed address.
+        {...(engineMode === 'picker'
+          ? {
+              requestLink: async () => 'cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256',
+            }
+          : {})}
       />
-      <pre data-testid="engine-html">{serializeHtml(snapshot.document)}</pre>
+      <pre data-testid="engine-html">
+        {serializeHtml(snapshot.document, { referenceLinks: true })}
+      </pre>
     </main>
   );
 }
