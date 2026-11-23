@@ -74,10 +74,11 @@ export interface InkforgeEngineEditorProps extends Native {
   readonly contentProfile?: ContentProfile;
   /**
    * Lets the host choose a link, for example with a picker for its own pages and files.
-   * Resolve with the address to set, `null` to remove the link, or `undefined` to cancel.
-   * Without it the editor shows a field for typing an address.
+   * Resolve with the address to set (alone, or with whether it opens in a new tab), `null`
+   * to remove the link, or `undefined` to cancel. Without it the editor shows a field for
+   * typing an address.
    */
-  readonly requestLink?: (current: string | null) => Promise<string | null | undefined>;
+  readonly requestLink?: (current: string | null) => Promise<EngineLinkChoice | null | undefined>;
   /** Display names for content style classes; a readable name is derived otherwise. */
   readonly tokenLabels?: Readonly<Record<string, string>>;
   readonly disabled?: boolean;
@@ -89,6 +90,7 @@ export interface InkforgeEngineEditorProps extends Native {
   /** Separate from the unchanged forwarded HTMLDivElement ref. */
   readonly surfaceRef?: React.Ref<EngineSurfaceHandle>;
 }
+export type EngineLinkChoice = string | Readonly<{ href: string; target?: '_self' | '_blank' }>;
 export const InkforgeEngineEditor = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps>(
   function InkforgeEngineEditor(props, ref) {
     if ('value' in props || 'defaultValue' in props || 'engineBinding' in props)
@@ -330,12 +332,18 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
       },
       [controller],
     );
-    function finishLink(bookmark: EngineBookmark, href: string | null) {
+    function finishLink(bookmark: EngineBookmark, choice: EngineLinkChoice | null) {
+      const link = typeof choice === 'string' ? { href: choice } : choice;
       binding.current?.applyBookmark(
         bookmark,
-        href === null
+        link === null
           ? { kind: 'removeLink', range: bookmark.selection }
-          : { kind: 'setLink', range: bookmark.selection, href },
+          : {
+              kind: 'setLink',
+              range: bookmark.selection,
+              href: link.href,
+              ...(link.target === '_blank' ? { target: '_blank' as const } : {}),
+            },
       );
       controller.releaseBookmark(bookmark);
     }
@@ -369,11 +377,16 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
           return;
         }
         void requestLink(current).then(
-          (href) => {
+          (choice) => {
+            const href = typeof choice === 'string' ? choice : choice?.href;
             // An address the profile refuses is dropped rather than stored.
-            if (href === undefined || (href !== null && !isProfileHref(href, contentProfile!)))
+            if (
+              choice === undefined ||
+              (choice !== null &&
+                (typeof href !== 'string' || !isProfileHref(href, contentProfile!)))
+            )
               controller.releaseBookmark(bookmark);
-            else finishLink(bookmark, href);
+            else finishLink(bookmark, choice);
           },
           () => controller.releaseBookmark(bookmark),
         );

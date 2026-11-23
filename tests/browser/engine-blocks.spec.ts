@@ -174,7 +174,7 @@ test('a host link picker supplies the address instead of the field', async ({ pa
   await select(page, 0, 0, 5);
   await button(page, 'Link').click();
   await expect(html(page)).toContainText(
-    '<a href="cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256">First</a>',
+    '<a href="cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256" target="_blank" rel="noopener noreferrer">First</a>',
   );
   await expect(page.getByRole('dialog', { name: 'Link' })).toHaveCount(0);
 });
