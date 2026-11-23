@@ -1,6 +1,6 @@
 {
   "name": "@inkforge/editor-react",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "React adapter for editor-core.",
   "repository": {
     "type": "git",
