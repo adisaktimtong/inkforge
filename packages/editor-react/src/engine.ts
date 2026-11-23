@@ -390,11 +390,16 @@ const EngineContent = React.forwardRef<HTMLDivElement, InkforgeEngineEditorProps
               choice === undefined ||
               (choice !== null &&
                 (typeof href !== 'string' || !isProfileHref(href, contentProfile!)))
-            )
+            ) {
+              // Nothing changes; the author continues where the Link action was taken.
+              binding.current?.focusBookmark(bookmark);
               controller.releaseBookmark(bookmark);
-            else finishLink(bookmark, choice);
+            } else finishLink(bookmark, choice);
           },
-          () => controller.releaseBookmark(bookmark),
+          () => {
+            binding.current?.focusBookmark(bookmark);
+            controller.releaseBookmark(bookmark);
+          },
         );
         return;
       }

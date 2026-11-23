@@ -217,6 +217,11 @@ function EnginePlayground() {
               requestLink: async (current: string | null, detail: { target: string }) => {
                 pickerCalls.push(`${current} ${detail.target}`);
                 setCalls(pickerCalls.join(' | '));
+                // ?engine=picker&cancel=1 stands in for an author who closes the picker.
+                if (new URLSearchParams(location.search).get('cancel')) {
+                  (document.activeElement as HTMLElement | null)?.blur();
+                  return undefined;
+                }
                 return {
                   href: 'cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256',
                   target: '_blank' as const,

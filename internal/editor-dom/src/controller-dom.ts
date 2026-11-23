@@ -177,6 +177,8 @@ export interface EngineDomBinding extends EngineSurfaceHandle {
   detach(): void;
   captureBookmark(): EngineBookmark | null;
   applyBookmark(bookmark: EngineBookmark, command: ControllerCommand): boolean;
+  /** Puts focus and the caret back where the bookmark was taken, without changing content. */
+  focusBookmark(bookmark: EngineBookmark): boolean;
   selectionMarks(): readonly Mark[];
 }
 /** The single editable-subtree writer. Imported relatively and bundled by editor-react. */
@@ -1074,6 +1076,14 @@ export function mountEngineDom(
       root.focus({ preventScroll: true });
       restoreNative(bookmark.selection);
       return execute(command, c);
+    },
+    focusBookmark(bookmark) {
+      if (blocked()) return false;
+      const r = controller.restoreBookmark(bookmark, { expected: bookmark.token, bookmark });
+      if (r.status === 'rejected') return false;
+      root.focus({ preventScroll: true });
+      restoreNative(bookmark.selection);
+      return true;
     },
     selectionMarks,
   };

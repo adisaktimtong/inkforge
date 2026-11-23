@@ -8,3 +8,5 @@ Add the `setLink` and `removeLink` controller commands, and Link and Remove link
 `requestLink` may resolve with `{ href, target }` so a host picker can ask for a new tab.
 
 `requestLink` receives a second argument, `{ target }`, so a picker reopened on a link knows whether it opens in a new tab.
+
+When a host picker is cancelled or its result is refused, the editor puts focus and the selection back where the Link action was taken.

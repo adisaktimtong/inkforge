@@ -192,3 +192,17 @@ test('a host link picker receives the current address and target when it reopens
     'null _self | cms-ref:content:c3e6b3d2-6fbd-4c63-a7da-05be2b79d256 _blank',
   );
 });
+
+test('cancelling a host link picker returns focus and the selection to the editor', async ({
+  page,
+}) => {
+  await page.goto('/?engine=picker&cancel=1');
+  await body(page).locator('p').first().click();
+  await select(page, 0, 0, 5);
+  await button(page, 'Link').click();
+  await expect(page.getByTestId('picker-calls')).toHaveText('null _self');
+  await expect(body(page)).toBeFocused();
+  await page.keyboard.type('!');
+  // Typing replaces the words that were selected when Link was pressed.
+  await expect(html(page)).toHaveText('<p>! paragraph</p><p>Second paragraph</p>');
+});
